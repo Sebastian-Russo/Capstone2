@@ -1,0 +1,19 @@
+app idea’s
+-budget 
+what are the parts of a budget?
+-income 
+-how much for savings
+-expenses
+—what kind of expenses, how much? 
+what do i want to show in the budget
+-3 routers
+api/users
+api/auth
+api/budgets
+
+start with creating budget object 
+const budget = { budget obj with all the attributes };
+create a new repo, put to GitHub 
+
+npm install
+express, mocha, chai, morgan, body-parser
