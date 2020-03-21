@@ -19,7 +19,7 @@
     "mocha": "^7.1.1"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --exit",
     "start": "node server.js"
   },
   "repository": {
