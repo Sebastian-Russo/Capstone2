@@ -38,16 +38,44 @@ A category section for the user to choose if this item is a necessity or a want 
 
 -As a user, I should be able to sign up for the budget app 
 -As a user, I should be able to log into the budget app
+-As a user, I should be able to set my weekly budget
+-As a user, I should see how much is left in my weekly budget
+-As a user, I should see how much I spent in my weekly budget
+-As a user, I should see how much have left in my weekly budget
+-As a user, I should be able to add $/item I've purchased to the weekly budget 
+-As a user, I should see what i spent my weekly budget on, each $/item
+-As a user, I should be able to categorize each $/item as: necessity or want 
+-As a user, I should be able to see a bar/pie graph of the two categories (necessity/want) to track which I'm spending more on
+
+--------------------------------------------------------------------
+* MVP- Minimum Viable Product *
 
 -As a user, I should be able to set my weekly budget
 -As a user, I should see how much is left in my weekly budget
 -As a user, I should see how much I spent in my weekly budget
 -As a user, I should see how much have left in my weekly budget
--As a user, I should be able to input $/item I just purchased 
--As a user, I should see what i spent my weekly budget on, each $/item
--As a user, I should be able to add $/item to the weekly budget 
--As a user, I should be able to categorize each $/item as: necessity or want 
--As a user, I should be able to see a bar/pie graph of the two categories (necessity/want) to track which I'm spending more on
+-As a user, I should be able to add $/item I've purchased to the weekly budget 
 
 --------------------------------------------------------------------
+* List Out the Screens the User Will See *
 
+- A screen for to set and see my weekly budget
+- A screen showing the weekly budget  
+    below showing what was spent and what is left in weekly budget,
+- A screen to add the $/items purchased,
+    below showing the the list of $/items
+
+--------------------------------------------------------------------
+* User Journey for Each Screen - User Flows *
+
+(1) Input weekly budget goal 
+------------------------
+User enters $ amount --------> (2) Home screen showing weekly budget  
+
+
+(2) Home screen showing weekly budget 
+-------------------------
+User enters $/item recently purchased --> (2) show $/item in list below 
+
+
+--------------------------------------------------------------------
