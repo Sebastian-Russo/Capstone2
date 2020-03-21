@@ -1,0 +1,35 @@
+{
+  "name": "capstone2",
+  "version": "1.0.0",
+  "description": "budget-app",
+  "main": "congif.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "mongoose": "^5.9.5",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.1"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sebastian-Russo/Capstone2.git"
+  },
+  "author": "Sebastian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sebastian-Russo/Capstone2/issues"
+  },
+  "homepage": "https://github.com/Sebastian-Russo/Capstone2#readme"
+}
