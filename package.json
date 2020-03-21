@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "budget-app",
   "main": "congif.js",
+  "engines": {
+    "node": "12.x"
+  },
   "directories": {
     "test": "test"
   },
