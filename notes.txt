@@ -1,3 +1,5 @@
+MIKE'S NOTES
+
 app idea’s
 -budget 
 what are the parts of a budget?
@@ -17,3 +19,31 @@ create a new repo, put to GitHub
 
 npm install
 express, mocha, chai, morgan, body-parser
+
+--------------------------------------------------------------------
+* Define Your App's Purpose *
+
+To track the daily, weekly, and monthly budget of a user's spending habits and prevent over spending.
+
+--------------------------------------------------------------------
+* Write Your App Idea Down *
+
+The app should be a daily budget tracker of budget spending habits. The user can set their monthly and/or weekly budget. It will focus on weekly budget, so the user stays concious of it the whole week. Keeps the same budget each week, and can get feed back on their own spending habits and how close they are to accurately staying on budget. By inputting each item, the user remains concious of what they're spending, and the math in the background shows them how much is spent and left for their week.
+If a user needs to change their weekly budget, they can see the effects a weekly budget has on a month, or year: i.e. changing a weekly budget by $50, means $200 in a month, which can be one's car payment. Do they need to change their budget, can the afford it? Or can they change their habits to reach their goals?
+A category section for the user to choose if this item is a necessity or a want will serve as another reminder, and also show the user as the week goes on, what's dominating their useage. 
+
+ 
+--------------------------------------------------------------------
+* Write User Stories to Determine Features *
+
+-As a user, I should be able to sign up for the budget app 
+-As a user, I should be able to log into the budget app
+
+-As a user, I should be able to set my weekly budget
+-As a user, I should see how much is left in my weekly budget
+-As a user, I should see how much I spent in my weekly budget
+-As a user, I should see how much have left in my weekly budget
+-As a user, I should see what i spent my weekly budget on, each $/item
+-As a user, I should be able to add $/item to the weekly budget 
+-As a user, I should be able to categorize each $/item as: necessity or want 
+-As a user, I should be able to see a bar/pie graph of the two categories (necessity/want)
