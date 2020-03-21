@@ -14,6 +14,7 @@ app.use(express.json());
 
 // CRUD
 app.get('/', (req, res) => {
+    // first feature goes here
     res.status(200)
 })
 
