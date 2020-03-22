@@ -1,13 +1,5 @@
 MIKE'S NOTES
 
-app idea’s
--budget 
-what are the parts of a budget?
--income 
--how much for savings
--expenses
-—what kind of expenses, how much? 
-what do i want to show in the budget
 -3 routers
 api/users
 api/auth
