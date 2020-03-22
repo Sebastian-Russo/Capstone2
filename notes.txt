@@ -51,7 +51,7 @@ A category section for the user to choose if this item is a necessity or a want 
 --------------------------------------------------------------------
 * List Out the Screens the User Will See *
 
-- A screen for to set and see my weekly budget
+- A screen for me to set and see my weekly budget
 - A screen showing the weekly budget  
     below showing what was spent and what is left in weekly budget,
 - A screen to add the $/items purchased,
