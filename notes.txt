@@ -1,13 +1,5 @@
 MIKE'S NOTES
 
-app idea’s
--budget 
-what are the parts of a budget?
--income 
--how much for savings
--expenses
-—what kind of expenses, how much? 
-what do i want to show in the budget
 -3 routers
 api/users
 api/auth
@@ -47,6 +39,10 @@ A category section for the user to choose if this item is a necessity or a want 
 -As a user, I should be able to categorize each $/item as: necessity or want 
 -As a user, I should be able to see a bar/pie graph of the two categories (necessity/want) to track which I'm spending more on
 
+-As a user, I should be able to see my cost of living breakdown for a month 
+-As a user, I should be able to input my monthly earnings
+-As a user, I should be able to input my monthly expenses and see what money is left over 
+
 --------------------------------------------------------------------
 * MVP- Minimum Viable Product *
 
@@ -59,11 +55,13 @@ A category section for the user to choose if this item is a necessity or a want 
 --------------------------------------------------------------------
 * List Out the Screens the User Will See *
 
-- A screen for to set and see my weekly budget
+- A screen for me to set and see my weekly budget
 - A screen showing the weekly budget  
     below showing what was spent and what is left in weekly budget,
 - A screen to add the $/items purchased,
     below showing the the list of $/items
+
+- A screen for the montly cost of living breakdown, monthly earnings, and the difference (money left over)
 
 --------------------------------------------------------------------
 * User Journey for Each Screen - User Flows *
@@ -73,9 +71,14 @@ A category section for the user to choose if this item is a necessity or a want 
 User enters $ amount --------> (2) Home screen showing weekly budget  
 
 
-(2) Home screen showing weekly budget 
+(2) Screen showing weekly budget 
 -------------------------
 User enters $/item recently purchased --> (2) show $/item in list below 
+
+(3) Screen showing monthly cost of living 
+-------------------------
+User enters monthly cost of living (known costs)
+User enters monthly earnings --> (4) shows list of $/items, and $ difference 
 
 
 --------------------------------------------------------------------
