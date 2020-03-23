@@ -8,7 +8,7 @@ const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
-// CRUD //////////////////
+// CRUD //////
 
 router.get("/", (req, res) => {
     res.json(Budget.get())
