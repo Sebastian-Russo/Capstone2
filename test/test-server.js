@@ -25,3 +25,26 @@ describe('server', function() {
     })
 });
 
+describe('/budget', function() {
+    describe('POST', function() {
+        it('Should create an object with the correct fields', function() {
+            const newItem = { 
+                monthlyBudget: 500, 
+                costOfLiving: {},
+                weeklyBudget: {}
+            }
+            return chai
+            .request(app)
+            .post('/budget')
+            .send(newItem)
+            .then(function(res){
+                expect(res).to.have.status(201);
+                expect(res).to.be.json;
+                expect(res.body).to.be.a('object');
+                expect(res.body).to.include.keys('monthlyBudget', 'costOfLiving', 'weeklyBudget')
+            })
+        })
+        }
+    )
+});
+

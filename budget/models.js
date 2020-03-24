@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const budgetSchema = mongoose.Schema({
-    monthlyBudget: { type: Number, require: true },
+    monthlyBudget: { type: Number, required: true },
     costOfLiving: [
         {
             item: { type: String, required: true },
