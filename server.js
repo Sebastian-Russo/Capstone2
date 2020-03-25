@@ -24,11 +24,7 @@ app.use('*', (req, res) => {
     return res.status(404).json({ message: 'Not Found' });
   });
 
-// CRUD
-app.get('/', (req, res) => {
-    // first feature goes here
-    res.status(200)
-})
+
 
 // runSever and closeServer functions here
 

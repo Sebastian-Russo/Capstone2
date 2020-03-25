@@ -14,21 +14,22 @@ router.get("/", (req, res) => {
     res.json(Budget.get())
 });
 
-router.post("/", (req, res) => {
-    const requiredFields = ["monthlyBudget", "costOfLiving", "weeklyBudget"]
+router.post("/", jsonParser, (req, res) => {
+    const requiredFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]
 
     const missingField = requiredFields.find(field => !(field in req.body));
 
     if (missingField) {
         return res.status(400).json({
-            message: `Required field ${field} missing.`
+            message: `Required \`${field}\` missing.`
         });
     }
 
     Budget.create({
         monthlyBudget: req.body.monthlyBudget,
         costOfLiving: req.body.costOfLiving,
-        weeklyBudget: req.body.weeklyBudget
+        weeklyBudget: req.body.weeklyBudget,
+        weeklyItems: req.body.weeklyItems
     })
     .then(budget => res.status(201).json(budget.serialize()))
     .catch(err => {

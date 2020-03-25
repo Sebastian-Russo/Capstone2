@@ -21,6 +21,8 @@ describe('server', function() {
             .then(_res => {
                 res = _res;
                 expect(res).to.have.status(200);
+                // expect(res).to.be.json;
+                // expect(res.body).to.be.a('object');
             })
     })
 });
@@ -29,9 +31,10 @@ describe('/budget', function() {
     describe('POST', function() {
         it('Should create an object with the correct fields', function() {
             const newItem = { 
-                monthlyBudget: 500, 
-                costOfLiving: {},
-                weeklyBudget: {}
+                monthlyBudget: 600, 
+                costOfLiving: 1500,
+                weeklyBudget: 150,
+                weeklyItems: ["item", 30]
             }
             return chai
             .request(app)
@@ -44,7 +47,8 @@ describe('/budget', function() {
                 expect(res.body).to.include.keys('monthlyBudget', 'costOfLiving', 'weeklyBudget')
             })
         })
-        }
-    )
+
+        
+    });
 });
 

@@ -3,6 +3,9 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
+const itemSchema = mongoose.Schema({ item: String })
+const amountSchema = mongoose.Schema({ amount: String })
+
 const budgetSchema = mongoose.Schema({
     monthlyBudget: { type: Number, required: true },
     costOfLiving: [
@@ -12,13 +15,7 @@ const budgetSchema = mongoose.Schema({
         }
     ],
     weeklyBudget: { type: Number, required: true },
-    items: [
-        {
-            item: { type: String, required: true },
-            amount: { type: Number, required: true },
-            date: Date
-        }
-    ]    
+    weeklyItems: [{itemSchema, amountSchema}]
 });
 
 budgetSchema.virtual("item").get(function() {
@@ -35,7 +32,7 @@ budgetSchema.methods.serialize = function() {
         monthlyBudget: this.monthlyBudget,
         costOfLiving: this.costOfLiving,
         weeklyBudget: this.weeklyBudget,
-        items: this.items,
+        weeklyItems: this.weeklyItems
     };
 };
 
