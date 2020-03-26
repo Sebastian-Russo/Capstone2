@@ -31,12 +31,21 @@ router.post("/", jsonParser, (req, res) => {
         weeklyBudget: req.body.weeklyBudget,
         weeklyItems: req.body.weeklyItems
     })
+    // .then(budget => {
+    //     console.log("created", budget);
+    //     console.log("serialized", budget.serialize());
+    //   })
     .then(budget => res.status(201).json(budget.serialize()))
     .catch(err => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
     });
 });
+
+// router.post("/", (req, res) => {
+//     const requiredFields = [""];
+//     res.sendStatus(200);
+// })
 
 module.exports = {router};
 
