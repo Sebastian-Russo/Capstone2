@@ -14,6 +14,7 @@ router.get("/", (req, res) => {
     res.json(Budget.get())
 });
 
+
 router.post("/", jsonParser, (req, res) => {
     const requiredFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]
 
@@ -24,28 +25,39 @@ router.post("/", jsonParser, (req, res) => {
             message: `Required \`${field}\` missing.`
         });
     }
-
+    // console.log(missingField)
+    // console.log(Budget.create({
+    //     monthlyBudget: req.body.monthlyBudget,
+    //     costOfLiving: req.body.costOfLiving,
+    //     weeklyBudget: req.body.weeklyBudget,
+    //     weeklyItems: req.body.weeklyItems
+    // }))
+    console.log(req.body)
     Budget.create({
         monthlyBudget: req.body.monthlyBudget,
         costOfLiving: req.body.costOfLiving,
         weeklyBudget: req.body.weeklyBudget,
         weeklyItems: req.body.weeklyItems
     })
-    // .then(budget => {
-    //     console.log("created", budget);
-    //     console.log("serialized", budget.serialize());
-    //   })
-    .then(budget => res.status(201).json(budget.serialize()))
+    .then(budget => {
+    console.log(budget)
+    return res.status(201).json(budget.serialize())
+   })
+    //.then(budget => res.status(201).json(budget.serialize()))
+    // .then(budget => res.status(201).json({
+    //     id: budget.id,
+    //     monthlyBudget: budget.monthlyBudget,
+    //     costOfLiving: budget.costOfLiving,
+    //     weeklyBudget: budget.weeklyItems,
+    //     weeklyItems: budget.weeklyItems
+    // }))
     .catch(err => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
     });
 });
 
-// router.post("/", (req, res) => {
-//     const requiredFields = [""];
-//     res.sendStatus(200);
-// })
+
 
 module.exports = {router};
 
