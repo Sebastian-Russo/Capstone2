@@ -17,13 +17,13 @@ chai.use(chaiHttp);
 
 describe('server', function() {
 
-    before(function () {
-        return runServer(TEST_DATABASE_URL);
-      });
+    // before(function () {
+    //     return runServer(TEST_DATABASE_URL);
+    //   });
     
-      after(function () {
-        return closeServer();
-      });
+    //   after(function () {
+    //     return closeServer();
+    //   });
 
     it('should verify that when you hit up the root url for you client, you get a 200 status code and HMTL', function() {
 
