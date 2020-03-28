@@ -52,13 +52,6 @@ router.post("/", jsonParser, (req, res) => {
             message: `Required \`${field}\` missing.`
         });
     }
-    // console.log(missingField)
-    // console.log(Budget.create({
-    //     monthlyBudget: req.body.monthlyBudget,
-    //     costOfLiving: req.body.costOfLiving,
-    //     weeklyBudget: req.body.weeklyBudget,
-    //     weeklyItems: req.body.weeklyItems
-    // }))
     console.log(req.body)
     Budget.create({
         monthlyBudget: req.body.monthlyBudget,
@@ -70,7 +63,6 @@ router.post("/", jsonParser, (req, res) => {
     console.log(budget)
     return res.status(201).json(budget.serialize())
    })
-    //.then(budget => res.status(201).json(budget.serialize()))
     // .then(budget => res.status(201).json({
     //     id: budget.id,
     //     monthlyBudget: budget.monthlyBudget,
@@ -115,7 +107,7 @@ router.put('/:id', jsonParser, (req, res) => {
 
 router.delete("/:id", (req, res) => {
     Budget.findByIdAndRemove(req.params.id)
-      .then(restaurant => res.status(204).end())
+      .then(budget => res.status(204).end())
       .catch(err => res.status(500).json({ message: "Internal server error" }));
   });
 

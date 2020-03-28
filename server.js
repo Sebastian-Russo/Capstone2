@@ -17,7 +17,8 @@ app.use(express.static('public'));
 app.use(morgan('common'));
 app.use(express.json());
 
-
+// first arg is the name of the url path for the second arg
+// second arg is the name for the router, named on line 9 
 app.use('/api/budget/', budgetRouter);
 
 // catch all endpoints 
@@ -25,42 +26,45 @@ app.use('*', (req, res) => {
     return res.status(404).json({ message: 'Not Found' });
   });
 
+let server;
 
-  let server;
+function runServer(databaseUrl, port = PORT) {
 
-  function runServer(databaseUrl, port = PORT) {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(databaseUrl, err => {
+      if (err) {
+        return reject(err);
+      }
+      server = app.listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+        resolve();
+      })
+        .on('error', err => {
+          mongoose.disconnect();
+          reject(err);
+        });
+    });
+  });
+}
   
+function closeServer() {
+  return mongoose.disconnect().then(() => {
     return new Promise((resolve, reject) => {
-      mongoose.connect(databaseUrl, err => {
+      console.log('Closing server');
+      server.close(err => {
         if (err) {
           return reject(err);
         }
-        server = app.listen(port, () => {
-          console.log(`Your app is listening on port ${port}`);
-          resolve();
-        })
-          .on('error', err => {
-            mongoose.disconnect();
-            reject(err);
-          });
+        resolve();
       });
     });
-  }
+  });
+}
+
   
-  function closeServer() {
-    return mongoose.disconnect().then(() => {
-      return new Promise((resolve, reject) => {
-        console.log('Closing server');
-        server.close(err => {
-          if (err) {
-            return reject(err);
-          }
-          resolve();
-        });
-      });
-    });
-  }
   
+// if (require.main === module) bit allows us to call our runServer function if this module is being run by calling node server.js from the command line (aka, when we run our app locally or in prod). When we open this file in order to import app and runServer in a test module, we don't want the server to automatically run, and this conditional block makes that possible
+
   if (require.main === module) {
     runServer(DATABASE_URL).catch(err => console.error(err));
   }
