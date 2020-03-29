@@ -110,10 +110,26 @@ describe('Budget', function() {
 
   describe('GET endpoint', function() {
 
+    it('should return all existing budgets', function() {
+        let res;
+        return chai.request(app)
+          .get('/api/budget')
+          .then(function(_res) {
+              res = _res;
+              expect(res).to.have.status(200);
+              expect(res.body.budgets).to.have.lengthOf.at.least(1)
+            
+              return Budget.count();
+          })
+          .then(function(count) {
+              expect(res.body.budgets).to.have.lengthOf(count);
+          });
+    });
+
     it('should list items on GET', function() {
         
         let resBudget;
-        
+
         return chai
             .request(app)
             .get('/api/budget')
@@ -134,14 +150,18 @@ describe('Budget', function() {
             .then(function(budget) {
                 expect(resBudget.id).to.equal(budget.id);
                 expect(resBudget.monthlyBudget).to.equal(budget.monthlyBudget);
-                expect(resBudget.costOfLiving).to.equal(budget.costOfLiving);
                 expect(resBudget.weeklyBudget).to.equal(budget.weeklyBudget);
-                expect(resBudget.weeklyItems).to.equal(budget.weeklyItems);
+
+                expect(resBudget.costOfLiving.item).to.equal(budget.costOfLiving.item);
+                expect(resBudget.costOfLiving.amount).to.equal(budget.costOfLiving.amount);
+                
+                expect(resBudget.weeklyItems.item).to.equal(budget.weeklyItems.item);
+                expect(resBudget.weeklyItems.amount).to.equal(budget.weeklyItems.amount);
             });
     });
   });
 
-  describe('PUT endpoint', function() {
+  describe('POST endpoint', function() {
   
     it('should create budget item on POST ', function() {
         
@@ -151,20 +171,51 @@ describe('Budget', function() {
         //     weeklyBudget: 150,
         //     weeklyItems: [{item: "groceries", amount: 30}]
         // };
-        const newItem = generateBudgetData();
+        const newBudgetObj = generateBudgetData();
+        let firstItem;
+        let firstAmount;
 
         return chai
+        // Once we get the response object, we inspect the status code and compare the returned object to the data we sent over.
         .request(app)
         .post('/api/budget')
-        .send(newItem)
+        .send(newBudgetObj)
         .then(function(res){
             expect(res).to.have.status(201);
             expect(res).to.be.json;
             expect(res.body).to.be.a('object');
             expect(res.body).to.include.keys('monthlyBudget', 'costOfLiving', 'weeklyBudget', 'weeklyItems');
+
+            expect(res.body.id).to.not.be.null;
+            expect(res.body.monthlyBudget).to.equal(newBudgetObj.monthlyBudget);
+            expect(res.body.weeklyBudget).to.equal(newBudgetObj.weeklyBudget);
+
+            // firstItem = newBudgetObj.weeklyItems.item.sort((a, b) => b.date - a.date)[0].item;
+            // firstAmount =newBudgetObj.weeklyItems.amount.sort((a, b) => b.date - a.date)[0].amount;
+
+            // expect(res.body.weeklyItems.item).to.equal(firstItem);
+            // expect(res.body.weeklyItems.amount).to.equal(firstAmount);
+
+
+            return Budget.findById(res.body.id);
+        })
+        // After that, we retrieve the new budget from the DB and compare its data to the data we sent over.
+        .then(function(budget) {
+            expect(budget.monthlyBudget).to.equal(newBudgetObj.monthlyBudget);
+            expect(budget.weeklyBudget).to.equal(newBudgetObj.weeklyBudget);
+
+            expect(budget.costOfLiving.item).to.equal(newBudgetObj.costOfLiving.item)
+            expect(budget.costOfLiving.amount).to.equal(newBudgetObj.costOfLiving.amount);
+
+            expect(budget.weeklyItems.item).to.equal(newBudgetObj.costOfLiving.item)
+            expect(budget.weeklyItems.amount).to.equal(newBudgetObj.costOfLiving.amount)
         })    
     });
   });
+
+
+/// PUT endpoint ///
+
 
    describe('DELETE endpoint', function() {
 
