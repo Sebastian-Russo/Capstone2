@@ -216,6 +216,46 @@ describe('Budget', function() {
 
 /// PUT endpoint ///
 
+  describe('PUT endpoint', function() {
+
+        // strategy:
+        //  1. Get an existing restaurant from db
+        //  2. Make a PUT request to update that restaurant
+        //  3. Prove restaurant returned by request contains data we sent
+        //  4. Prove restaurant in db is correctly updated
+      it('should update budget object', function() {
+          const updateData = generateBudgetData()
+      
+        return Budget  
+            .findOne()
+            .then(function(budget) {
+                updateData.id = budget.id;
+            // make request then inspect it to make sure it reflects data we sent
+            return chai.request(app)
+            .put(`/api/budget/${budget.id}`)
+            .send(updateData);
+            })
+            .then(function(res) {
+                expect(res).to.have.status(200);
+
+                return Budget.findById(updateData.id)
+            })
+            .then(function(budget) {
+                expect(budget.monthlyBudget).to.equal(updateData.monthlyBudget);
+                expect(budget.weeklyBudget).to.equal(updateData.weeklyBudget);
+    
+                expect(budget.costOfLiving.item).to.equal(updateData.costOfLiving.item)
+                expect(budget.costOfLiving.amount).to.equal(updateData.costOfLiving.amount);
+    
+                expect(budget.weeklyItems.item).to.equal(updateData.costOfLiving.item)
+                expect(budget.weeklyItems.amount).to.equal(updateData.costOfLiving.amount)
+            });    
+      });
+
+  });
+
+
+
 
    describe('DELETE endpoint', function() {
 
