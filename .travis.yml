@@ -1,2 +1,12 @@
 language: node_js
 node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  edge: true
+  api_key:
+    secure: 
+  app: seb-capstone2
+  on:
+    repo: Sebastian-Russo/Capstone2
