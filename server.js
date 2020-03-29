@@ -37,7 +37,7 @@ app.use(express.json());
 // second arg is the name for the router, named on line 9 
 app.use('/api/budget/', budgetRouter);
 
-const jwtAuth = passport.authenticate('jwt', { session: false });
+//const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
 // app.get('/api/protected', jwtAuth, (req, res) => {

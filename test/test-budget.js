@@ -87,7 +87,7 @@ function tearDownDb() {
 
 
 
-describe('Budget', function() {
+describe('/api/budget', function() {
 
     before(function () {
         return runServer(TEST_DATABASE_URL);
