@@ -4,6 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 const { router: usersRouter } = require('./users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
@@ -31,6 +32,10 @@ app.use(function (req, res, next) {
 app.use(morgan('common'));
 app.use(express.json());
 
+app.use(passport.initialize());
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
 // made `localStrategy()` in `strategies.js` to use in a route
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
@@ -38,21 +43,10 @@ app.use('/api/auth/', authRouter);
 // second arg is the name for the router, named on line 9 
 app.use('/api/budget/', budgetRouter);
 
-const jwtAuth = passport.authenticate('jwt', { session: false });
-
-// A protected endpoint which needs a valid JWT to access it
-app.get('/api/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: 'rosebud'
-  });
-});
-
 // catch all endpoints 
 app.use('*', (req, res) => {
     return res.status(404).json({ message: 'Not Found' });
   });
-
-
 
 let server;
 
