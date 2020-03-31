@@ -19,10 +19,6 @@ const createAuthToken = function(user) {
   });
 };
 
-// To use the strategy in a route, we must register the strategy in server.js
-// Then we can use the strategy to protect the /api/auth/login endpoint, defined in /auth/router.js:
-// To use our local auth strategy, we call passport.authenticate('local', {session: false}), which returns a middleware function. Store a reference to the middleware function in a variable, and pass it as the second argument to the .post endpoint. 
-// We set session to false to stop Passport from adding session cookies, which identify the user to the response. Instead of using these cookies to authenticate, the user supplies their JWT in a request header. This helps prevent against cross-site request forgery (CSRF) attacks, which can allow attackers to gain access to a user's details.
 const localAuth = passport.authenticate('local', {session: false});
 
 router.use(bodyParser.json());
