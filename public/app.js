@@ -8,7 +8,7 @@ const STATE = {
 const setState = (newState, state=STATE) => {
   return Object.assign(state, newState);
 };
-
+//
 // landing page
 // area for user to sign up/sign in
 // dashboard holds budget
