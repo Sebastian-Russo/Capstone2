@@ -17,7 +17,9 @@ const UserSchema = mongoose.Schema({
     required: true
   },
   firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''}
+  lastName: {type: String, default: ''},
+  email: {type: mongoose.SchemaTypes.Email, required: true},
+  budget: {type: mongoose.Schema.Types.ObjectId, ref:'Budget'}
 });
 
 // take the `UserSchema` created just above and serialize each instance
