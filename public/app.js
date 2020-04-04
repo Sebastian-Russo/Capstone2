@@ -13,25 +13,25 @@ const STATE = {
 };
 
 //update state function 
-const setState = (newState, currentState=STATE) => {
-  return Object.assign(currentState, newState);
+const setState = (currentState=STATE, newState) => {
+  Object.assign(currentState, newState);
 };
 
 // render monthly budget function
 function renderMonthlyBudget(state, element){
   const result = `<li> Monthly Budget: ${state.budget} </li>`
-  element.html(result)
+  monthlyBudget.html(result)
 }
 
 
 // event handler
-const element = $('.monthly-budget');
+const monthlyBudget = $('.monthly-budget');
 function monthlyBudgetHandler(){  
     $('.monthly-budget-add').submit(function(event){
     event.preventDefault();
     const userInput = $(event.currentTarget).find('#add-input').val();
-    setState(STATE, userInput);
-    renderMonthlyBudget(STATE, element)
+    setState(STATE, { budget: userInput });
+    renderMonthlyBudget(STATE, monthlyBudget)
     })
 }
 
