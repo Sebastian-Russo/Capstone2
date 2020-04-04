@@ -1,16 +1,42 @@
 <!DOCTYPE html>
-<html> 
-  <head>
-    <title>
-
-    </title>
-  </head>
-  <body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="main.css">
+  <title>Budget App</title>
+</head>
+<body>
     <header>
-
     </header>
     <main>
-      <div id="main"></div>
+      <div id="main">
+        <div class="container">
+          <form class="monthly-budget-add">
+            <label for="add-input">Add Monthly Budget</label>
+            <input type="text" class="monthly-budget-add-input" name="add-input" id="add-input">
+            <button class="monthly-budget-add-button">Add item</button>
+          </form>
+          <ul class="monthly-budget"></ul>
+        </div>
+
+
+
+
+            <div id="cost-of-living">Cost of Living: </div>
+            <div id="weekly-budget">Weekly Budget: </div>
+            <div id="expenses">Expenses for this week: </div>
+      </div>
     </main>
+
+
+    <footer class="footer">Badass Budgets</footer>
+
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="app.js"></script>
   </body>
 </html>
