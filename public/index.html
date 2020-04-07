@@ -14,7 +14,9 @@
 
         <div class="container">
           <form class="cost-of-living-add">
+            <!-- MO: labels are supposed to be for specific inputs. You might also want to add a placeholder so people know what to put where -->
             <label for="add-input">Cost of Living</label>
+            <!-- MO: you can't have multiple inputs with the same id's. you chould change the id's to classes -->
             <input type="text" class="cost-of-living-add-item-input" name="add-input" id="add-input">
             <input type="text" class="cost-of-living-add-amount-input" name="add-input" id="add-input">
             <button class="cost-of-living-add-button">Add item</button>
@@ -28,6 +30,8 @@
             <input type="text" class="monthly-budget-add-input" name="add-input" id="add-input">
             <button class="monthly-budget-add-button">Add item</button>
           </form>
+          <!-- MO: you should make this a <div> or <section> if it is just going to be a number (as indicated by your model) -->
+          <!-- if it is not an array, its unwise to make this a list -->
           <ul class="monthly-budget"></ul>
         </div>
 
@@ -37,16 +41,19 @@
             <input type="text" class="weekly-budget-add-input" name="add-input" id="add-input">
             <button class="weekly-budget-add-button">Add item</button>
           </form>
+          <!-- MO: you should consider wrapping this in a container div and giving it an <h2> or <h3> title of "weekly budget" -->
           <ul class="weekly-budget"></ul>
         </div>
 
         <div class="container">
           <form class="weekly-items-add">
             <label for="add-input">Cost of Living</label>
+            <!-- MO: same here, change the id's to classes -->
             <input type="text" class="weekly-items-add-item-input" name="add-input" id="add-input">
             <input type="text" class="weekly-items-add-amount-input" name="add-input" id="add-input">
             <button class="weekly-items-add-button">Add item</button>
           </form>
+          <!-- MO: you should consider wrapping this in a container div and giving it an <h2> or <h3> title of "weekly items" -->
           <ul class="weekly-items"></ul>
         </div>
 
