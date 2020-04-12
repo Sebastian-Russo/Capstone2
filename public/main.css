@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+body{
+    background: lightblue;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+header{
+    padding: 20px;
+    text-align: center;
+    font-size: 200%;
+    color: yellow;
+    border: solid;
+}
+
+.container{
+    width: 80%;
+    padding: 15px;
+    margin: auto;
+    border: solid;
+}
+
+h3{
+    color: green;
+}
+
+li{
+    color: yellow;
+}
+
+footer{
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+    color: yellow;
+}
+
+@media screen and (max-width: 600px) {
+   
+}
