@@ -15,10 +15,12 @@ const budgetSchema = mongoose.Schema({
         }
     ],
     weeklyBudget: { type: Number, required: true },
-    weeklyItems: [ {
-        item: { type: String, required: true },
-        amount: { type: Number, required: true },
-    }]
+    weeklyItems: [ 
+        {
+            item: { type: String, required: true },
+            amount: { type: Number, required: true },
+        }
+    ]
 });
 
 budgetSchema.virtual("item").get(function() {

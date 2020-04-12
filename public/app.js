@@ -8,80 +8,73 @@
 const STATE = {
   user: null,
   // this isnt the schema, and empty array will be fine;
-  costOfLiving: [{item: null, amount: null}],
-  budget: null,
-  weeklyBudget: null,
+  budget: {
+      costOfLiving: [],
+      weeklyBudget: null,
+      weeklyItems: [],
+      monthlyBudget: null
+  },
   route: 'landingPage',
   editing: false
 };
 
-/* 
-  Don't forget, 'costOfLiving' and 'weeklyBudget' are part of your 'budget'.
-  You need to make sure your state accounts for that.
-*/
 
 //update state function 
 const setState = (currentState=STATE, newState) => {
   Object.assign(currentState, newState);
 };
 
-// to update cost of living state 
-/* 
-  MO: I see what you are going for here, and its the right idea, but you shouldn't
-  name it something so generic if it is for such a specific item. Also, try to keep it
-  so you only have one function updating the state. You want to create what you are going
-  to add to the state first, then update the state with setState() (go to line 167-169 of mikeEdits/app.js)
-*/
-
-function addItem(state, item){
-  state.costOfLiving.push(item);
-}
 
 /////// RENDER FUNCTIONS 
 
+function renderWeeklyItems(state, element){
+  const result = state.budget.weeklyItems.map(function(obj){ //.map(item =>{})
+    return `<li> ${obj.item} : ${obj.amount} </li>`
+  })
+  console.log(result);
+  element.html(result)
+}
+
 function renderWeeklyBudget(state, element){
-  const result = `<li> Weekly Budget: ${state.weeklyBudget} </li>`
-  // MO: you should change this to element
-  weeklyBudget.html(result)
+  const result = `<div> Weekly Budget: ${state.weeklyBudget} </div>`
+  element.html(result)
 }
 
 // render monthly budget function
 function renderMonthlyBudget(state, element){
-  const result = `<li> Monthly Budget: ${state.budget} </li>`
-  // MO: you should change this to element
-  monthlyBudget.html(result)
+  const result = `<div> Monthly Budget: ${state.budget} </div>`
+  element.html(result)
 }
 
-// I realized my cost of living has two input fields, how would that work?
-/* 
-  MO:
-  your cost of living handler should look for each input field by name.
-  you should name each input field for what it is (example: cost-of-liv-item);
-  (go to lines 157 thru 175 of mikeEdits/app.js)
-*/
-
-
 function renderCostOfLiving(state, element){
-  const result = state.costOfLiving.map(function(item){ //.map(item =>{})
-    /* 
-      MO: these will return 'undefined'. state.costOfLiving is an array of ojbects, not an object.
-      *hint* you may want to change the callback argument so you aren't doing item.item
-    */
-    return `<li> ${state.costOfLiving.item} : ${state.costOfLiving.amount} </li>`
+  const result = state.budget.costOfLiving.map(function(obj){ //.map(item =>{})
+    return `<li> ${obj.item} : ${obj.amount} </li>`
   })
   element.html(result)
 }
 
-// event handlers
 
-/* 
-  MO: these variables that you put before each function should actually go inside the function.
-  Try to limit global vars as much as possible
-*/
+/////////////// EVENT HANDLERS
 
-const weeklyBudget = $('.weekly-budget');
+function weeklyItemsHandler(){
+  const weeklyItems = $('.weekly-items');
+  $('.weekly-items-add').submit(function(event){
+    event.preventDefault();
+    const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
+    console.log(userInputItem);
+    const userInputAmount = $('input[name="add-input-amount"]').val();
+    const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = ? )
+      weeklyItems: [...STATE.budget.weeklyItems, {item: userInputItem, amount: userInputAmount}]
+    })
+    setState(STATE, {budget: newCost});
+    console.log(STATE)
+    renderWeeklyItems(STATE, weeklyItems);
+  })
+}
+
 function weeklyBudgetHandler(){  
-    $('.weekly-budget-add').submit(function(event){
+  const weeklyBudget = $('.weekly-budget');
+  $('.weekly-budget-add').submit(function(event){
     event.preventDefault();
     const userInput = $(event.currentTarget).find('#add-input').val();
     setState(STATE, { weeklyBudget: userInput });
@@ -89,9 +82,9 @@ function weeklyBudgetHandler(){
     })
 }
 
-const monthlyBudget = $('.monthly-budget');
 function monthlyBudgetHandler(){  
-    $('.monthly-budget-add').submit(function(event){
+  const monthlyBudget = $('.monthly-budget');
+  $('.monthly-budget-add').submit(function(event){
     event.preventDefault();
     const userInput = $(event.currentTarget).find('#add-input').val();
     setState(STATE, { budget: userInput });
@@ -99,34 +92,41 @@ function monthlyBudgetHandler(){
     })
 }
 
-const costOfLiving = $('.cost-of-living');
 function costOfLivingHandler(){
+  const costOfLiving = $('.cost-of-living');
   $('.cost-of-living-add').submit(function(event){
     event.preventDefault();
-    const userInputItem = $(event.currentTarget).find('#add-input').val();
-    const userInputAmount = $(event.currentTarget).find('#add-input').val();
-    addItem(STATE, {costOfLiving: [{item: userInputItem}, {amount: userInputAmount}]});
+    const userInputItem = $('input[name="cost-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
+    console.log(userInputItem);
+    const userInputAmount = $('input[name="cost-input-amount"]').val();
+    const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = ? )
+      costOfLiving: [...STATE.budget.costOfLiving, {item: userInputItem, amount: userInputAmount}]
+    })
+    setState(STATE, {budget: newCost});
+    console.log(STATE)
     renderCostOfLiving(STATE, costOfLiving);
   })
 }
 
+
 //load
+$(weeklyItemsHandler);
 $(weeklyBudgetHandler);
 $(monthlyBudgetHandler);
 $(costOfLivingHandler);
 
+// BUDGET PAGE
+// have render the right titles and layout
+// print things to screen
+// have amounts right
+// add css
+// fix weekly items add
+// thats one page
 
-// function renderList(state, element){
-//   const result = state.items.map(function(item){
-//       return `<li> ${item} </li>`
-//   })
-//   element.html(result)
-// }
-// state.budget.weeklyItems.map(item =>{})
-// (`
-//   <div>
-//     <div>${item.title}</div>
-//     <div>${item.amount}</div>
-//   </div>
-// `)
-// add class and id 
+// make html dynamic in app.js (do this last)
+
+// header (the bar at the top)
+
+// 2 more PAGES
+// landing page (anybody arrives on before they sign in, welcome to...)
+// sign in and sign up
