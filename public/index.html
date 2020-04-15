@@ -11,19 +11,54 @@
     <main>
       <div id="main">
 
+<!-------- landging page ---------->
+        <!-- <div class="container" >
+          <h2>Welcome</h2>
+          <p>
+            Here's your simple budget calculator to help you stay on track with your budget and monetary goals.
+          </p>
+        </div>
+
+<!-------- sign up sign in page ---------->
+ <!--   <div class="container">
+          <form class="login-form">Login</form>
+            <label for="login-input"></label>
+            <input type="text" class="login" name="username" placeholder="username">
+            <label for="password">Password</label>
+            <input type="text" class="password" name="password" placeholder="password">
+            <button class="login-button">Login</button>
+        </div>
+
+        <div class="container">
+          <form class="sign-up-form">Sign up</form>
+            <label for="sign-up-input"></label>
+            <input type="text" class="username add-input" name="sign-up-input" placeholder="username">
+            <label for="first-name">First Name</label>
+            <input type="text" class="first-name-input add-input" name="first-name" placeholder="first name">
+            <label for="last-name">Last Name</label>
+            <input type="text" class="last-name add-input" name="last-name" placeholder="last night">
+            <label for="email">Email</label>
+            <input type="text" class="email add-input" name="email" placeholder="email">
+            <button class="sign-up-button">Sign Up</button>
+        </div> -->
+
+
+
+<!-------- budget page ---------->
+
         <div class="container">
           <form class="cost-of-living-add">
-            <!-- MO: labels are supposed to be for specific inputs. You might also want to add a placeholder so people know what to put where -->
             <label for="cost-input-item">Cost of Living Item</label>
             <input type="text" class="cost-of-living-add-item-input add-input" name="cost-input-item" placeholder="item">
             <label for="cost-input-amount">Cost of Living Amount</label>
-            <input type="text" class="cost-of-living-add-amount-input add-input" name="cost-input-amount" placeholder="amount">
+            <input type="number" class="cost-of-living-add-amount-input add-input" name="cost-input-amount" placeholder="amount">
             <button class="cost-of-living-add-button">Add item</button>
           </form>
 
           <div class="item-list" >
             <h3>Cost of Living</h3>
             <ul class="cost-of-living"></ul>
+            <div class="total-cost-of-living" ></div>
           </div>
         </div>
 
@@ -62,8 +97,10 @@
           <div class="item-list">
             <h3>Weekly Items</h3>
             <ul class="weekly-items"></ul>
+            <div class="total-cost-weekly-items" ></div>
           </div>
         </div>
+        
 
       </div>
     </main>
