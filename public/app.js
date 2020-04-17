@@ -6,15 +6,15 @@
 // budget design - is it one form, several forms depending on area etc...
 
 const STATE = {
-  user: {},
+  user: {id: "5e9a22970b377e32b85938d3", username: "jay", firstName: "jay", lastName: "jay"},
   // this isnt the schema, and empty array will be fine;
   budget: {
       costOfLiving: [],
       totalCost: 0,
       totalExpenses: 0,
-      weeklyBudget: 0,
+   //   weeklyBudget: 0,
       weeklyItems: [],
-      monthlyBudget: 0
+   //   monthlyBudget: 0
   },
   route: 'landingPage',
   editing: false
@@ -37,6 +37,7 @@ function updateUser(object){
 /////// RENDER FUNCTIONS 
 
 function renderWeeklyItems(state, element){
+  console.log(state, STATE)
   const result = state.budget.weeklyItems.map(function(obj){ //.map(item =>{})
     return `<li> ${obj.item} : ${obj.amount} </li>`
   })
@@ -44,13 +45,13 @@ function renderWeeklyItems(state, element){
 }
 
 function renderWeeklyBudget(state, element){
-  const result = `<div> Weekly Budget: ${state.weeklyBudget} </div>`
+  const result = `<div> Weekly Budget: ${state.budget.weeklyBudget} </div>`
   element.html(result)
 }
 
 // render monthly budget function
 function renderMonthlyBudget(state, element){
-  const result = `<div> Monthly Budget: ${state.budget} </div>`
+  const result = `<div> Monthly Budget: ${state.budget.monthlyBudget} </div>`
   element.html(result)
 }
 
@@ -116,6 +117,7 @@ function weeklyItemsHandler(){
     event.preventDefault();
     const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
     const userInputAmount = $('input[name="add-input-amount"]').val();
+    console.log(STATE)
     const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = a sepparte obj to overwrite current )
       weeklyItems: [...STATE.budget.weeklyItems, {item: userInputItem, amount: userInputAmount}]
     })
@@ -131,8 +133,10 @@ function weeklyBudgetHandler(){
     event.preventDefault();
     // const userInput = $(event.currentTarget).find('#add-input').val();
     const userInput = $('input[name="add-weekly-input"]').val();
-
-    setState(STATE, { weeklyBudget: userInput });
+    const newBudget = Object.assign({}, STATE.budget, {
+      weeklyBudget: userInput
+    })
+    setState(STATE, newBudget);
     renderWeeklyBudget(STATE, weeklyBudget)
     })
 }
@@ -143,8 +147,10 @@ function monthlyBudgetHandler(){
     event.preventDefault();
     //const userInput = $(event.currentTarget).find('#add-input').val();
     const userInput = $('input[name="add-monthly-input"]').val();
-
-    setState(STATE, { budget: userInput });
+    const newBudget = Object.assign({}, STATE.budget, {
+      monthlyBudget: userInput
+    })
+    setState(STATE, newBudget);
     renderMonthlyBudget(STATE, monthlyBudget);
   })
 }
@@ -157,7 +163,8 @@ function costOfLivingHandler(){
     const userInputItem = $('input[name="cost-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
     const userInputAmount = $('input[name="cost-input-amount"]').val();
 
-    if (!! userInputItem && !!userInputAmount){
+    if (!!userInputItem && !!userInputAmount){
+      console.log(STATE)
     const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = ? )
       costOfLiving: [...STATE.budget.costOfLiving, {item: userInputItem, amount: userInputAmount}]
     })
