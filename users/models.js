@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
+// schema for user
+// whole job for frontend user creation
+// sign up has to get username, password, first name, last name, email
+
+
 const UserSchema = mongoose.Schema({
   username: {
     type: String,
@@ -22,6 +27,7 @@ const UserSchema = mongoose.Schema({
 
 UserSchema.methods.serialize = function() {
   return {
+    id: this._id,
     username: this.username || '',
     firstName: this.firstName || '',
     lastName: this.lastName || ''

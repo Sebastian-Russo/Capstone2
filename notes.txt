@@ -84,3 +84,11 @@ User enters monthly earnings --> (4) shows list of $/items, and $ difference
 --------------------------------------------------------------------
 
 
+3 main parts of web app
+
+-front end (css, html, jquery)
+
+-server (API, backend) talks to database
+
+-database (API, backend) schemed database 
+

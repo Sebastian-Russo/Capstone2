@@ -30,10 +30,10 @@
           <a href="#">Sing Up Here</a>
          </div>
 
-<!-------- sign up sign in page ---------->
+<!-------- sign up page ---------->
 
         <div class="container">
-          <form class="sign-up-form">Sign up</form>
+          <form class="sign-up-form">
             <label for="username-input">Username</label>
             <input type="text" class="username-input add-input" name="username-input" placeholder="username">
             <label for="first-name-input">First Name</label>
@@ -41,10 +41,11 @@
             <label for="last-name-input">Last Name</label>
             <input type="text" class="last-name-input add-input" name="last-name-input" placeholder="last name">
             <label for="email-input">Email</label>
-            <input type="text" class="email-input add-input" name="email-input" placeholder="email">
+            <input type="email" class="email-input add-input" name="email-input" placeholder="email">
             <label for="password">Password</label>
-            <input type="text" class="password-input" name="password-input" placeholder="password">
+            <input type="password" class="password-input" name="password-input" placeholder="password">
             <button class="sign-up-button">Sign Up</button>
+          </form>
         </div>
 
 <!-------- budget page ---------->
@@ -68,7 +69,7 @@
         <div class="container">
           <form class="monthly-budget-add">
             <label for="add-monthly-input">Add Monthly Budget</label>
-            <input type="text" class="monthly-budget-add-input" name="add-monthly-input" id="add-input" placeholder="amount">
+            <input type="text" class="monthly-budget-add-input" name="add-monthly-input" placeholder="amount">
             <button class="monthly-budget-add-button">Add item</button>
           </form>
           <div class="item-list"></div>
@@ -80,7 +81,7 @@
         <div class="container">
           <form class="weekly-budget-add">
             <label for="add-weekly-input">Add weekly Budget</label>
-            <input type="text" class="weekly-budget-add-input" name="add-weekly-input" id="add-input" placeholder="amount">
+            <input type="text" class="weekly-budget-add-input" name="add-weekly-input" placeholder="amount">
             <button class="weekly-budget-add-button">Add item</button>
           </form>
           <div class="item-list">
@@ -102,6 +103,10 @@
             <ul class="weekly-items"></ul>
             <div class="total-cost-weekly-items" ></div>
           </div>
+        </div>
+        
+        <div class="container">
+          <button id="save-budget">Save Budget Information</button>
         </div>
         
 

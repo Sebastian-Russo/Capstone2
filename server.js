@@ -35,6 +35,12 @@ app.use(passport.initialize());
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
+// front end is going to use these endpoints to request information from the database through the server
+// going to make a request to the server, the server is going to figure out what the request is talking about, query the database for the information that the front end is requesting, and then send that information to the front end
+// front end's whole point: get data, manipulate data, and display data
+// or front end - someone's signing up, it has to take user provided information and send that through the server, so that we can validate that user, and continue to use the application 
+// front end is everything user interacts with to get and send information to your database 
+
 // made `localStrategy()` in `strategies.js` to use in a route
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);

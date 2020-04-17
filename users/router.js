@@ -9,7 +9,8 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password'];
+  const requiredFields = ['username', 'password', 'email'];
+  console.log(req.body)
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
@@ -21,7 +22,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
   // We then check that all of the fields are strings:
-  const stringFields = ['username', 'password', 'firstName', 'lastName'];
+  const stringFields = ['username', 'password', 'firstName', 'lastName', 'email'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -84,10 +85,11 @@ router.post('/', jsonParser, (req, res) => {
   }
 
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
+  let {username, password, firstName = '', lastName = '', email} = req.body;
 
   firstName = firstName.trim();
   lastName = lastName.trim();
+  email = email.trim();
 
   return User.find({username})
     .count()
@@ -106,6 +108,7 @@ router.post('/', jsonParser, (req, res) => {
       return User.create({
         username,
         password: hash,
+        email,
         firstName,
         lastName
       });
@@ -121,6 +124,22 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
+router.put('/:id', jsonParser, (req, res) => {
+  if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
+      const message = (`Request path id (${req.params.id}) and request body id (${req.body.id}) must match`)
+      console.error(message);
+      return res.status(400).json({message: message})
+  }
+
+  const toUpdate = {};
+
+  User
+      .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+      .then(updateUser => res.status(200).json({ 
+        id: updateUser.id 
+      }))
+      .catch(err => res.status(500).json({message: 'Internal server error'}));
+})
 
 router.get('/', (req, res) => {
   return User.find()
