@@ -134,11 +134,22 @@ router.put('/:id', jsonParser, (req, res) => {
 
   const toUpdate = {};
 
+  const canUpdate = ['firstName', 'lastName', 'budget'];
+
+  canUpdate.forEach(field => {
+    if (field in req.body) {
+      toUpdate[field] = req.body[field];
+    };
+  });
+
+  console.log('updating', toUpdate);
+
   User
       .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-      .then(updateUser => res.status(200).json({ 
-        id: updateUser.id 
-      }))
+      .then(updateUser => {
+        console.log('updated', updateUser);
+        res.status(200).json(updateUser.serialize())
+      })
       .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 

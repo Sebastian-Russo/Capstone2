@@ -7,11 +7,11 @@
 
 const STATE = {
   user: {
-    id: "5e9a22970b377e32b85938d3", 
-    username: "jay", 
-    firstName: "jay", 
-    lastName: "jay", 
-    budget: ""
+    id: "5e9cb990006bf9471a06c08c",
+    username: "ossig",
+    firstName: "ossig",
+    lastName: "ossig",
+    budget: "5e9cbf7b7716f149280e7ba9"
   },
   // this isnt the schema, and empty array will be fine;
   budget: {
@@ -33,7 +33,7 @@ const setState = (currentState=STATE, newState) => {
 };
 
 function updateUser(object){
-  Object.assign(state, {
+  Object.assign(STATE, {
     user: object
   });
 };
@@ -223,13 +223,8 @@ function costOfLivingHandler(){
 
 // since the user is signed in, we're going to get their budget
 // in our success handler, when we effectively update the user with the budget id
-function updateBudgetSuccess(){
-  const newUser = Object.assign({}, STATE.user, {
-    budget: STATE.budget.id
-  });
-  // update the user in the state with the budget id
-  setState(STATE, {user: newUser});
-
+function updateUserSuccess(userObj){
+  setState(STATE, {user: userObj});
   renderBudgetPage();
 };
 
@@ -238,7 +233,7 @@ function updateBudgetSuccess(){
 // then take user id from updateBudgetSuccess
 // user.id find/make a put/update request to user endpoint with the id of the budget
 // that way the user and budget will be linked to each other 
-function updateUserWithBudgetSuccess(userBudgetObj){
+function updateUserWithBudget(budgetObj){
   
   const settings = {
     url: `/api/users/${STATE.user.id}`,
@@ -246,11 +241,11 @@ function updateUserWithBudgetSuccess(userBudgetObj){
     // `/user/router.js` put router has a condition: if(!(req.params.id && req.body.id && req.params.id == req.body.id)) 
     data: JSON.stringify({
       id: STATE.user.id,
-      budget: userBudgetObj.id
+      budget: budgetObj.id
     }),
     contentType: 'application/json',
     type: 'PUT',
-    success: updateBudgetSuccess,
+    success: updateUserSuccess,
     error: function(err){
       console.error(err)
     }
@@ -261,15 +256,14 @@ function updateUserWithBudgetSuccess(userBudgetObj){
 
 // create a post request, to create a budget
 // passing through `user` from successfully created user in the arg
-function createUserBudgetObject(userBudgetObj){
+function createBudget(){
 
   const settings = {
     url: "/api/budget",
-    // want to send through a blank empty budget 
-    data: JSON.stringify(userBudgetObj),
+    data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
     type: 'POST',
-    success: updateUserWithBudgetSuccess,
+    success: updateUserWithBudget,
     error: function(err){
       console.error(err)
     }
@@ -281,19 +275,13 @@ function createUserBudgetObject(userBudgetObj){
 // user creates budget, then we grab the info 
 function userObjectHandler(){
 
-  $('#save-budget').click(function(event){
+  $('body').on('click', '#save-budget', function(event){
     event.preventDefault();
-
-    const userBudgetObj = STATE.budget.id
-
-    console.log('calling function');
-
-    const newCost = Object.assign({}, STATE.budget, { userBudgetObj })
-    console.log(newCost);
-    setState(STATE, {budget: newCost})
-    console.log(newCost);
-    createUserBudgetObject(newCost) 
-    console.log(newCost);
+    if(STATE.user.budget) {
+      updateBudget()
+    } else {
+      createBudget() 
+    }
   })
 }
 
@@ -372,6 +360,7 @@ function userLoginHandler(){
 }
 
 const updateStateWithBudget = budget => {
+  console.log(budget);
   setState(STATE, { budget }) // don't have to do { budget: budget } because same name 
   renderBudgetPage();
 };
@@ -379,28 +368,28 @@ const updateStateWithBudget = budget => {
 // when the user is signs in, it will automatically go get their budget
 // in our success handler, we effectively update the user with the budget id
 const getUserBudget = () => {
-
+  console.log('getting user budget');
   const settings = {
-    // it's `.budget` not `.id` because in the user object, budget is the id
     url: `/api/budget/${STATE.user.budget}`,
     contentType: 'application/json',
     type: 'GET',
-    success: updateStateWithBudget(),
+    success: updateStateWithBudget,
     error: function(err){
-      console.error(err)
+      console.error('error getting budget', err);
     }
   };
-
   $.ajax(settings);
 };
 
 const checkBudget = () => {
+  console.log('at checkBudget');
   // if there's a user id, get the budget object with the associated id
   if (STATE.user.budget) {
     //console.log('getting budget');
     getUserBudget(STATE.user.budget);
   } else {
     console.log('no budget');
+    renderBudgetPage();
   }
 };
 
