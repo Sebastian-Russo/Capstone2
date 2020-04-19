@@ -125,6 +125,7 @@ router.post('/', jsonParser, (req, res) => {
 });
 
 router.put('/:id', jsonParser, (req, res) => {
+  // if `req.params.id` and `req.body.id` don't exist, and if they don't match, it fails
   if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
       const message = (`Request path id (${req.params.id}) and request body id (${req.body.id}) must match`)
       console.error(message);
@@ -146,5 +147,20 @@ router.get('/', (req, res) => {
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
+
+router.get("/:id", (req, res) => {
+  User
+    .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
+    .then(user => {
+      res.json({
+      id: user._id,
+    });
+  })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
 
 module.exports = {router};

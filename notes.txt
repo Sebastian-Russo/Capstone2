@@ -92,3 +92,10 @@ User enters monthly earnings --> (4) shows list of $/items, and $ difference
 
 -database (API, backend) schemed database 
 
+// If they sign in, you make your authentication requests to check the username/password and send back an auth token, which you should store in your state (or in session storage, if you wanna get fancy). You should also store their username and id (mongo id) in the state.
+
+// If a login is successful, you should make a request to the budgets endpoint to look for the budget that belongs to that user, and return it
+
+// When that is successful, you should make a post request to the budgets endpoint to create a new, blank budget with the userId stored on there so you can find it later
+
+// auth functions 
