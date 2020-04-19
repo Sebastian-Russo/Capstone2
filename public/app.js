@@ -6,15 +6,21 @@
 // budget design - is it one form, several forms depending on area etc...
 
 const STATE = {
-  user: {id: "5e9a22970b377e32b85938d3", username: "jay", firstName: "jay", lastName: "jay"},
+  user: {
+    id: "5e9a281b3fc8782f9375231c",
+    username: "mikeyo",
+    firstName: "mike",
+    lastName: "ossig",
+    budget: "5e9a2b1083b0df308653b272"
+  },
   // this isnt the schema, and empty array will be fine;
   budget: {
       costOfLiving: [],
       totalCost: 0,
       totalExpenses: 0,
-   //   weeklyBudget: 0,
+      weeklyBudget: 0,
       weeklyItems: [],
-   //   monthlyBudget: 0
+      monthlyBudget: 0
   },
   route: 'landingPage',
   editing: false
@@ -36,45 +42,82 @@ function updateUser(object){
 
 /////// RENDER FUNCTIONS 
 
-function renderWeeklyItems(state, element){
-  console.log(state, STATE)
-  const result = state.budget.weeklyItems.map(function(obj){ //.map(item =>{})
+function renderBudgetPage(){
+  const costOfLiving = STATE.budget.costOfLiving.map(function(obj){ //.map(item =>{})
     return `<li> ${obj.item} : ${obj.amount} </li>`
   })
-  element.html(result)
-}
-
-function renderWeeklyBudget(state, element){
-  const result = `<div> Weekly Budget: ${state.budget.weeklyBudget} </div>`
-  element.html(result)
-}
-
-// render monthly budget function
-function renderMonthlyBudget(state, element){
-  const result = `<div> Monthly Budget: ${state.budget.monthlyBudget} </div>`
-  element.html(result)
-}
-
-function renderCostOfLiving(state, element){
-  const result = state.budget.costOfLiving.map(function(obj){ //.map(item =>{})
+  const weeklyItems = STATE.budget.weeklyItems.map(function(obj){ //.map(item =>{})
     return `<li> ${obj.item} : ${obj.amount} </li>`
   })
-  element.html(result)
-}
+
+  $('#budget-page').html(`
+  <div class="container">
+  <form class="cost-of-living-add">
+    <label for="cost-input-item">Cost of Living Item</label>
+    <input type="text" class="cost-of-living-add-item-input add-input" name="cost-input-item" placeholder="item">
+    <label for="cost-input-amount">Cost of Living Amount</label>
+    <input type="number" class="cost-of-living-add-amount-input add-input" name="cost-input-amount" placeholder="amount">
+    <button class="cost-of-living-add-button">Add item</button>
+  </form>
+
+  <div class="item-list" >
+    <h3>Cost of Living</h3>
+    <ul class="cost-of-living">${costOfLiving}</ul>
+    <div class="total-cost-of-living" >${STATE.budget.totalCost}</div>
+  </div>
+</div>
+
+<div class="container">
+  <form class="monthly-budget-add">
+    <label for="add-monthly-input">Add Monthly Budget</label>
+    <input type="text" class="monthly-budget-add-input" name="add-monthly-input" placeholder="amount">
+    <button class="monthly-budget-add-button">Add item</button>
+  </form>
+  <div class="item-list"></div>
+    <h3>Monthly Budget</h3>
+    <div class="monthly-budget">
+      <div> Monthly Budget: ${STATE.budget.monthlyBudget} </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form class="weekly-budget-add">
+    <label for="add-weekly-input">Add weekly Budget</label>
+    <input type="text" class="weekly-budget-add-input" name="add-weekly-input" placeholder="amount">
+    <button class="weekly-budget-add-button">Add item</button>
+  </form>
+  <div class="item-list">
+    <h3>Weekly Budget</h3>
+    <div class="weekly-budget">
+      <div> Weekly Budget: ${STATE.budget.weeklyBudget} </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form class="weekly-items-add">
+    <label for="add-input-item">Weekley Items added</label>
+    <input type="text" class="weekly-items-add-item-input add-input" name="add-input-item" placeholder="item">
+    <label for="add-input-amount">Weekley Amount added</label>
+    <input type="text" class="weekly-items-add-amount-input add-input" name="add-input-amount" placeholder="amount">
+    <button class="weekly-items-add-button">Add item</button>
+  </form>
+  <div class="item-list">
+    <h3>Weekly Items</h3>
+    <ul class="weekly-items">${weeklyItems}</ul>
+    <div class="total-cost-weekly-items" >${STATE.budget.totalExpenses}</div>
+  </div>
+</div>
+
+<div class="container">
+  <button id="save-budget">Save Budget Information</button>
+</div>
 
 
-function renderTotalAmountCost(state, element){
-  const { totalCost } = state.budget  // object destructuring 
-  const result = `<div> ${totalCost} </div>`  // just show this div
-  element.html(result)
-}
-
-function renderTotalAmountExpenses(state, element){
-  const { totalExpenses } = state.budget
-  const result = `<div> ${totalExpenses} </div>`
-  element.html(result)
-}
-
+</div>
+  `)
+};
 
 
 /////////////// EVENT HANDLERS FOR BUDGET 
@@ -88,7 +131,7 @@ function totalCostHandler(){
 
   const newBudget = Object.assign({}, STATE.budget, {totalCost: total}) // 1st arg = target, 2nd arg = state.budget obj, 3rd arg = state.budget.totalCost     (i wonder if there's a new arg everytime you go into another obj within an obj in state)
   setState(STATE, {budget: newBudget}); // set state with what was just updated
-  renderTotalAmountCost(STATE, totalCost); // render state to the class/div grabbed in the begging
+  renderBudgetPage()
 }
 
 function totalExpensesHandler(){
@@ -99,7 +142,7 @@ function totalExpensesHandler(){
 
   const newBudget = Object.assign({}, STATE.budget, {totalExpenses: total})
   setState(STATE, {budget: newBudget});
-  renderTotalAmountExpenses(STATE, totalExpenses)
+  renderBudgetPage()
 }
 
 // function monthToWeeklyBudgetHandler(){
@@ -113,7 +156,7 @@ function totalExpensesHandler(){
 
 function weeklyItemsHandler(){
   const weeklyItems = $('.weekly-items');
-  $('.weekly-items-add').submit(function(event){
+  $('body').on('submit', '.weekly-items-add', function(event){
     event.preventDefault();
     const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
     const userInputAmount = $('input[name="add-input-amount"]').val();
@@ -123,7 +166,7 @@ function weeklyItemsHandler(){
     })
     setState(STATE, {budget: newCost});
     totalExpensesHandler();  // piggybacking off weeklyItemsHandler() to trigger function, which added $ amounts when adding items and amounts to list 
-    renderWeeklyItems(STATE, weeklyItems);
+    renderBudgetPage()
   })
 }
 
@@ -136,8 +179,8 @@ function weeklyBudgetHandler(){
     const newBudget = Object.assign({}, STATE.budget, {
       weeklyBudget: userInput
     })
-    setState(STATE, newBudget);
-    renderWeeklyBudget(STATE, weeklyBudget)
+    setState(STATE, { budget: newBudget });
+    renderBudgetPage()
     })
 }
 
@@ -149,9 +192,9 @@ function monthlyBudgetHandler(){
     const userInput = $('input[name="add-monthly-input"]').val();
     const newBudget = Object.assign({}, STATE.budget, {
       monthlyBudget: userInput
-    })
-    setState(STATE, newBudget);
-    renderMonthlyBudget(STATE, monthlyBudget);
+    });
+    setState(STATE, { budget: newBudget });
+    renderBudgetPage()
   })
 }
 
@@ -171,7 +214,7 @@ function costOfLivingHandler(){
  
     setState(STATE, {budget: newCost});
     totalCostHandler(); // piggybacking on costOfLivingHandler() to trigger totalCostHandler 
-    return renderCostOfLiving(STATE, costOfLiving);
+    renderBudgetPage()
     }
   })
   //alert("You can't leave fields blank");
@@ -181,9 +224,13 @@ function costOfLivingHandler(){
 
 //////// EVENT HANDLERS FOR USER SIGN UP AND USER LOGIN AND BUDGET OBJ
 
-function updateBudgetSuccess(userBudgetObj){
-  setState(STATE, {userBudgetObj})
-}
+function updateBudgetSuccess(){
+  const newUser = Object.assign({}, STATE.user, {
+    budget: STATE.budget.id
+  });
+
+  setState(STATE, {user: newUser});
+};
 
 // take response in success handler
 // save the id of the budget 
@@ -195,7 +242,10 @@ function updateBudgetWithUserSuccess(userBudgetObj){
   const settings = {
     url: `/api/users/${STATE.user.id}`,
     // because I'm grabbing the value from the object, it's just a string. unlike prviously below, i sent the whole object, so i didn't nee to add { } myself 
-    data: JSON.stringify({budget: userBudgetObj.id}),
+    data: JSON.stringify({
+      id: STATE.user.id,
+      budget: userBudgetObj.id
+    }),
     contentType: 'application/json',
     type: 'PUT',
     success: updateBudgetSuccess,
@@ -313,18 +363,48 @@ function userLoginHandler(){
 
 }
 
+const updateStateWithBudget = budget => {
+  setState(STATE, { budget });
+  renderBudgetPage();
+};
 
+const getUserBudget = () => {
+  const settings = {
+    url: `/api/budget/${STATE.user.budget}`,
+    // want to send through a blank empty budget 
+    contentType: 'application/json',
+    type: 'GET',
+    success: updateStateWithBudget,
+    error: function(err){
+      console.error(err)
+    }
+  };
+  
+  $.ajax(settings);
+};
+
+const checkBudget = () => {
+  if (STATE.user.budget) {
+   getUserBudget(STATE.user.budget);
+  } else {
+    console.log('no budget');
+  }
+};
 
 
 //load
-$(userObjectHandler);
-$(userLoginHandler);
-$(userSignUpHandler);
+$(() => {
+    checkBudget();
+    userObjectHandler();
+    userLoginHandler();
+    userSignUpHandler();
+    weeklyItemsHandler();
+    weeklyBudgetHandler();
+    monthlyBudgetHandler();
+    costOfLivingHandler();
+  }
+);
 
-$(weeklyItemsHandler);
-$(weeklyBudgetHandler);
-$(monthlyBudgetHandler);
-$(costOfLivingHandler);
 
 
 // BUDGET PAGE
