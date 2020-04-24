@@ -113,7 +113,8 @@ router.post('/', jsonParser, (req, res) => {
         lastName
       });
     })
-    .then(user => {
+    .then(user => { 
+      // `.serialize()` creates an id after obj was created
       return res.status(201).json(user.serialize());
     })
     .catch(err => {
@@ -134,11 +135,21 @@ router.put('/:id', jsonParser, (req, res) => {
 
   const toUpdate = {};
 
+  const canUpdate = ['firstName', 'lastName', 'budget'];
+
+  canUpdate.forEach(field => {
+    if (field in req.body) {
+      toUpdate[field] = req.body[field];
+    };
+  });
+  
+
   User
       .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-      .then(updateUser => res.status(200).json({ 
-        id: updateUser.id 
-      }))
+      // `serialize()` creates id after updating userObj with id 
+      .then(updateUser => { 
+        res.status(200).json(updateUser.serialize())
+      })
       .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 

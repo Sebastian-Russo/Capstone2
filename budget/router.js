@@ -28,6 +28,7 @@ router.get("/:id", (req, res) => {
     Budget
       .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
       .then(budget => {
+        console.log('retrieved budget', budget);
         res.json({
         id: budget._id,
         monthlyBudget: budget.monthlyBudget,
@@ -40,7 +41,7 @@ router.get("/:id", (req, res) => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
       });
-  });
+});
 
 router.post("/", jsonParser, (req, res) => {
     const requiredFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]

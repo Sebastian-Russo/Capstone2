@@ -7,11 +7,11 @@
 
 const STATE = {
   user: {
-    id: "5e9a22970b377e32b85938d3", 
-    username: "jay", 
-    firstName: "jay", 
-    lastName: "jay", 
-    budget: ""
+    // id: "5e9a22970b377e32b85938d3", 
+    // username: "jay", 
+    // firstName: "jay", 
+    // lastName: "jay", 
+    // budget: "5ea18a7bddc7d553189582fd"
   },
   // this isnt the schema, and empty array will be fine;
   budget: {
@@ -155,7 +155,7 @@ function weeklyItemsHandler(){
     event.preventDefault();
     const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
     const userInputAmount = $('input[name="add-input-amount"]').val();
-    console.log(STATE)
+    
     const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = a sepparte obj to overwrite current )
       weeklyItems: [...STATE.budget.weeklyItems, {item: userInputItem, amount: userInputAmount}]
     })
@@ -223,12 +223,9 @@ function costOfLivingHandler(){
 
 // since the user is signed in, we're going to get their budget
 // in our success handler, when we effectively update the user with the budget id
-function updateBudgetSuccess(){
-  const newUser = Object.assign({}, STATE.user, {
-    budget: STATE.budget.id
-  });
+function updateUserSuccess(userObj){
   // update the user in the state with the budget id
-  setState(STATE, {user: newUser});
+  setState(STATE, {user: userObj});
 
   renderBudgetPage();
 };
@@ -238,19 +235,21 @@ function updateBudgetSuccess(){
 // then take user id from updateBudgetSuccess
 // user.id find/make a put/update request to user endpoint with the id of the budget
 // that way the user and budget will be linked to each other 
-function updateUserWithBudgetSuccess(userBudgetObj){
-  
+function updateUserWithBudgetSuccess(budgetObj){
+  console.log('link budget obj to user obj', budgetObj)
   const settings = {
     url: `/api/users/${STATE.user.id}`,
     // because I'm grabbing the value from the object, it's just a string. unlike prviously below, i sent the whole object to create, so i didn't nee to add { } myself to update
     // `/user/router.js` put router has a condition: if(!(req.params.id && req.body.id && req.params.id == req.body.id)) 
+    // send back id of budget obj we created, to link to user obj
     data: JSON.stringify({
       id: STATE.user.id,
-      budget: userBudgetObj.id
+      budget: budgetObj.id
     }),
     contentType: 'application/json',
     type: 'PUT',
-    success: updateBudgetSuccess,
+    // then take that and update user with that information 
+    success: updateUserSuccess,
     error: function(err){
       console.error(err)
     }
@@ -260,13 +259,12 @@ function updateUserWithBudgetSuccess(userBudgetObj){
 }
 
 // create a post request, to create a budget
-// passing through `user` from successfully created user in the arg
-function createUserBudgetObject(userBudgetObj){
-
+function createBudget(){ 
+  console.log('budget created')
   const settings = {
     url: "/api/budget",
-    // want to send through a blank empty budget 
-    data: JSON.stringify(userBudgetObj),
+    // the other handlers have already updated the state with each click
+    data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
     type: 'POST',
     success: updateUserWithBudgetSuccess,
@@ -278,22 +276,38 @@ function createUserBudgetObject(userBudgetObj){
   $.ajax(settings);
 }
 
+function updateBudget(budgetObj){//////////////////////////////////////////////////////
+  console.log('budget updated', budgetObj)
+  const settings = {
+    url: `/api/budget/${STATE.budget.id}`,
+    data: JSON.stringify(STATE.user.budget),
+    contentType: 'application/json',
+    type: 'PUT',
+    success: updateUserWithBudgetSuccess,
+    error: function(err){
+      console.error(err)
+    }
+  };
+
+  $.ajax(settings);
+}
+
 // user creates budget, then we grab the info 
+// if `#save-budget` is not in html code yet, so Jquery doesn't know how to put a listener on it if it doesn't exist yet
 function userObjectHandler(){
-
-  $('#save-budget').click(function(event){
+  
+  $('body').on('click', '#save-budget', function(event){
     event.preventDefault();
-
-    const userBudgetObj = STATE.budget.id
-
-    console.log('calling function');
-
-    const newCost = Object.assign({}, STATE.budget, { userBudgetObj })
-    console.log(newCost);
-    setState(STATE, {budget: newCost})
-    console.log(newCost);
-    createUserBudgetObject(newCost) 
-    console.log(newCost);
+    // first thing `#save-budget` should do is update or create the budget 
+    // all it's doing is making a request to the backend, does not need to update state 
+    if(STATE.user.budget){
+      
+      updateBudget()
+      console.log('updateBudget() was called')
+    } else {
+      createBudget()
+      console.log('createBudget() was called')
+    }
   })
 }
 
@@ -309,7 +323,7 @@ function createUserSuccess(user){
 // posting the user to your server so that the user exists in your database
 // arg `user` comes from the `userSignUpHandler` what the user inputted
 function createUser(user){
-
+console.log('user created');
   const settings = {
     url: "/api/users", // since it's in the server, you don't need a whole https//www.etc.com 
     data: JSON.stringify(user), // JSON.stringify() the object you're sending in app.js for POST AND PUT requests, because that's what your server expects/interacts with 
@@ -379,15 +393,14 @@ const updateStateWithBudget = budget => {
 // when the user is signs in, it will automatically go get their budget
 // in our success handler, we effectively update the user with the budget id
 const getUserBudget = () => {
-
+  //console.log('getting User Budget');
   const settings = {
-    // it's `.budget` not `.id` because in the user object, budget is the id
     url: `/api/budget/${STATE.user.budget}`,
     contentType: 'application/json',
     type: 'GET',
-    success: updateStateWithBudget(),
+    success: updateStateWithBudget,
     error: function(err){
-      console.error(err)
+      console.error('error getting budget', err)
     }
   };
 
@@ -399,8 +412,10 @@ const checkBudget = () => {
   if (STATE.user.budget) {
     //console.log('getting budget');
     getUserBudget(STATE.user.budget);
+    renderBudgetPage();
   } else {
     console.log('no budget');
+    renderBudgetPage();
   }
 };
 
