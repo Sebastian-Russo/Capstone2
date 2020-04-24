@@ -237,6 +237,8 @@ function updateUserSuccess(userObj){
 // that way the user and budget will be linked to each other 
 function updateUserWithBudgetSuccess(budgetObj){
   console.log('link budget obj to user obj', budgetObj)
+  setState(STATE, {budget: budgetObj})
+
   const settings = {
     url: `/api/users/${STATE.user.id}`,
     // because I'm grabbing the value from the object, it's just a string. unlike prviously below, i sent the whole object to create, so i didn't nee to add { } myself to update
@@ -254,7 +256,7 @@ function updateUserWithBudgetSuccess(budgetObj){
       console.error(err)
     }
   };
-  
+
   $.ajax(settings);
 }
 
@@ -276,11 +278,11 @@ function createBudget(){
   $.ajax(settings);
 }
 
-function updateBudget(budgetObj){//////////////////////////////////////////////////////
-  console.log('budget updated', budgetObj)
+function updateBudget(){//////////////////////////////////////////////////////
+  console.log('budget updated')
   const settings = {
-    url: `/api/budget/${STATE.budget.id}`,
-    data: JSON.stringify(STATE.user.budget),
+    url: `/api/budget/${STATE.user.budget}`,
+    data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
     type: 'PUT',
     success: updateUserWithBudgetSuccess,
@@ -301,7 +303,6 @@ function userObjectHandler(){
     // first thing `#save-budget` should do is update or create the budget 
     // all it's doing is making a request to the backend, does not need to update state 
     if(STATE.user.budget){
-      
       updateBudget()
       console.log('updateBudget() was called')
     } else {
