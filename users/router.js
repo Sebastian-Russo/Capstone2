@@ -144,9 +144,9 @@ router.put('/:id', jsonParser, (req, res) => {
   });
   
 
-  User
-      .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-      // `serialize()` creates id after updating userObj with id 
+  User // `.findByIdAndUpdate` default to sending original object/document before `update` was applied, `{new: true}` will give you the object/document after `update` was applied 
+      .findByIdAndUpdate(req.params.id, {$set: toUpdate}, {new: true})
+      // `serialize()` structures the response
       .then(updateUser => { 
         res.status(200).json(updateUser.serialize())
       })

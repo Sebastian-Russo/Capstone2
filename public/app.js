@@ -126,7 +126,6 @@ function renderBudgetPage(){
 
 // total sum of the key values of `costOfLiving` and `weeklyItems`
 function totalCostHandler(){
-  const totalCost = $('.total-cost-of-living');  // grab the class
   const total = STATE.budget.costOfLiving.reduce(function(acc, x){ // reduce method, x iterates through costOfLiving keys
     return acc + Number(x.amount) // change string to number, x.item and x.amount keys, only need amount 
   }, 0) // third arg, index to start at
@@ -137,7 +136,6 @@ function totalCostHandler(){
 }
 
 function totalExpensesHandler(){
-  const totalExpenses = $('.total-cost-weekly-items');
   const total = STATE.budget.weeklyItems.reduce(function(acc, x){
     return acc + Number(x.amount)
   }, 0)
@@ -150,7 +148,6 @@ function totalExpensesHandler(){
 
 
 function weeklyItemsHandler(){
-  const weeklyItems = $('.weekly-items');
   $('body').on('submit', '.weekly-items-add', function(event){
     event.preventDefault();
     const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
@@ -166,7 +163,6 @@ function weeklyItemsHandler(){
 }
 
 function weeklyBudgetHandler(){  
-  const weeklyBudget = $('.weekly-budget');
   $('body').on('submit', '.weekly-budget-add', function(event){
     event.preventDefault();
     // const userInput = $(event.currentTarget).find('#add-input').val();
@@ -181,7 +177,6 @@ function weeklyBudgetHandler(){
 }
 
 function monthlyBudgetHandler(){  
-  const monthlyBudget = $('.monthly-budget');
   $('body').on('submit', '.monthly-budget-add', function(event){
     event.preventDefault();
     //const userInput = $(event.currentTarget).find('#add-input').val();
@@ -195,7 +190,6 @@ function monthlyBudgetHandler(){
 }
 
 function costOfLivingHandler(){
-  const costOfLiving = $('.cost-of-living');
   $('body').on('submit', '.cost-of-living-add', function(event){
     event.preventDefault();
 
@@ -372,6 +366,8 @@ function userSignUpHandler(){
 
 // auth functions 
 
+// **take user password, make req to see if user exists and if password matches, then generate token for them to then make request, need auth token to get the budget and make the budget behind a protected endpoint
+// worry about getting username and password and sending it to login endpoint (users or auth)
 function userLoginHandler(){
 
   $('.login-form').submit(function(event){
