@@ -44,6 +44,7 @@ passport.use(jwtStrategy);
 // made `localStrategy()` in `strategies.js` to use in a route
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
+// app.use('/api/protected, ')
 // first arg is the name of the url path for the second arg
 // second arg is the name for the router, named on line 9 
 app.use('/api/budget/', budgetRouter);

@@ -212,15 +212,17 @@ function costOfLivingHandler(){
 
 
 
+
+
 //////// EVENT HANDLERS FOR USER SIGN UP AND USER LOGIN AND BUDGET OBJ
 
+// FLOW FOR USER OBJ/DOCUMENT AND BUDGET OBJ/DOCUMENT TO UPDATE/CREATE/LINK TOGETHER 
 
 // since the user is signed in, we're going to get their budget
 // in our success handler, when we effectively update the user with the budget id
 function updateUserSuccess(userObj){
   // update the user in the state with the budget id
   setState(STATE, {user: userObj});
-
   renderBudgetPage();
 };
 
@@ -272,7 +274,7 @@ function createBudget(){
   $.ajax(settings);
 }
 
-function updateBudget(){//////////////////////////////////////////////////////
+function updateBudget(){
   console.log('budget updated')
   const settings = {
     url: `/api/budget/${STATE.user.budget}`,
@@ -358,30 +360,6 @@ function userSignUpHandler(){
 }
 
 
-// If they sign in, you make your authentication requests to check the username/password and send back an auth token, which you should store in your state (or in session storage, if you wanna get fancy). You should also store their username and id (mongo id) in the state.
-
-// If a login is successful, you should make a request to the budgets endpoint to look for the budget that belongs to that user, and return it
-
-// When that is successful, you should make a post request to the budgets endpoint to create a new, blank budget with the userId stored on there so you can find it later
-
-// auth functions 
-
-// **take user password, make req to see if user exists and if password matches, then generate token for them to then make request, need auth token to get the budget and make the budget behind a protected endpoint
-// worry about getting username and password and sending it to login endpoint (users or auth)
-function userLoginHandler(){
-
-  $('.login-form').submit(function(event){
-    event.preventDefault();
-
-    const userNameLogin = $('input[name="username-login-input"]').val();
-    const passwordLogin = $('input[name="password-loging-input"]').val();
-
-    
-
-  })
-
-}
-
 const updateStateWithBudget = budget => {
   setState(STATE, { budget }) // don't have to do { budget: budget } because same name 
   renderBudgetPage();
@@ -415,6 +393,65 @@ const checkBudget = () => {
     renderBudgetPage();
   }
 };
+
+
+
+
+// FLOW FOR USER TO SIGN UP AND AUTHENTICATION AND TOKENIZE 
+
+
+
+
+
+// using JWT to access an endpoint, endpoint returns the protected data
+const tokenSuccess = () => {
+  console.log('getting access')
+  const settings = {
+    url: "/api/protected",
+    contentType: 'application/json',
+    type: 'GET',
+    success: success,
+    error: function(err){
+      console.error(err)
+    }
+  }
+  $.ajax(settings);
+}
+
+// sending the username and password we just registered. As a response we get some JSON containing our JWT
+const obtainJwt = (user) => {
+  console.log('authenticating user login');
+
+  const settings = {
+    url: "/api/auth/login", 
+    data: JSON.stringify(user), 
+    contentType: 'application/json',
+    type: 'POST',
+    success: tokenSuccess,
+    // error handler 
+    error: function(err){
+      console.error(err)
+    }
+  };
+
+  $.ajax(settings);
+}
+
+
+function userLoginHandler(){
+
+  $('.login-form').submit(function(event){
+    event.preventDefault();
+    const user = {
+      username: $('input[name="username-login-input"]').val(),
+      password: $('input[name="password-loging-input"]').val()
+    }
+    obtainJwt(user) // find out where login info goes next
+  })
+}
+
+
+
 
 
 //load
