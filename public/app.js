@@ -401,24 +401,37 @@ const checkBudget = () => {
 
 
 
+const refreshSuccess = (token) => {
+  setState(STATE, {user: { jwt: token }})
+}
 
+// refreshing the JWT
+const refreshJwt = () => {
+  console.log('authenticating user login');
 
-// using JWT to access an endpoint, endpoint returns the protected data
-const tokenSuccess = () => {
-  console.log('getting access')
   const settings = {
-    url: "/api/protected",
+    url: "/api/auth/refresh", 
+    data: JSON.stringify(STATE.user.jwt), 
     contentType: 'application/json',
-    type: 'GET',
-    success: success,
+    type: 'POST',
+    success: refreshSuccess,
+    // error handler 
     error: function(err){
       console.error(err)
     }
-  }
+  };
+
   $.ajax(settings);
 }
 
-// sending the username and password we just registered. As a response we get some JSON containing our JWT
+
+
+
+const tokenSuccess = (token) => {
+  setState(STATE, {user: { jwt: token }})
+}
+
+// sending the username and password we just registered. response gets some JSON containing our JWT
 const obtainJwt = (user) => {
   console.log('authenticating user login');
 
@@ -444,9 +457,9 @@ function userLoginHandler(){
     event.preventDefault();
     const user = {
       username: $('input[name="username-login-input"]').val(),
-      password: $('input[name="password-loging-input"]').val()
+      password: $('input[name="password-login-input"]').val()
     }
-    obtainJwt(user) // find out where login info goes next
+    obtainJwt(user); 
   })
 }
 
