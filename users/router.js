@@ -52,10 +52,10 @@ router.post('/', jsonParser, (req, res) => {
 
   const sizedFields = {
     username: {
-      min: 1
+      min: 2
     },
     password: {
-      min: 10,
+      min: 8,
       max: 72
     }
   };
@@ -125,6 +125,8 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
+
+
 router.put('/:id', jsonParser, (req, res) => {
   // if `req.params.id` and `req.body.id` don't exist, and if they don't match, it fails
   if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
@@ -143,7 +145,6 @@ router.put('/:id', jsonParser, (req, res) => {
     };
   });
   
-
   User // `.findByIdAndUpdate` default to sending original object/document before `update` was applied, `{new: true}` will give you the object/document after `update` was applied 
       .findByIdAndUpdate(req.params.id, {$set: toUpdate}, {new: true})
       // `serialize()` structures the response
@@ -152,6 +153,8 @@ router.put('/:id', jsonParser, (req, res) => {
       })
       .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
+
+
 
 router.get('/', (req, res) => {
   return User.find()

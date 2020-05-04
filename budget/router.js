@@ -8,9 +8,31 @@ const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
+// FORMAT OF TOKEN
+// Authorization: Bearer <access_token>
+// Verify Token 
+function verifyToken(req, res, next) {
+    // get auth header value
+    const bearerHeader = req.headers['authorization']
+    // Check if beraer is undefined
+    if(typeof bearerHeader !== 'undefined'){
+      // split at the space
+      const bearer = bearerHeader.split(' ');
+      // get token from array
+      const bearerToken = bearer[1];
+      // set the token
+      req.token = bearerToken;
+      
+      next();
+
+    } else {
+      res.sendStatus(403);
+    }
+}
+
 // CRUD //////
 
-router.get("/", (req, res) => {
+router.get("/", verifyToken, (req, res) => {
     Budget.find()
         .then(budgets => {
             res.json({
@@ -24,7 +46,7 @@ router.get("/", (req, res) => {
 });
 
 // can also request by ID
-router.get("/:id", (req, res) => {
+router.get("/:id", verifyToken, (req, res) => {
     Budget
       .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
       .then(budget => {
@@ -43,7 +65,18 @@ router.get("/:id", (req, res) => {
       });
 });
 
-router.post("/", jsonParser, (req, res) => {
+router.post("/", jsonParser, verifyToken, (req, res) => {
+    jwt.verify(req.token, 'secretkey', (err, authData)=>{
+        if(err){
+            res.sendStatus(403);
+        } else {
+            res.json({
+                message: 'budget created...',
+                authData
+            })
+        }
+    })
+
     const requiredFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]
 
     const missingField = requiredFields.find(field => !(field in req.body));
@@ -78,7 +111,7 @@ router.post("/", jsonParser, (req, res) => {
 });
 
 
-router.put('/:id', jsonParser, (req, res) => {
+router.put('/:id', jsonParser, verifyToken, (req, res) => {
     if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
         const message = (`Request path id (${req.params.id}) and request body id (${req.body.id}) must match`)
         console.error(message);
@@ -106,7 +139,7 @@ router.put('/:id', jsonParser, (req, res) => {
         .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", verifyToken, (req, res) => {
     Budget.findByIdAndRemove(req.params.id)
       .then(budget => res.status(204).end())
       .catch(err => res.status(500).json({ message: "Internal server error" }));

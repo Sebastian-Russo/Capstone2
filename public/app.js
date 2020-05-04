@@ -7,11 +7,11 @@
 
 const STATE = {
   user: {
-    // id: "5e9a22970b377e32b85938d3", 
-    // username: "jay", 
-    // firstName: "jay", 
-    // lastName: "jay", 
-    // budget: "5ea18a7bddc7d553189582fd"
+    id: "", 
+    username: "", 
+    firstName: "", 
+    lastName: "", 
+    budget: ""
   },
   // this isnt the schema, and empty array will be fine;
   budget: {
@@ -23,7 +23,8 @@ const STATE = {
       monthlyBudget: 0
   },
   route: 'landingPage',
-  editing: false
+  editing: false,
+  jwt: ""
 };
 
 
@@ -264,6 +265,9 @@ function createBudget(){
     // the other handlers have already updated the state with each click
     data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
+    headers: {
+      'Authorization': `Bearer ${STATE.jwt.authToken}`
+    },
     type: 'POST',
     success: updateUserWithBudgetSuccess,
     error: function(err){
@@ -280,6 +284,9 @@ function updateBudget(){
     url: `/api/budget/${STATE.user.budget}`,
     data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
+    headers: {
+      'Authorization': `Bearer ${STATE.jwt.authToken}`
+    },
     type: 'PUT',
     success: updateUserWithBudgetSuccess,
     error: function(err){
@@ -368,10 +375,11 @@ const updateStateWithBudget = budget => {
 // when the user is signs in, it will automatically go get their budget
 // in our success handler, we effectively update the user with the budget id
 const getUserBudget = () => {
-  //console.log('getting User Budget');
+  console.log('getting User Budget');
   const settings = {
     url: `/api/budget/${STATE.user.budget}`,
     contentType: 'application/json',
+    headers: { "Bearer Token": STATE.jwt},    
     type: 'GET',
     success: updateStateWithBudget,
     error: function(err){
@@ -397,15 +405,15 @@ const checkBudget = () => {
 
 
 
-// FLOW FOR USER TO SIGN UP AND AUTHENTICATION AND TOKENIZE 
+// FLOW FOR USER TO SIGN IN AND AUTHENTICATION AND TOKENIZE 
 
 
 
 const refreshSuccess = (token) => {
-  setState(STATE, {user: { jwt: token }})
+  setState(STATE, {jwt: token })
 }
 
-// refreshing the JWT
+// refreshing the JWT  -- not complete 
 const refreshJwt = () => {
   console.log('authenticating user login');
 
@@ -428,12 +436,11 @@ const refreshJwt = () => {
 
 
 const tokenSuccess = (token) => {
-  setState(STATE, {user: { jwt: token }})
+  setState(STATE, { jwt: token })
 }
-
 // sending the username and password we just registered. response gets some JSON containing our JWT
 const obtainJwt = (user) => {
-  console.log('authenticating user login');
+  console.log('user signed in and made JWT');
 
   const settings = {
     url: "/api/auth/login", 
