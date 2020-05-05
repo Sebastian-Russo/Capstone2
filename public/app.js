@@ -42,6 +42,42 @@ function updateUser(object){
 
 
 /////// RENDER FUNCTIONS 
+
+function renderLoginPage(){
+  $('#login-page').html(`
+  <div class="container">
+  <form class="login-form">
+    <label for="username-login-input">Username</label>
+    <input type="text" class="login" name="username-login-input" placeholder="username">
+    <label for="password-login-input">Password</label>
+    <input type="text" class="password" name="password-login-input" placeholder="password">
+    <button class="login-button">Login</button>
+  </form>
+  <a href="#">Sign Up Here</a>
+ </div>
+  `)
+}
+
+function renderSignUpPage(){
+  $('#sign-up-page').html(`
+  <div class="container">
+  <form class="sign-up-form">
+    <label for="username-input">Username</label>
+    <input type="text" class="username-input add-input" name="username-input" placeholder="username">
+    <label for="first-name-input">First Name</label>
+    <input type="text" class="first-name-input add-input" name="first-name-input" placeholder="first name">
+    <label for="last-name-input">Last Name</label>
+    <input type="text" class="last-name-input add-input" name="last-name-input" placeholder="last name">
+    <label for="email-input">Email</label>
+    <input type="email" class="email-input add-input" name="email-input" placeholder="email">
+    <label for="password">Password</label>
+    <input type="password" class="password-input" name="password-input" placeholder="password">
+    <button class="sign-up-button">Sign Up</button>
+  </form>
+</div>
+  `)
+}
+
 function renderBudgetPage(){
   
   const monthlyCost = STATE.budget.costOfLiving.map(function(obj){ //.map(item =>{})
@@ -285,7 +321,7 @@ function updateBudget(){
     data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
     headers: {
-      'Authorization': `Bearer ${STATE.jwt.authToken}`
+      'Authorization': `Bearer ${STATE.jwt}`
     },
     type: 'PUT',
     success: updateUserWithBudgetSuccess,
@@ -379,7 +415,9 @@ const getUserBudget = () => {
   const settings = {
     url: `/api/budget/${STATE.user.budget}`,
     contentType: 'application/json',
-    headers: { "Bearer Token": STATE.jwt},    
+    headers: {
+      'Authorization': `Bearer ${STATE.jwt}`
+    },    
     type: 'GET',
     success: updateStateWithBudget,
     error: function(err){
@@ -436,7 +474,9 @@ const refreshJwt = () => {
 
 
 const tokenSuccess = (token) => {
-  setState(STATE, { jwt: token })
+  setState(STATE, { user: token.user, jwt: token.authToken })
+  checkBudget()
+  renderBudgetPage()
 }
 // sending the username and password we just registered. response gets some JSON containing our JWT
 const obtainJwt = (user) => {
@@ -474,8 +514,24 @@ function userLoginHandler(){
 
 
 
+
+// you want to add another page listener that says if route === ‘landingPage’ render landing page stuff, else if route === ‘budget’ render budget page stuff
+
+const pageListener = () => {
+
+  if (STATE.route === 'landingPage') {
+    renderLoginPage()
+  } else {
+    renderBudgetPage()
+  }
+
+}
+
+
+
 //load
 $(() => {
+  pageListener();
   checkBudget();
   userObjectHandler();
   userLoginHandler();
