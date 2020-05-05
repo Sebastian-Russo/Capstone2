@@ -56,9 +56,7 @@ function renderLoginPage(){
   <a href="#">Sign Up Here</a>
  </div>
   `)
-}
 
-function renderSignUpPage(){
   $('#sign-up-page').html(`
   <div class="container">
   <form class="sign-up-form">
@@ -77,6 +75,26 @@ function renderSignUpPage(){
 </div>
   `)
 }
+
+// function renderSignUpPage(){
+//   $('#sign-up-page').html(`
+//   <div class="container">
+//   <form class="sign-up-form">
+//     <label for="username-input">Username</label>
+//     <input type="text" class="username-input add-input" name="username-input" placeholder="username">
+//     <label for="first-name-input">First Name</label>
+//     <input type="text" class="first-name-input add-input" name="first-name-input" placeholder="first name">
+//     <label for="last-name-input">Last Name</label>
+//     <input type="text" class="last-name-input add-input" name="last-name-input" placeholder="last name">
+//     <label for="email-input">Email</label>
+//     <input type="email" class="email-input add-input" name="email-input" placeholder="email">
+//     <label for="password">Password</label>
+//     <input type="password" class="password-input" name="password-input" placeholder="password">
+//     <button class="sign-up-button">Sign Up</button>
+//   </form>
+// </div>
+//   `)
+// }
 
 function renderBudgetPage(){
   
@@ -436,7 +454,8 @@ const checkBudget = () => {
     renderBudgetPage();
   } else {
     console.log('no budget');
-    renderBudgetPage();
+    // renderBudgetPage();
+    renderLoginPage();
   }
 };
 
@@ -474,9 +493,9 @@ const refreshJwt = () => {
 
 
 const tokenSuccess = (token) => {
-  setState(STATE, { user: token.user, jwt: token.authToken })
+  setState(STATE, { user: token.user, jwt: token.authToken, route: 'budget' })
   checkBudget()
-  renderBudgetPage()
+  //renderBudgetPage()
 }
 // sending the username and password we just registered. response gets some JSON containing our JWT
 const obtainJwt = (user) => {
@@ -521,7 +540,7 @@ const pageListener = () => {
 
   if (STATE.route === 'landingPage') {
     renderLoginPage()
-  } else {
+  } else if (STATE.route === 'budget') {
     renderBudgetPage()
   }
 
