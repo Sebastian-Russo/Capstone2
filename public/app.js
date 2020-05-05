@@ -44,7 +44,7 @@ function updateUser(object){
 /////// RENDER FUNCTIONS 
 
 function renderLoginPage(){
-  $('#login-page').html(`
+  $('#page').html(`
   <div class="container">
   <form class="login-form">
     <label for="username-login-input">Username</label>
@@ -55,9 +55,7 @@ function renderLoginPage(){
   </form>
   <a href="#">Sign Up Here</a>
  </div>
-  `)
-
-  $('#sign-up-page').html(`
+  
   <div class="container">
   <form class="sign-up-form">
     <label for="username-input">Username</label>
@@ -76,25 +74,7 @@ function renderLoginPage(){
   `)
 }
 
-// function renderSignUpPage(){
-//   $('#sign-up-page').html(`
-//   <div class="container">
-//   <form class="sign-up-form">
-//     <label for="username-input">Username</label>
-//     <input type="text" class="username-input add-input" name="username-input" placeholder="username">
-//     <label for="first-name-input">First Name</label>
-//     <input type="text" class="first-name-input add-input" name="first-name-input" placeholder="first name">
-//     <label for="last-name-input">Last Name</label>
-//     <input type="text" class="last-name-input add-input" name="last-name-input" placeholder="last name">
-//     <label for="email-input">Email</label>
-//     <input type="email" class="email-input add-input" name="email-input" placeholder="email">
-//     <label for="password">Password</label>
-//     <input type="password" class="password-input" name="password-input" placeholder="password">
-//     <button class="sign-up-button">Sign Up</button>
-//   </form>
-// </div>
-//   `)
-// }
+
 
 function renderBudgetPage(){
   
@@ -106,7 +86,7 @@ function renderBudgetPage(){
     return `<li> ${obj.item} : ${obj.amount} </li>`
   })
 
-  $('#budget-page').html(`
+  $('#page').html(`
   <div class="container">
   <form class="cost-of-living-add">
     <label for="cost-input-item">Cost of Living Item</label>
@@ -541,7 +521,7 @@ const pageListener = () => {
   if (STATE.route === 'landingPage') {
     renderLoginPage()
   } else if (STATE.route === 'budget') {
-    renderBudgetPage()
+    checkBudget()
   }
 
 }
