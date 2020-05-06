@@ -259,6 +259,8 @@ function updateUserSuccess(userObj){
   // update the user in the state with the budget id
   setState(STATE, {user: userObj});
   renderBudgetPage();
+  totalCostHandler();
+  totalExpensesHandler();
 };
 
 // take response in success handler
@@ -300,7 +302,7 @@ function createBudget(){
     data: JSON.stringify(STATE.budget),
     contentType: 'application/json',
     headers: {
-      'Authorization': `Bearer ${STATE.jwt.authToken}`
+      'Authorization': `Bearer ${STATE.jwt}`
     },
     type: 'POST',
     success: updateUserWithBudgetSuccess,
@@ -339,6 +341,7 @@ function userObjectHandler(){
     event.preventDefault();
     // first thing `#save-budget` should do is update or create the budget 
     // all it's doing is making a request to the backend, does not need to update state 
+    
     if(STATE.user.budget){
       updateBudget()
       console.log('updateBudget() was called')
@@ -429,7 +432,6 @@ const getUserBudget = () => {
 const checkBudget = () => {
   // if there's a user id, get the budget object with the associated id
   if (STATE.user.budget) {
-    //console.log('getting budget');
     getUserBudget(STATE.user.budget);
     renderBudgetPage();
   } else {
