@@ -477,7 +477,7 @@ const refreshJwt = () => {
 const tokenSuccess = (token) => {
   setState(STATE, { user: token.user, jwt: token.authToken, route: 'budget' })
   checkBudget()
-  //renderBudgetPage()
+  renderBudgetPage()
 }
 // sending the username and password we just registered. response gets some JSON containing our JWT
 const obtainJwt = (user) => {
