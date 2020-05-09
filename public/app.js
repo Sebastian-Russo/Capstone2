@@ -78,12 +78,18 @@ function renderLoginPage(){
 
 function renderBudgetPage(){
   
-  const monthlyCost = STATE.budget.costOfLiving.map(function(obj){ //.map(item =>{})
-    return `<li> ${obj.item} : ${obj.amount} </li>`
+  const monthlyCost = STATE.budget.costOfLiving.map(function(obj,i){ //.map(item =>{})
+    return `
+    <li class="list-item"> ${obj.item} : ${obj.amount} </li>
+    <button class="delete-button" data-item-index=${i}>Delete Item</button>
+    `
   })
 
-  const weeklyCost = STATE.budget.weeklyItems.map(function(obj){ //.map(item =>{})
-    return `<li> ${obj.item} : ${obj.amount} </li>`
+  const weeklyCost = STATE.budget.weeklyItems.map(function(obj, i){ //.map(item =>{})
+    return `
+    <li> ${obj.item} : ${obj.amount} </li>
+    <button class="delete-button" data-item-index=${i}>Delete Item</button>
+    `
   })
 
   $('#page').html(`
@@ -133,9 +139,9 @@ function renderBudgetPage(){
 
 <div class="container">
   <form class="weekly-items-add">
-    <label for="add-input-item">Weekley Items added</label>
+    <label for="add-input-item">Weekly Items added</label>
     <input type="text" class="weekly-items-add-item-input add-input" name="add-input-item" placeholder="item">
-    <label for="add-input-amount">Weekley Amount added</label>
+    <label for="add-input-amount">Weekly Amount added</label>
     <input type="text" class="weekly-items-add-amount-input add-input" name="add-input-amount" placeholder="amount">
     <button class="weekly-items-add-button">Add item</button>
   </form>
@@ -232,8 +238,8 @@ function costOfLivingHandler(){
     const userInputAmount = $('input[name="cost-input-amount"]').val();
 
     if (!!userInputItem && !!userInputAmount){
-
-      const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = ? )
+      // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = ? )
+      const newCost = Object.assign({}, STATE.budget, { 
       costOfLiving: [...STATE.budget.costOfLiving, {item: userInputItem, amount: userInputAmount}]
     })
  
@@ -243,6 +249,33 @@ function costOfLivingHandler(){
     }
   })
   //alert("You can't leave fields blank");
+}
+
+const deleteItemHandler = () => {
+  // click event listener
+  $('body').on('click', '.delete-button', function(event){
+    event.preventDefault();
+    const selected = $(event.target).data('item-index');
+
+    // for costOfMonth list
+    const newItemsForMonth = STATE.budget.costOfLiving.filter((item, i) => i !== selected);
+
+    const newStateForMonth = Object.assign({}, STATE.budget, {costOfLiving: newItemsForMonth});
+
+    setState(STATE, { budget: newStateForMonth });
+
+    // for weeklyItems list
+    const newItemsForWeek = STATE.budget.weeklyItems.filter((item, i) => i !== selected);
+
+    const newStateForWeek = Object.assign({}, STATE.budget, {weeklyItems: newItemsForWeek});
+
+    setState(STATE, { budget: newStateForWeek });
+
+  updateBudget(); 
+  totalCostHandler();
+  totalExpensesHandler();
+  renderBudgetPage();
+  })
 }
 
 
@@ -532,6 +565,7 @@ const pageListener = () => {
 
 //load
 $(() => {
+  deleteItemHandler();
   pageListener();
   checkBudget();
   userObjectHandler();
