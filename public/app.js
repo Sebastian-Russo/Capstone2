@@ -190,18 +190,21 @@ function weeklyItemsHandler(){
     const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
     const userInputAmount = $('input[name="add-input-amount"]').val();
     
+    if (!!userInputItem && !!userInputAmount){
     const newCost = Object.assign({}, STATE.budget, { // Obj.assign( 1st arg = target, 2nd arg = source, 3rd arg = a sepparte obj to overwrite current )
       weeklyItems: [...STATE.budget.weeklyItems, {item: userInputItem, amount: userInputAmount}]
     })
     setState(STATE, {budget: newCost});
     totalExpensesHandler();  // piggybacking off weeklyItemsHandler() to trigger function, which added $ amounts when adding items and amounts to list 
     renderBudgetPage();
+    } else {
+      alert("You can't leave fields blank");
+    }  
   })
 }
 
 
 function weeklyBudgetHandler(){  
-
   const monthlySpending = STATE.budget.monthlyBudget 
   const weeklySpending = Number(monthlySpending)/4
   const newBudget = Object.assign({}, STATE.budget, {
@@ -211,31 +214,23 @@ function weeklyBudgetHandler(){
   renderBudgetPage();
 }
 
-// function weeklyBudgetHandler(){  
-//   $('body').on('submit', '.weekly-budget-add', function(event){
-//     event.preventDefault();
-//     // const userInput = $(event.currentTarget).find('#add-input').val();
-//     const userInput = $('input[name="add-weekly-input"]').val();
-//     // update state with budget, 3rd arg merges into 2nd without wiping everything out because it's specific to `weeklyBudget`
-//     const newBudget = Object.assign({}, STATE.budget, {
-//       weeklyBudget: userInput
-//     })
-//     setState(STATE, { budget: newBudget });
-//     renderBudgetPage();
-//   })
-// }
 
 function monthlyBudgetHandler(){  
   $('body').on('submit', '.monthly-budget-add', function(event){
     event.preventDefault();
     //const userInput = $(event.currentTarget).find('#add-input').val();
     const userInput = $('input[name="add-monthly-input"]').val();
+    
+    if (!!userInput){
     const newBudget = Object.assign({}, STATE.budget, {
       monthlyBudget: userInput
     })
     setState(STATE, { budget: newBudget });
     weeklyBudgetHandler();
     renderBudgetPage();
+    } else {
+    alert("You can't leave fields blank");
+    }
   })
 }
 
@@ -251,13 +246,13 @@ function costOfLivingHandler(){
       const newCost = Object.assign({}, STATE.budget, { 
       costOfLiving: [...STATE.budget.costOfLiving, {item: userInputItem, amount: userInputAmount}]
     })
- 
     setState(STATE, {budget: newCost});
     totalCostHandler(); // piggybacking on costOfLivingHandler() to trigger totalCostHandler 
     renderBudgetPage();
+    } else {
+    alert("You can't leave fields blank");
     }
   })
-  //alert("You can't leave fields blank");
 }
 
 const deleteItemHandler = () => {
