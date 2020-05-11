@@ -46,6 +46,7 @@ function updateUser(object){
 function renderLoginPage(){
   $('#page').html(`
   <div class="container">
+  <h4>Sign In</h4>
   <form class="login-form">
     <label for="username-login-input">Username</label>
     <input type="text" class="login" name="username-login-input" placeholder="username">
@@ -53,10 +54,10 @@ function renderLoginPage(){
     <input type="text" class="password" name="password-login-input" placeholder="password">
     <button class="login-button">Login</button>
   </form>
-  <a href="#">Sign Up Here</a>
  </div>
   
   <div class="container">
+  <h4>Sign Up</h4>
   <form class="sign-up-form">
     <label for="username-input">Username</label>
     <input type="text" class="username-input add-input" name="username-input" placeholder="username">
@@ -125,14 +126,14 @@ function renderBudgetPage(){
 
 <div class="container">
   <form class="weekly-budget-add">
-    <label for="add-weekly-input">Add weekly Budget</label>
+    <label for="add-weekly-input">Weekly "Spending Money"</label>
     <input type="text" class="weekly-budget-add-input" name="add-weekly-input" placeholder="amount">
     <button class="weekly-budget-add-button">Add item</button>
   </form>
   <div class="item-list">
-    <h3>Weekly Budget</h3>
+    <h3>Weekly "Spending Money"</h3>
     <div class="weekly-budget">
-      <div> Weekly Budget: ${STATE.budget.weeklyBudget} </div>
+      <div>Spending Money: ${STATE.budget.weeklyBudget} </div>
     </div>
   </div>
 </div>
@@ -259,26 +260,21 @@ const deleteItemHandler = () => {
 
     // for costOfMonth list
     const newItemsForMonth = STATE.budget.costOfLiving.filter((item, i) => i !== selected);
-
-    const newStateForMonth = Object.assign({}, STATE.budget, {costOfLiving: newItemsForMonth});
-
-    setState(STATE, { budget: newStateForMonth });
-
-    // for weeklyItems list
+    // for weeklyItems list 
     const newItemsForWeek = STATE.budget.weeklyItems.filter((item, i) => i !== selected);
+    
+    const newState = Object.assign({}, STATE.budget, {
+      costOfLiving: newItemsForMonth,
+      weeklyItems: newItemsForWeek
+    });
+    setState(STATE, { budget: newState });
 
-    const newStateForWeek = Object.assign({}, STATE.budget, {weeklyItems: newItemsForWeek});
-
-    setState(STATE, { budget: newStateForWeek });
-
-  updateBudget(); 
-  totalCostHandler();
-  totalExpensesHandler();
-  renderBudgetPage();
+    updateBudget(); 
+    totalCostHandler();
+    totalExpensesHandler();
+    renderBudgetPage();
   })
 }
-
-
 
 
 
