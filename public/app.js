@@ -125,11 +125,6 @@ function renderBudgetPage(){
 </div>
 
 <div class="container">
-  <form class="weekly-budget-add">
-    <label for="add-weekly-input">Weekly "Spending Money"</label>
-    <input type="text" class="weekly-budget-add-input" name="add-weekly-input" placeholder="amount">
-    <button class="weekly-budget-add-button">Add item</button>
-  </form>
   <div class="item-list">
     <h3>Weekly "Spending Money"</h3>
     <div class="weekly-budget">
@@ -204,19 +199,31 @@ function weeklyItemsHandler(){
   })
 }
 
+
 function weeklyBudgetHandler(){  
-  $('body').on('submit', '.weekly-budget-add', function(event){
-    event.preventDefault();
-    // const userInput = $(event.currentTarget).find('#add-input').val();
-    const userInput = $('input[name="add-weekly-input"]').val();
-    // update state with budget, 3rd arg merges into 2nd without wiping everything out because it's specific to `weeklyBudget`
-    const newBudget = Object.assign({}, STATE.budget, {
-      weeklyBudget: userInput
-    })
-    setState(STATE, { budget: newBudget });
-    renderBudgetPage();
+
+  const monthlySpending = STATE.budget.monthlyBudget 
+  const weeklySpending = Number(monthlySpending)/4
+  const newBudget = Object.assign({}, STATE.budget, {
+    weeklyBudget: weeklySpending
   })
+  setState(STATE, { budget: newBudget });
+  renderBudgetPage();
 }
+
+// function weeklyBudgetHandler(){  
+//   $('body').on('submit', '.weekly-budget-add', function(event){
+//     event.preventDefault();
+//     // const userInput = $(event.currentTarget).find('#add-input').val();
+//     const userInput = $('input[name="add-weekly-input"]').val();
+//     // update state with budget, 3rd arg merges into 2nd without wiping everything out because it's specific to `weeklyBudget`
+//     const newBudget = Object.assign({}, STATE.budget, {
+//       weeklyBudget: userInput
+//     })
+//     setState(STATE, { budget: newBudget });
+//     renderBudgetPage();
+//   })
+// }
 
 function monthlyBudgetHandler(){  
   $('body').on('submit', '.monthly-budget-add', function(event){
@@ -227,6 +234,7 @@ function monthlyBudgetHandler(){
       monthlyBudget: userInput
     })
     setState(STATE, { budget: newBudget });
+    weeklyBudgetHandler();
     renderBudgetPage();
   })
 }
@@ -568,7 +576,7 @@ $(() => {
   userLoginHandler();
   userSignUpHandler();
   weeklyItemsHandler();
-  weeklyBudgetHandler();
+  //weeklyBudgetHandler();
   monthlyBudgetHandler();
   costOfLivingHandler();
 })
