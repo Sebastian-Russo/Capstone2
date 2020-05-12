@@ -3,14 +3,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { Budget } = require('./models');
+const { jwtAuth } = require('../auth');
 
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
+
 // CRUD //////
 
-router.get("/", (req, res) => {
+router.get("/", jwtAuth, (req, res) => {
     Budget.find()
         .then(budgets => {
             res.json({
@@ -24,10 +26,11 @@ router.get("/", (req, res) => {
 });
 
 // can also request by ID
-router.get("/:id", (req, res) => {
+router.get("/:id", jwtAuth, (req, res) => {
     Budget
       .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
       .then(budget => {
+        console.log('retrieved budget', budget);
         res.json({
         id: budget._id,
         monthlyBudget: budget.monthlyBudget,
@@ -40,9 +43,10 @@ router.get("/:id", (req, res) => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
       });
-  });
+});
 
-router.post("/", jsonParser, (req, res) => {
+router.post("/", jwtAuth, jsonParser, (req, res) => {
+
     const requiredFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]
 
     const missingField = requiredFields.find(field => !(field in req.body));
@@ -77,7 +81,7 @@ router.post("/", jsonParser, (req, res) => {
 });
 
 
-router.put('/:id', jsonParser, (req, res) => {
+router.put('/:id', jwtAuth, jsonParser, (req, res) => {
     if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
         const message = (`Request path id (${req.params.id}) and request body id (${req.body.id}) must match`)
         console.error(message);
@@ -105,7 +109,7 @@ router.put('/:id', jsonParser, (req, res) => {
         .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", jwtAuth, (req, res) => {
     Budget.findByIdAndRemove(req.params.id)
       .then(budget => res.status(204).end())
       .catch(err => res.status(500).json({ message: "Internal server error" }));

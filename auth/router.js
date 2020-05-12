@@ -26,8 +26,10 @@ router.use(bodyParser.json());
 // The user provides a username and password to `/login` as a `req`
 // 2nd arg is the var we just made above
 router.post('/login', localAuth, (req, res) => {
-  const authToken = createAuthToken(req.user.serialize());
-  res.json({authToken});
+  const user = req.user.serialize();
+  const authToken = createAuthToken(user);
+  res.json({authToken, user});
+
 });
 
 // The final part of the login system allows users to refresh their tokens, receiving a token with a later expiry date when they supply a valid token to /api/auth/refresh:
@@ -40,6 +42,11 @@ router.post('/refresh', jwtAuth, (req, res) => {
   res.json({authToken});
 });
 
+
+// router.get('/logout', (req, res)=>{ })
+
+
+
 // Note that in endpoints secured by the JWT strategy, req.user will point to the representation of the user that was decoded from the payload. This is in contrast to endpoints secured by local authentication, where req.user points to the user object fetched from the database. This means that in /api/auth/login, which is protected by local auth, we need to use req.user.serialize() as the JWT payload, whereas in /api/auth/refresh, which is protected by the JWT strategy, the payload for the new token is just req.user
 
-module.exports = {router};
+module.exports = {router, jwtAuth};
