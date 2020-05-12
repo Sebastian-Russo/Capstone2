@@ -33,7 +33,7 @@ const setState = (currentState=STATE, newState) => {
   Object.assign(currentState, newState);
 };
 
-function updateUser(object){
+const updateUser = object => {
   Object.assign(state, {
     user: object
   });
@@ -43,7 +43,7 @@ function updateUser(object){
 
 /////// RENDER FUNCTIONS 
 
-function renderLoginPage(){
+const renderLoginPage = () => {
   $('#page').html(`
   <div class="container">
   <h4>Sign In</h4>
@@ -76,8 +76,7 @@ function renderLoginPage(){
 }
 
 
-
-function renderBudgetPage(){
+const renderBudgetPage = () => {
   
   const monthlyCost = STATE.budget.costOfLiving.map(function(obj,i){ //.map(item =>{})
     return `
@@ -162,7 +161,7 @@ function renderBudgetPage(){
 /////////////// EVENT HANDLERS FOR BUDGET 
 
 // total sum of the key values of `costOfLiving` and `weeklyItems`
-function totalCostHandler(){
+const totalCostHandler = () => {
   const total = STATE.budget.costOfLiving.reduce(function(acc, x){ // reduce method, x iterates through costOfLiving keys
     return acc + Number(x.amount) // change string to number, x.item and x.amount keys, only need amount 
   }, 0) // third arg, index to start at
@@ -172,7 +171,7 @@ function totalCostHandler(){
   renderBudgetPage();
 }
 
-function totalExpensesHandler(){
+const totalExpensesHandler = () => {
   const total = STATE.budget.weeklyItems.reduce(function(acc, x){
     return acc + Number(x.amount)
   }, 0)
@@ -184,7 +183,7 @@ function totalExpensesHandler(){
 
 
 
-function weeklyItemsHandler(){
+const weeklyItemsHandler = () => {
   $('body').on('submit', '.weekly-items-add', function(event){
     event.preventDefault();
     const userInputItem = $('input[name="add-input-item"]').val(); // using the name attr of the input element to find the specific one that we want 
@@ -204,7 +203,7 @@ function weeklyItemsHandler(){
 }
 
 
-function weeklyBudgetHandler(){  
+const weeklyBudgetHandler = () => {  
   const monthlySpending = STATE.budget.monthlyBudget 
   const weeklySpending = Number(monthlySpending)/4
   const newBudget = Object.assign({}, STATE.budget, {
@@ -215,7 +214,7 @@ function weeklyBudgetHandler(){
 }
 
 
-function monthlyBudgetHandler(){  
+const monthlyBudgetHandler = () => {  
   $('body').on('submit', '.monthly-budget-add', function(event){
     event.preventDefault();
     //const userInput = $(event.currentTarget).find('#add-input').val();
@@ -234,7 +233,7 @@ function monthlyBudgetHandler(){
   })
 }
 
-function costOfLivingHandler(){
+const costOfLivingHandler = () => {
   $('body').on('submit', '.cost-of-living-add', function(event){
     event.preventDefault();
 
@@ -287,7 +286,7 @@ const deleteItemHandler = () => {
 
 // since the user is signed in, we're going to get their budget
 // in our success handler, when we effectively update the user with the budget id
-function updateUserSuccess(userObj){
+const updateUserSuccess = userObj => {
   // update the user in the state with the budget id
   setState(STATE, {user: userObj});
   renderBudgetPage();
@@ -300,7 +299,7 @@ function updateUserSuccess(userObj){
 // then take user id from updateBudgetSuccess
 // user.id find/make a put/update request to user endpoint with the id of the budget
 // that way the user and budget will be linked to each other 
-function updateUserWithBudgetSuccess(budgetObj){
+const updateUserWithBudgetSuccess = budgetObj => {
   console.log('link budget obj to user obj', budgetObj)
   setState(STATE, {budget: budgetObj})
 
@@ -326,7 +325,7 @@ function updateUserWithBudgetSuccess(budgetObj){
 }
 
 // create a post request, to create a budget
-function createBudget(){ 
+const createBudget = () => { 
   console.log('budget created')
   const settings = {
     url: "/api/budget",
@@ -346,7 +345,7 @@ function createBudget(){
   $.ajax(settings);
 }
 
-function updateBudget(){
+const updateBudget = () => {
   console.log('budget updated')
   const settings = {
     url: `/api/budget/${STATE.user.budget}`,
@@ -367,7 +366,7 @@ function updateBudget(){
 
 // user creates budget, then we grab the info 
 // if `#save-budget` is not in html code yet, so Jquery doesn't know how to put a listener on it if it doesn't exist yet
-function userObjectHandler(){
+const userObjectHandler = () => {
   
   $('body').on('click', '#save-budget', function(event){
     event.preventDefault();
@@ -385,56 +384,8 @@ function userObjectHandler(){
 }
 
 
-// FLOW FOR USER SIGN UP 
 
-function createUserSuccess(user){
-  // (success callback for `createUser`) first thing we did is set the state with the user obj that we received, so now we have user information in our state
-  setState(STATE, {user})
-  renderBudgetPage();
-}
-
-// posting the user to your server so that the user exists in your database
-// arg `user` comes from the `userSignUpHandler` what the user inputted
-function createUser(user){
-console.log('user created');
-  const settings = {
-    url: "/api/users", // since it's in the server, you don't need a whole https//www.etc.com 
-    data: JSON.stringify(user), // JSON.stringify() the object you're sending in app.js for POST AND PUT requests, because that's what your server expects/interacts with 
-    contentType: 'application/json',
-    type: 'POST',
-    // if this request is successful, it's going to call a function (aka callback function), that means it's going to send back some information you're going to use 
-    success: createUserSuccess,
-    // error handler 
-    error: function(err){
-      console.error(err)
-    }
-  };
-  // after validating^, creates a user object in database
-  $.ajax(settings);
-  // since it was successful, the server sent back part of the user object that was created (id, username, firstname, lastname) all back to the frontend, which we took and passed it through to our success
-}
-
-function userSignUpHandler(){
-  // const userSignUpForm = ?
-  $('.sign-up-form').submit(function(event){
-    event.preventDefault();
-
-    // created an object that's going to hold everything you need in the ajax request (got all this from the form the user inputted)
-    const user = {
-      username: $('input[name="username-input').val(),
-      firstName: $('input[name="first-name-input').val(),
-      lastName: $('input[name="last-name-input').val(),
-      email: $('input[name="email-input').val(),
-      password: $('input[name="password-input').val()
-    }
-    // uncontrolled inputs, once they hit submit, then it takes whatevers there and sends it up to the server
-    // normal flow is to then set state
-    // instead of setting state in your handler, we're going to pass all this information through to `createUser` 
-    // arg `user`, function `userSignUpHandler()` is returning the result of `createUser()`
-    createUser(user) 
-  })
-}
-
+// HANDLES GRABBING THE USER'S BUDGET (CREATED OR NOT) AFTER LOGIN
 
 const updateStateWithBudget = budget => {
   setState(STATE, { budget }) // don't have to do { budget: budget } because same name 
@@ -461,6 +412,8 @@ const getUserBudget = () => {
   $.ajax(settings);
 };
 
+
+// HANDLES GRABBING THE USER'S BUDGET AFTER LOGIN
 const checkBudget = () => {
   // if there's a user id, get the budget object with the associated id
   if (STATE.user.budget) {
@@ -476,9 +429,7 @@ const checkBudget = () => {
 
 
 
-// FLOW FOR USER TO SIGN IN AND AUTHENTICATION AND TOKENIZE 
-
-
+// FLOW FOR USER TO LOGIN AND AUTHENTICATION AND TOKENIZE 
 
 const refreshSuccess = (token) => {
   setState(STATE, {jwt: token })
@@ -531,7 +482,7 @@ const obtainJwt = (user) => {
 }
 
 
-function userLoginHandler(){
+const userLoginHandler = () => {
 
   $('.login-form').submit(function(event){
     event.preventDefault();
@@ -545,6 +496,55 @@ function userLoginHandler(){
 
 
 
+// FLOW FOR USER SIGN UP 
+
+const createUserSuccess = user => {
+  // (success callback for `createUser`) first thing we did is set the state with the user obj that we received, so now we have user information in our state
+  setState(STATE, {user})
+  renderBudgetPage();
+}
+
+// posting the user to your server so that the user exists in your database
+// arg `user` comes from the `userSignUpHandler` what the user inputted
+const createUser = user => {
+console.log('user created');
+  const settings = {
+    url: "/api/users", // since it's in the server, you don't need a whole https//www.etc.com 
+    data: JSON.stringify(user), // JSON.stringify() the object you're sending in app.js for POST AND PUT requests, because that's what your server expects/interacts with 
+    contentType: 'application/json',
+    type: 'POST',
+    // if this request is successful, it's going to call a function (aka callback function), that means it's going to send back some information you're going to use 
+    success: createUserSuccess,
+    // error handler 
+    error: function(err){
+      console.error(err)
+    }
+  };
+  // after validating^, creates a user object in database
+  $.ajax(settings);
+  // since it was successful, the server sent back part of the user object that was created (id, username, firstname, lastname) all back to the frontend, which we took and passed it through to our success
+}
+
+const userSignUpHandler = () => {
+  // const userSignUpForm = ?
+  $('.sign-up-form').submit(function(event){
+    event.preventDefault();
+
+    // created an object that's going to hold everything you need in the ajax request (got all this from the form the user inputted)
+    const user = {
+      username: $('input[name="username-input').val(),
+      firstName: $('input[name="first-name-input').val(),
+      lastName: $('input[name="last-name-input').val(),
+      email: $('input[name="email-input').val(),
+      password: $('input[name="password-input').val()
+    }
+    // uncontrolled inputs, once they hit submit, then it takes whatevers there and sends it up to the server
+    // normal flow is to then set state
+    // instead of setting state in your handler, we're going to pass all this information through to `createUser` 
+    // arg `user`, function `userSignUpHandler()` is returning the result of `createUser()`
+    createUser(user) 
+  })
+}
 
 
 
@@ -571,7 +571,6 @@ $(() => {
   userLoginHandler();
   userSignUpHandler();
   weeklyItemsHandler();
-  //weeklyBudgetHandler();
   monthlyBudgetHandler();
   costOfLivingHandler();
 })
