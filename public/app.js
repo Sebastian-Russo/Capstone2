@@ -301,7 +301,6 @@ const updateUserSuccess = userObj => {
 // that way the user and budget will be linked to each other 
 const updateUserWithBudgetSuccess = budgetObj => {
   console.log('link budget obj to user obj', budgetObj)
-  setState(STATE, {budget: budgetObj})
 
   const settings = {
     url: `/api/users/${STATE.user.id}`,
@@ -347,6 +346,7 @@ const createBudget = () => {
 
 const updateBudget = () => {
   console.log('budget updated')
+  
   const settings = {
     url: `/api/budget/${STATE.user.budget}`,
     data: JSON.stringify(STATE.budget),
@@ -436,7 +436,7 @@ const refreshSuccess = (token) => {
 
 // refreshing the JWT  -- not complete -- do i pull 'user' from login? 
 const refreshJwt = (user) => {
-  console.log('authenticating user login');
+  console.log('refresh user login');
 
   const settings = {
     url: "/api/auth/refresh", 
@@ -444,7 +444,6 @@ const refreshJwt = (user) => {
     contentType: 'application/json',
     type: 'POST',
     success: refreshSuccess,
-    // error handler 
     error: function(err){
       console.error(err)
     }
