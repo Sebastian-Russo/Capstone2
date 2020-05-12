@@ -418,7 +418,7 @@ const checkBudget = () => {
   // if there's a user id, get the budget object with the associated id
   if (STATE.user.budget) {
     getUserBudget(STATE.user.budget);
-    renderBudgetPage();
+    //renderBudgetPage();
   } else {
     console.log('no budget');
     // renderBudgetPage();
@@ -427,21 +427,20 @@ const checkBudget = () => {
 };
 
 
-
-
-// FLOW FOR USER TO LOGIN AND AUTHENTICATION AND TOKENIZE 
+// REFRESH JWT
 
 const refreshSuccess = (token) => {
-  setState(STATE, {jwt: token })
+  setState(STATE, { user: token.user, jwt: token.authToken, route: 'budget' })
+  checkBudget()
 }
 
-// refreshing the JWT  -- not complete 
-const refreshJwt = () => {
+// refreshing the JWT  -- not complete -- do i pull 'user' from login? 
+const refreshJwt = (user) => {
   console.log('authenticating user login');
 
   const settings = {
     url: "/api/auth/refresh", 
-    data: JSON.stringify(STATE.user.jwt), 
+    data: JSON.stringify(user), 
     contentType: 'application/json',
     type: 'POST',
     success: refreshSuccess,
@@ -455,12 +454,11 @@ const refreshJwt = () => {
 }
 
 
-
+// FLOW FOR USER TO LOGIN AND AUTHENTICATION AND TOKENIZE 
 
 const tokenSuccess = (token) => {
   setState(STATE, { user: token.user, jwt: token.authToken, route: 'budget' })
   checkBudget()
-  renderBudgetPage()
 }
 // sending the username and password we just registered. response gets some JSON containing our JWT
 const obtainJwt = (user) => {
@@ -526,7 +524,7 @@ console.log('user created');
 }
 
 const userSignUpHandler = () => {
-  // const userSignUpForm = ?
+  
   $('.sign-up-form').submit(function(event){
     event.preventDefault();
 
@@ -547,7 +545,7 @@ const userSignUpHandler = () => {
 }
 
 
-
+// SEPARATE PAGES 
 // you want to add another page listener that says if route === ‘landingPage’ render landing page stuff, else if route === ‘budget’ render budget page stuff
 
 const pageListener = () => {
@@ -555,6 +553,7 @@ const pageListener = () => {
   if (STATE.route === 'landingPage') {
     renderLoginPage()
   } else if (STATE.route === 'budget') {
+    // checkBudget instead of renderBudgetPage because checkBudget calls renderBudgetPage after it requests the budget obj/document from user login
     checkBudget()
   }
 
