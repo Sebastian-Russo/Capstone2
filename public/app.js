@@ -415,6 +415,8 @@ const userObjectHandler = () => {
 
 const updateStateWithBudget = budget => {
   setState(STATE, { budget }) // don't have to do { budget: budget } because same name 
+  totalCostHandler();
+  totalExpensesHandler();
   renderBudgetPage();
 };
 
