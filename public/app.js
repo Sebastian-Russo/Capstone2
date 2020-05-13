@@ -45,6 +45,28 @@ const updateUser = object => {
 
 const renderLoginPage = () => {
   $('#page').html(`
+
+  <div class="container" >
+  <h2>Welcome</h2>
+  <p>
+    Here's your simple budget calculator to help you stay on track with your budget and monetary goals. List all your fixed bills you have each month; your "cost of living." This allows you to put aside that money already. 
+    <br>
+    <br>
+    Examples: savings, rent, car payment, insurance, groceries (if consistent), phone/cable bills, etc. 
+    <br>
+    <br>
+    Calculate and keep track of what's left. This is your monthly budget, which is your extra "spending money".  
+    <br>
+    <br>
+    Your "spending money" is broken down week by week. This can be what you spend for fun, or unoccured expensenes. By adding each item daily for the week, it will help contiously keep track of what you spend your money on. 
+    <br>
+    <br> 
+    If you find yourself going over your weekly limit, you can review where your spending habits focus. Then adjust how much you spend on those things, or be honest with yourself and give yourself more weekly spending money from your monthly budget you set for yourself. Or consider to yourself if you can curb habits.
+    <br>
+    <br>
+    The first couple weeks are crucial to add each item to build the habit and monitor. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline. Just make sure to adjust either your monthly budget or your spending habits. 
+  </p>
+</div>
   <div class="container">
   <h4>Sign In</h4>
   <form class="login-form">
@@ -160,6 +182,30 @@ const renderBudgetPage = () => {
 
 /////////////// EVENT HANDLERS FOR BUDGET 
 
+const deleteItemHandler = () => {
+  // click event listener
+  $('body').on('click', '.delete-button', function(event){
+    event.preventDefault();
+    const selected = $(event.target).data('item-index');
+
+    // for costOfMonth list
+    const newItemsForMonth = STATE.budget.costOfLiving.filter((item, i) => i !== selected);
+    // for weeklyItems list 
+    const newItemsForWeek = STATE.budget.weeklyItems.filter((item, i) => i !== selected);
+    
+    const newState = Object.assign({}, STATE.budget, {
+      costOfLiving: newItemsForMonth,
+      weeklyItems: newItemsForWeek
+    });
+    setState(STATE, { budget: newState });
+
+    updateBudget(); 
+    totalCostHandler();
+    totalExpensesHandler();
+    renderBudgetPage();
+  })
+}
+
 // total sum of the key values of `costOfLiving` and `weeklyItems`
 const totalCostHandler = () => {
   const total = STATE.budget.costOfLiving.reduce(function(acc, x){ // reduce method, x iterates through costOfLiving keys
@@ -254,36 +300,14 @@ const costOfLivingHandler = () => {
   })
 }
 
-const deleteItemHandler = () => {
-  // click event listener
-  $('body').on('click', '.delete-button', function(event){
-    event.preventDefault();
-    const selected = $(event.target).data('item-index');
-
-    // for costOfMonth list
-    const newItemsForMonth = STATE.budget.costOfLiving.filter((item, i) => i !== selected);
-    // for weeklyItems list 
-    const newItemsForWeek = STATE.budget.weeklyItems.filter((item, i) => i !== selected);
-    
-    const newState = Object.assign({}, STATE.budget, {
-      costOfLiving: newItemsForMonth,
-      weeklyItems: newItemsForWeek
-    });
-    setState(STATE, { budget: newState });
-
-    updateBudget(); 
-    totalCostHandler();
-    totalExpensesHandler();
-    renderBudgetPage();
-  })
-}
 
 
 
-//////// EVENT HANDLERS FOR USER SIGN UP AND USER LOGIN AND BUDGET OBJ
+//////// EVENT HANDLERS/ HTTP REQUESTS FOR USER SIGN UP AND USER LOGIN AND BUDGET OBJ
 
 // FLOW FOR USER OBJ/DOCUMENT AND BUDGET OBJ/DOCUMENT TO UPDATE/CREATE/LINK TOGETHER 
 
+// CREATE BUDGET AND LINK TO USER 
 // since the user is signed in, we're going to get their budget
 // in our success handler, when we effectively update the user with the budget id
 const updateUserSuccess = userObj => {
@@ -364,7 +388,9 @@ const updateBudget = () => {
   $.ajax(settings);
 }
 
-// user creates budget, then we grab the info 
+
+
+// user creates/updates and saves budget, grab input with listener
 // if `#save-budget` is not in html code yet, so Jquery doesn't know how to put a listener on it if it doesn't exist yet
 const userObjectHandler = () => {
   
@@ -389,6 +415,8 @@ const userObjectHandler = () => {
 
 const updateStateWithBudget = budget => {
   setState(STATE, { budget }) // don't have to do { budget: budget } because same name 
+  totalCostHandler();
+  totalExpensesHandler();
   renderBudgetPage();
 };
 
@@ -413,7 +441,7 @@ const getUserBudget = () => {
 };
 
 
-// HANDLES GRABBING THE USER'S BUDGET AFTER LOGIN
+// HANDLES GRABBING THE USER'S BUDGET (CREATED OR NOT) AFTER LOGIN
 const checkBudget = () => {
   // if there's a user id, get the budget object with the associated id
   if (STATE.user.budget) {
@@ -480,14 +508,17 @@ const obtainJwt = (user) => {
 
 
 const userLoginHandler = () => {
-
   $('.login-form').submit(function(event){
     event.preventDefault();
     const user = {
       username: $('input[name="username-login-input"]').val(),
       password: $('input[name="password-login-input"]').val()
     }
+    if (!!user.username && !!user.password){
     obtainJwt(user); 
+    } else {
+      alert("You can't leave fields blank");
+    }
   })
 }
 
@@ -539,7 +570,11 @@ const userSignUpHandler = () => {
     // normal flow is to then set state
     // instead of setting state in your handler, we're going to pass all this information through to `createUser` 
     // arg `user`, function `userSignUpHandler()` is returning the result of `createUser()`
+    if (!!user.username && !!user.firstName && !!user.lastName && !!user.email && !!user.password){
     createUser(user) 
+    } else {
+    alert("You can't leave fields blank");
+    }
   })
 }
 
