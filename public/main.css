@@ -16,8 +16,12 @@ header{
     color: yellow;
 }
 
-input {
-  border-radius: 5px;
+.container{
+    width: 90%;
+    background-color: beige;
+    padding: 10px;
+    margin: auto;
+    border-radius: 15px;
 }
 
 h3{
@@ -28,58 +32,8 @@ ul {
   padding: 0;
 }
 
-li {
+li{
     list-style: none;
-}
-
-footer {
-  margin: auto;
-  padding: 20px;
-  text-align: center;
-  color: yellow;
-}
-
-.container {
-  width: 90%;
-  background-color: beige;
-  padding: 10px;
-  margin: auto;
-  border-radius: 15px;
-}
-
-#user-actions {
-  display: flex;
-  flex: 1 1 0;
-}
-
-#landing-page-text {
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-#sign-up-container, #login-container {
-  width: 50%;
-  text-align: center;
-}
-
-#sign-up-container {
-  border-right: 2px solid navy;
-}
-
-#login-container {
-  border-right: 2px solid navy;
-  border-left: 2px solid navy;
-}
-
-.landing-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.landing-form input {
-  margin: 5px;
-  height: 30px;
 }
 
 .section {
@@ -103,4 +57,11 @@ footer {
 .delete-button:hover{
   color: lightcoral;
   cursor: pointer;
+}
+
+footer {
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  color: yellow;
 }
