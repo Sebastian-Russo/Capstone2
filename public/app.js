@@ -17,6 +17,7 @@ const STATE = {
 const setState = (newItem, currentState=STATE) => {
   const newState = Object.assign({}, currentState, newItem);
   Object.assign(currentState, newState);
+  sessionStorage.setItem("appState", JSON.stringify(STATE));
   // by putting this here, you do not need to specifically call a rerender after each action
   render();
 };
@@ -142,29 +143,29 @@ const createBudgetPage = () => {
 
         <div id="weekly-budget-container" class="section-container">
           <h3>Weekly "Spending Money"</h3>
-          <div>$${monthlyBudget - costOfLivingTotal}</div>
+          <div>$${(monthlyBudget - costOfLivingTotal)/4}</div>
         </div>
       </div>
 
       <div id="list-elements" class="section">
         <div id="cost-of-living-container" class="section-container">
           <h3>Cost of Living: $${costOfLivingTotal}</h3>
-          <ul id="cost-of-living" class="item-list">${costOfLivingList}</ul>
           <form id="cost-of-living-add" class="budget-form">
             <input type="text" class="cost-of-living-add-item-input add-input" name="cost-input-item" placeholder="item">
             <input type="number" class="cost-of-living-add-amount-input add-input" name="cost-input-amount" placeholder="amount">
             <button id="cost-of-living-add-button">Add item</button>
           </form>
+          <ul id="cost-of-living" class="item-list">${costOfLivingList}</ul>
         </div>
 
         <div id="weekly-items-container" class="section-container">
           <h3>Weekly Items: $${weeklyTotal}</h3>
-          <ul class="weekly-items">${weeklyItemsList}</ul>
           <form id="weekly-items-add" class="budget-form">
             <input type="text" name="add-input-item" placeholder="item">
             <input type="text" name="add-input-amount" placeholder="amount">
             <button id="weekly-items-add-button" class="add-button">Add item</button>
           </form>
+          <ul class="weekly-items">${weeklyItemsList}</ul>
         </div>
       </div>
 
@@ -473,6 +474,10 @@ $('body').on('submit', '#monthly-budget-add', event => monthlyBudgetHandler(even
 /* ---------- LOAD ----------*/
 
 $(() => {
+  const initialState = sessionStorage.getItem("appState");
+  if (initialState) {
+    setState(JSON.parse(initialState))
+  };
   checkForUser();
 });
 
