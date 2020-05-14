@@ -1,15 +1,14 @@
 const STATE = {
-  user: {
-    id: '5ebc26b760672027e5970010',
-    username: 'miketest6',
-    firstName: 'mike',
-    lastName: 'ossig',
-    budget: '5ebc31fd19db94295d00d7d1'
+  user: {},
+  budget: {
+    costOfLiving: [],
+    monthlyBudget: 0,
+    weeklyBudget: 0,
+    weeklyItems: []
   },
-  budget: {},
-  route: 'budgetPage',
+  route: 'landingPage',
   editing: false,
-  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWViYzI2Yjc2MDY3MjAyN2U1OTcwMDEwIiwidXNlcm5hbWUiOiJtaWtldGVzdDYiLCJmaXJzdE5hbWUiOiJtaWtlIiwibGFzdE5hbWUiOiJvc3NpZyIsImJ1ZGdldCI6IjVlYmMzMWZkMTlkYjk0Mjk1ZDAwZDdkMSJ9LCJpYXQiOjE1ODkzOTIxMzMsImV4cCI6MTU4OTk5NjkzMywic3ViIjoibWlrZXRlc3Q2In0.NGcmcBa2G6DA7guoPJ_XWZ0RbqD4qPm2h7PjEg29aAQ'
+  jwt: ''
 };
 
 
@@ -23,6 +22,9 @@ const STATE = {
 const setState = (newItem, currentState=STATE) => {
   const newState = Object.assign({}, currentState, newItem);
   Object.assign(currentState, newState);
+
+  // set the session storage with the STATE, this will stop you from losing progress every refresh
+  sessionStorage.setItem('appState', JSON.stringify(STATE));
   // by putting this here, you do not need to specifically call a rerender after each action
   render();
 };
@@ -89,33 +91,26 @@ const langingPageText = (`
 `);
 
 const userActionForms = (`
-  <div class="container">
+  <div id="user-actions" class="container">
     <div id="login-container">
       <h4>Sign In</h4>
-      <form class="login-form">
-        <label for="username-login-input">Username</label>
+      <form class="login-form landing-form">
         <input type="text" class="login" name="username-login-input" placeholder="username">
-        <label for="password-login-input">Password</label>
         <input type="password" class="password" name="password-login-input" placeholder="password">
-        <button class="login-button">Login</button>
-      </form>
+        </form>
+        <button class="login-button">Submit</button>
     </div>
 
     <div id="sign-up-container">
       <h4>Sign Up</h4>
-      <form class="sign-up-form">
-        <label for="username-input">Username</label>
+      <form class="sign-up-form landing-form">
         <input type="text" name="username-input" placeholder="username">
-        <label for="first-name-input">First Name</label>
         <input type="text" name="first-name-input" placeholder="first name">
-        <label for="last-name-input">Last Name</label>
         <input type="text" name="last-name-input" placeholder="last name">
-        <label for="email-input">Email</label>
         <input type="email" name="email-input" placeholder="email">
-        <label for="password">Password</label>
         <input type="password" name="password-input" placeholder="password">
+        </form>
         <button id="sign-up-button" class="form-buton" type="submit">Sign Up</button>
-      </form>
     </div>
   </div>
 `);
@@ -132,7 +127,6 @@ const createBudgetPage = () => {
 
   const costOfLivingTotal = getTotal(costOfLiving);
   const costOfLivingList = createList('costOfLiving', costOfLiving);
-  console.log(costOfLivingList);
 
   return (`
     <div class="container">
@@ -479,6 +473,14 @@ $('body').on('submit', '#monthly-budget-add', event => monthlyBudgetHandler(even
 /* ---------- LOAD ----------*/
 
 $(() => {
+  // check session storage for state
+  const appState = sessionStorage.getItem('appState');
+
+  if (appState) {
+    // if one exists, set the app STATE to the one stored
+    setState(JSON.parse(appState));
+  };
+
   checkForUser();
 });
 
