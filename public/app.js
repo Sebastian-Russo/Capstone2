@@ -1,15 +1,9 @@
 const STATE = {
-  user: {
-    id: '5ebc26b760672027e5970010',
-    username: 'miketest6',
-    firstName: 'mike',
-    lastName: 'ossig',
-    budget: '5ebc31fd19db94295d00d7d1'
-  },
+  user: {},
   budget: {},
-  route: 'budgetPage',
+  route: 'landingPage',
   editing: false,
-  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWViYzI2Yjc2MDY3MjAyN2U1OTcwMDEwIiwidXNlcm5hbWUiOiJtaWtldGVzdDYiLCJmaXJzdE5hbWUiOiJtaWtlIiwibGFzdE5hbWUiOiJvc3NpZyIsImJ1ZGdldCI6IjVlYmMzMWZkMTlkYjk0Mjk1ZDAwZDdkMSJ9LCJpYXQiOjE1ODkzOTIxMzMsImV4cCI6MTU4OTk5NjkzMywic3ViIjoibWlrZXRlc3Q2In0.NGcmcBa2G6DA7guoPJ_XWZ0RbqD4qPm2h7PjEg29aAQ'
+  jwt: ''
 };
 
 
