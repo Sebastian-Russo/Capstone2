@@ -33,11 +33,8 @@ const setBudget = (newItem, currentBudget=STATE.budget) => {
 /* ---------- TEMPLATE HELPERS ---------- */
 
 const getTotal = list => list.reduce((acc, x) => {
-  if (x == undefined){
-    return 
-  } else {
+  console.log('total amount', x)
     return acc + Number(x.amount)
-  }
 }, 0);
 
 const createList = (type, list) => {
