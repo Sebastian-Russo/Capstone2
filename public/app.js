@@ -47,6 +47,7 @@ const createList = (type, list) => {
   `)).join("");
 };
 
+
 /* ---------- TEMPLATES ---------- */
 
 const langingPageText = (`
@@ -173,6 +174,7 @@ const createBudgetPage = () => {
 
 const updateUserSuccess = user => {
   setState({ user });
+
 };
 
 const updateUserWithBudgetId = budgetObj => {
@@ -303,6 +305,7 @@ const userLogin = user => {
   $.ajax(settings);
 };
 
+
 // FLOW FOR USER SIGN UP 
 
 const createUserSuccess = (newUser, userInfo) => {
@@ -387,6 +390,7 @@ const costOfLivingHandler = event => {
   } else {
     alert("You can't leave fields blank");
   }
+
 }
 
 const deleteItemHandler = event => {
