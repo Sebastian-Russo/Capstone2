@@ -67,13 +67,6 @@ router.post("/", jwtAuth, jsonParser, (req, res) => {
     console.log(budget)
     return res.status(201).json(budget.serialize())
    })
-    // .then(budget => res.status(201).json({
-    //     id: budget.id,
-    //     monthlyBudget: budget.monthlyBudget,
-    //     costOfLiving: budget.costOfLiving,
-    //     weeklyBudget: budget.weeklyItems,
-    //     weeklyItems: budget.weeklyItems
-    // }))
     .catch(err => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });

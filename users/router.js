@@ -10,7 +10,6 @@ const jsonParser = bodyParser.json();
 
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'email'];
-  console.log(req.body)
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {

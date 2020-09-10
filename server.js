@@ -15,7 +15,7 @@ mongoose.Promise = global.Promise;
 
 const app = express();
 
-app.use(express.static('public'));
+app.use(express.static('public')); // serves files from public folder
 
 // CORS
 app.use(function (req, res, next) {
@@ -31,15 +31,9 @@ app.use(function (req, res, next) {
 app.use(morgan('common'));
 app.use(express.json());
 
-app.use(passport.initialize());
+app.use(passport.initialize()); // middleware function that has access to req/res object, which initializes authenication module, or rather:setups the functions to serialize/deserialize the user data from the request.
 passport.use(localStrategy);
 passport.use(jwtStrategy);
-
-// front end is going to use these endpoints to request information from the database through the server
-// going to make a request to the server, the server is going to figure out what the request is talking about, query the database for the information that the front end is requesting, and then send that information to the front end
-// front end's whole point: get data, manipulate data, and display data
-// or front end - someone's signing up, it has to take user provided information and send that through the server, so that we can validate that user, and continue to use the application 
-// front end is everything user interacts with to get and send information to your database 
 
 // made `localStrategy()` in `strategies.js` to use in a route
 app.use('/api/users/', usersRouter);

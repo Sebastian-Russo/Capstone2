@@ -13,6 +13,7 @@ const { JWT_SECRET } = require('../config');
 
 
 const localStrategy = new LocalStrategy((username, password, callback) => {
+  console.log('here');
   let user;
   // We look for a user with the supplied username. If the user is found, we then call the validatePassword instance method with the password from the request header.
   User.findOne({ username: username })

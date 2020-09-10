@@ -26,9 +26,10 @@ router.use(bodyParser.json());
 // The user provides a username and password to `/login` as a `req`
 // 2nd arg is the var we just made above
 router.post('/login', localAuth, (req, res) => {
-  const user = req.user.serialize();
-  const authToken = createAuthToken(user);
-  res.json({authToken, user});
+  console.log('user is', req)
+  const user = req.user.serialize(); // create id for new user 
+  const authToken = createAuthToken(user); 
+  res.json({authToken, user}); 
 
 });
 
