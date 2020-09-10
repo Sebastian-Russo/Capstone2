@@ -1,6 +1,5 @@
 const STATE = {
   user: {},
-  // made the budget an empty object ?
   budget: {
     costOfLiving: [],
     totalCost: 0,
