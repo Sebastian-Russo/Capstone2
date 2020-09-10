@@ -35,8 +35,6 @@ const getTotal = list => list.reduce((acc, x) => {
   return acc + Number(x.amount)
 }, 0);
 
-// redid structure with spans and changed the way it looks to user
-// used span instead of button for delete 
 const createList = (type, list) => {
   return list.map((obj, i) => (`
     <li class="list-item">
@@ -170,6 +168,7 @@ const createBudgetPage = () => {
   `);
 };
 
+
 /* ---------- BUDGET REQUESTS ---------- */
 
 const updateUserSuccess = user => {
@@ -255,7 +254,8 @@ const getUserBudget = budgetId => {
   $.ajax(settings);
 };
 
-/* ---------- SIGN UP, SIGN IN, AUTHENTICATION ---------- */
+
+/* ---------- SIGN UP, SIGN IN, AUTHENTICATE ---------- */
 
 // REFRESH JWT
 
@@ -287,7 +287,6 @@ const loginSuccess = token => {
   setState({ user: token.user, jwt: token.authToken, route: 'budgetPage' });
 };
 
-// changed from 'obtainJwt' to 'userLogin' because both things are happening simutaniously???
 const userLogin = user => {
   console.log('logging in with', user);
   const settings = {
@@ -331,7 +330,6 @@ const createUser = userInfo => {
 
 /* ---------- EVENT HANDLER HELPERS ---------- */
 
-// removes item from 'list' and returns the rest of the array of none selected items
 // uses index for data-index to identify, rather than class
 const deleteItem = (list, index) => {
   console.log(list);
