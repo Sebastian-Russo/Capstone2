@@ -1,6 +1,14 @@
 const STATE = {
   user: {},
-  budget: {},
+  // made the budget an empty object ?
+  budget: {
+    costOfLiving: [],
+    totalCost: 0,
+    totalExpenses: 0,
+    weeklyBudget: 0,
+    weeklyItems: [],
+    monthlyBudget: 0
+},
   route: 'landingPage',
   editing: false,
   jwt: ''
@@ -9,35 +17,18 @@ const STATE = {
 
 /* ---------- UPDATE STATE ---------- */
 
-/*
-  NOTE: I changed the order of the arguments so that you don't need to give it STATE every time
-  you call it. Makes the code cleaner. Also, I updated the setState function a bit.  I wanted
-  you to get used to using Object.assign a bunch, but now we can just put it in one place
-*/
 const setState = (newItem, currentState=STATE) => {
   const newState = Object.assign({}, currentState, newItem);
   Object.assign(currentState, newState);
-  sessionStorage.setItem("appState", JSON.stringify(STATE));
-  // by putting this here, you do not need to specifically call a rerender after each action
-  render();
+
+  render();  // by putting this here, you do not need to specifically call a rerender after each action
 };
 
-/* 
-  This function (updateUser) is redundant. Also, "state" is undefined in this. 
-  BUT, I like where your head is at here.  Very DRY mentality.
-  I'll throw in an additional state update function for budget to show you how it would go.
-  NOTE: this will help you understand React Hooks later (but don't worry about that now)
-*/
-
-// const updateUser = object => {
-//   Object.assign(state, {
-//     user: object
-//   });
-// };
-
+// called when user adds input to budget and saves
 const setBudget = (newItem, currentBudget=STATE.budget) => {
   setState({ budget: Object.assign({}, currentBudget, newItem)});
 };
+
 
 /* ---------- TEMPLATE HELPERS ---------- */
 
@@ -45,6 +36,8 @@ const getTotal = list => list.reduce((acc, x) => {
   return acc + Number(x.amount)
 }, 0);
 
+// redid structure with spans and changed the way it looks to user
+// used span instead of button for delete 
 const createList = (type, list) => {
   return list.map((obj, i) => (`
     <li class="list-item">
@@ -83,6 +76,7 @@ const langingPageText = (`
   </div>
 `);
 
+// sign up and login forms
 const userActionForms = (`
   <div class="container">
     <div id="login-container">
@@ -123,6 +117,7 @@ const createBudgetPage = () => {
   } = STATE.budget;
 
   const weeklyTotal = getTotal(weeklyItems);
+                                    // data-type
   const weeklyItemsList = createList('weeklyItems', weeklyItems);
 
   const costOfLivingTotal = getTotal(costOfLiving);
@@ -143,29 +138,29 @@ const createBudgetPage = () => {
 
         <div id="weekly-budget-container" class="section-container">
           <h3>Weekly "Spending Money"</h3>
-          <div>$${(monthlyBudget - costOfLivingTotal)/4}</div>
+          <div>$${monthlyBudget - costOfLivingTotal}</div>
         </div>
       </div>
 
       <div id="list-elements" class="section">
         <div id="cost-of-living-container" class="section-container">
           <h3>Cost of Living: $${costOfLivingTotal}</h3>
+          <ul id="cost-of-living" class="item-list">${costOfLivingList}</ul>
           <form id="cost-of-living-add" class="budget-form">
             <input type="text" class="cost-of-living-add-item-input add-input" name="cost-input-item" placeholder="item">
             <input type="number" class="cost-of-living-add-amount-input add-input" name="cost-input-amount" placeholder="amount">
             <button id="cost-of-living-add-button">Add item</button>
           </form>
-          <ul id="cost-of-living" class="item-list">${costOfLivingList}</ul>
         </div>
 
         <div id="weekly-items-container" class="section-container">
           <h3>Weekly Items: $${weeklyTotal}</h3>
+          <ul class="weekly-items">${weeklyItemsList}</ul>
           <form id="weekly-items-add" class="budget-form">
             <input type="text" name="add-input-item" placeholder="item">
             <input type="text" name="add-input-amount" placeholder="amount">
             <button id="weekly-items-add-button" class="add-button">Add item</button>
           </form>
-          <ul class="weekly-items">${weeklyItemsList}</ul>
         </div>
       </div>
 
@@ -263,9 +258,11 @@ const getUserBudget = budgetId => {
 
 /* ---------- SIGN UP, SIGN IN, AUTHENTICATION ---------- */
 
+// REFRESH JWT
+
 const refreshSuccess = token => {
   console.log('token refreshed');
-  setState(Object.assign({}, STATE, { jwt: token.authToken }));
+  setState(Object.assign({}, STATE, { jwt: token.authToken })); // only have to update jwt token, not the whole user or budget obj 
 };
 
 const refreshJwt = (user) => {
@@ -283,11 +280,15 @@ const refreshJwt = (user) => {
   $.ajax(settings);
 };
 
+
+// FLOW FOR USER TO LOGIN, AUTHENTICATION, AND TOKENIZE 
+
 const loginSuccess = token => {
   console.log('user signed in and made JWT');
   setState({ user: token.user, jwt: token.authToken, route: 'budgetPage' });
 };
 
+// changed from 'obtainJwt' to 'userLogin' because both things are happening simutaniously???
 const userLogin = user => {
   console.log('logging in with', user);
   const settings = {
@@ -303,6 +304,8 @@ const userLogin = user => {
 
   $.ajax(settings);
 };
+
+// FLOW FOR USER SIGN UP 
 
 const createUserSuccess = (newUser, userInfo) => {
   console.log('user created', newUser, userInfo);
@@ -329,6 +332,8 @@ const createUser = userInfo => {
 
 /* ---------- EVENT HANDLER HELPERS ---------- */
 
+// removes item from 'list' and returns the rest of the array of none selected items
+// uses index for data-index to identify, rather than class
 const deleteItem = (list, index) => {
   console.log(list);
   return list.filter((item, i) => i !== index);
@@ -336,6 +341,7 @@ const deleteItem = (list, index) => {
 
 /* ---------- EVENT HANDLERS ---------- */
 
+// saves new/updated budget 
 const budgetSaveHandler = event => {
   event.preventDefault();
   if(STATE.user.budget){
@@ -391,9 +397,10 @@ const deleteItemHandler = event => {
   const toDelete = $(event.target);
   const type = toDelete.data('type');
   const selected = toDelete.data('item-index');
+  console.log('target', event.target, 'type', type, 'selected', selected)
   
   setBudget({
-    [type]: deleteItem(STATE.budget[type], selected)
+    [type]: deleteItem(STATE.budget[type], selected) // args: list, index
   });
 }
 
@@ -459,7 +466,7 @@ const render = () => {
 /* ---------- LISTENERS ----------*/
 
 // click events
-
+                                              // calling event handlers and keeping them separate from listeners 
 $('body').on('click', '#save-budget', event => budgetSaveHandler(event));
 $('body').on('click', '.delete-button', event => deleteItemHandler(event));
 
@@ -474,10 +481,6 @@ $('body').on('submit', '#monthly-budget-add', event => monthlyBudgetHandler(even
 /* ---------- LOAD ----------*/
 
 $(() => {
-  const initialState = sessionStorage.getItem("appState");
-  if (initialState) {
-    setState(JSON.parse(initialState))
-  };
   checkForUser();
 });
 

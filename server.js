@@ -15,7 +15,7 @@ mongoose.Promise = global.Promise;
 
 const app = express();
 
-app.use(express.static('public'));
+app.use(express.static('public')); // serves files from public folder
 
 // CORS
 app.use(function (req, res, next) {
@@ -31,7 +31,7 @@ app.use(function (req, res, next) {
 app.use(morgan('common'));
 app.use(express.json());
 
-app.use(passport.initialize());
+app.use(passport.initialize()); // middleware function that has access to req/res object, which initializes authenication module, or rather:setups the functions to serialize/deserialize the user data from the request.
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
