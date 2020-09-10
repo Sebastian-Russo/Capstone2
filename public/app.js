@@ -19,6 +19,7 @@ const STATE = {
 const setState = (newItem, currentState=STATE) => {
   const newState = Object.assign({}, currentState, newItem);
   Object.assign(currentState, newState);
+  console.loog(newState)
 
   render();  // by putting this here, you do not need to specifically call a rerender after each action
 };
@@ -32,10 +33,15 @@ const setBudget = (newItem, currentBudget=STATE.budget) => {
 /* ---------- TEMPLATE HELPERS ---------- */
 
 const getTotal = list => list.reduce((acc, x) => {
-  return acc + Number(x.amount)
+  if (x == undefined){
+    return 
+  } else {
+    return acc + Number(x.amount)
+  }
 }, 0);
 
 const createList = (type, list) => {
+  console.log(type, list)
   return list.map((obj, i) => (`
     <li class="list-item">
       <span class="list-span">${obj.item}: </span>
@@ -120,7 +126,6 @@ const createBudgetPage = () => {
 
   const costOfLivingTotal = getTotal(costOfLiving);
   const costOfLivingList = createList('costOfLiving', costOfLiving);
-  console.log(costOfLivingList);
 
   return (`
     <div class="container">
@@ -164,6 +169,7 @@ const createBudgetPage = () => {
 
       <div class="section-container">
         <button id="save-budget">Save Budget Information</button>
+        <button id="logout"> Logout </button>
       </div>
     </div>
   `);
@@ -257,7 +263,7 @@ const getUserBudget = budgetId => {
 };
 
 
-/* ---------- SIGN UP, SIGN IN, AUTHENTICATE ---------- */
+/* ---------- USER REQUESTS: SIGN UP, LOGIN, AUTHENTICATE ---------- */
 
 // REFRESH JWT
 
@@ -282,11 +288,16 @@ const refreshJwt = (user) => {
 };
 
 
+
 // FLOW FOR USER TO LOGIN, AUTHENTICATION, AND TOKENIZE 
 
 const loginSuccess = token => {
   console.log('user signed in and made JWT');
-  setState({ user: token.user, jwt: token.authToken, route: 'budgetPage' });
+  setState({ 
+    user: token.user, 
+    jwt: token.authToken,
+    route: 'budgetPage' 
+  });
 };
 
 const userLogin = user => {
@@ -340,6 +351,18 @@ const deleteItem = (list, index) => {
 };
 
 /* ---------- EVENT HANDLERS ---------- */
+
+// logout 
+
+const userLogout = () => {
+  console.log('logout')
+  setState({ 
+    route: 'landingPage',
+    user: {},
+    budget: {},
+    jwt: '' 
+  })
+}
 
 // saves new/updated budget 
 const budgetSaveHandler = event => {
@@ -424,7 +447,13 @@ const userLoginHandler = event => {
     username: $('input[name="username-login-input"]').val(),
     password: $('input[name="password-login-input"]').val()
   };
-  userLogin(user);
+
+  if (user.username && user.password){
+    userLogin(user);
+  } else {
+    alert("Please fill in both fields")
+  }
+  
 };
 
 /* ---------- RENDER Functions ---------- */
@@ -467,7 +496,8 @@ const render = () => {
 /* ---------- LISTENERS ----------*/
 
 // click events
-                                              // calling event handlers and keeping them separate from listeners 
+
+$('body').on('click', '#logout', () => userLogout());
 $('body').on('click', '#save-budget', event => budgetSaveHandler(event));
 $('body').on('click', '.delete-button', event => deleteItemHandler(event));
 
