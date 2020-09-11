@@ -116,9 +116,9 @@ const createBudgetPage = () => {
     monthlyBudget
   } = STATE.budget;
 
-  if (STATE.user.id) {
-    getUserBudget(STATE.user.budget);
-  }
+  // if (STATE.user.id) {
+  //   getUserBudget(STATE.user.budget);
+  // }
 
   const weeklyTotal = getTotal(weeklyItems);
                                     // data-type
@@ -130,7 +130,7 @@ const createBudgetPage = () => {
   return (`
     <div class="container">
       <div id="available-funds" class="section">
-        <div id="monthly-budget-container" class="section-container">
+        <div id="monthly-budget-container" class="section-container-1">
           <h3>Monthly Income</h3>
           <form id="monthly-budget-add" class="budget-form">
             <label for="add-monthly-input">$</label>
@@ -139,14 +139,14 @@ const createBudgetPage = () => {
           </form>
         </div>
 
-        <div id="weekly-budget-container" class="section-container">
+        <div id="weekly-budget-container" class="section-container-2">
           <h3>Weekly "Spending Money"</h3>
           <div>$${monthlyBudget - costOfLivingTotal}</div>
         </div>
       </div>
 
       <div id="list-elements" class="section">
-        <div id="cost-of-living-container" class="section-container">
+        <div id="cost-of-living-container" class="section-container-1">
           <h3>Cost of Living: $${costOfLivingTotal}</h3>
           <ul id="cost-of-living" class="item-list">${costOfLivingList}</ul>
           <form id="cost-of-living-add" class="budget-form">
@@ -156,7 +156,7 @@ const createBudgetPage = () => {
           </form>
         </div>
 
-        <div id="weekly-items-container" class="section-container">
+        <div id="weekly-items-container" class="section-container-2">
           <h3>Weekly Items: $${weeklyTotal}</h3>
           <ul class="weekly-items">${weeklyItemsList}</ul>
           <form id="weekly-items-add" class="budget-form">
@@ -180,6 +180,9 @@ const createBudgetPage = () => {
 
 const updateUserSuccess = user => {
   setState({ user });
+  toastr.success('Saved', 'Success!', {
+    containerId: 'budget-success',
+  })
 
 };
 
@@ -374,9 +377,6 @@ const userLogout = () => {
 // saves new/updated budget 
 const budgetSaveHandler = event => {
   event.preventDefault();
-  toastr.success('Saved', 'Success!', {
-    containerId: 'budget-success',
-  })
   if(STATE.user.budget){
     console.log('updating budget');
     updateBudget(STATE.user.budget);
