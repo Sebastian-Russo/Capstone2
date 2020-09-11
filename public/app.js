@@ -14,7 +14,7 @@ const STATE = {
 };
 
 
-/* ---------- UPDATE STATE ---------- */
+/* ---------- CHECK/UPDATE STATE ---------- */
 
 const setState = (newItem, currentState=STATE) => {
   const newState = Object.assign({}, currentState, newItem);
@@ -28,6 +28,367 @@ const setBudget = (newItem, currentBudget=STATE.budget) => {
   setState({ budget: Object.assign({}, currentBudget, newItem)});
 };
 
+const checkForUser = () => {
+  if (STATE.user.id) {
+    return setState({ route: 'budgetPage' })
+  };
+
+  render();
+};
+
+/* ---------- BUDGET REQUESTS ---------- */
+
+const updateUserWithBudgetId = budgetObj => {
+  const authToken = STATE.jwt.length ? STATE.jwt : Cookies.get('authToken');
+
+  console.log('budget updated', budgetObj.id);
+  const settings = {
+    url: `/api/users/${STATE.user.id}`,
+    method: 'PUT',
+    contentType: 'application/json',
+    headers: {
+      'Authorization': `Bearer ${authToken}`
+    },
+    data: JSON.stringify({
+      id: STATE.user.id,
+      budget: budgetObj.id
+    }),
+    success: user => {
+      toastr.success('Saved', 'Success!', {
+        containerId: 'budget-success',
+      })
+      setState({ user });
+    },
+    error: function(err){
+      console.error(err);
+    }
+  };
+
+  $.ajax(settings);
+}
+
+const createBudget = () => { 
+  const authToken = STATE.jwt.length ? STATE.jwt : Cookies.get('authToken');
+
+  const settings = {
+    url: "/api/budget",
+    method: 'POST',
+    data: JSON.stringify(STATE.budget),
+    contentType: 'application/json',
+    headers: {
+      'Authorization': `Bearer ${authToken}`
+    },
+    success: updateUserWithBudgetId,
+    error: function(err){
+      console.error(err)
+    }
+  };
+
+  $.ajax(settings);
+}
+
+const updateBudget = budgetId => {
+  const authToken = STATE.jwt.length ? STATE.jwt : Cookies.get('authToken');
+
+  const settings = {
+    url: `/api/budget/${budgetId}`,
+    method: 'PUT',
+    contentType: 'application/json',
+    headers: {
+      'Authorization': `Bearer ${authToken}`
+    },
+    data: JSON.stringify(STATE.budget),
+    success: updateUserWithBudgetId,
+    error: function(err){
+      console.error(err)
+    }
+  };
+
+  $.ajax(settings);
+};
+
+const getUserBudget = budgetId => {
+  const authToken = STATE.jwt.length ? STATE.jwt : Cookies.get('authToken');
+  const settings = {
+    url: `/api/budget/${budgetId}`,
+    method: 'GET',
+    contentType: 'application/json',
+    headers: {
+      'Authorization': `Bearer ${authToken}`
+    },    
+    success: (budget) => {
+      setState({ budget });
+    },
+    error: function(err){
+      console.log(err);
+      if(err.status === 404) {
+        console.error('NOT FOUND');
+      }
+      console.error('error getting budget', err)
+    }
+  };
+
+  $.ajax(settings);
+};
+
+/* ---------- USER REQUESTS ---------- */
+
+// LOGIN & TOKEN REFRESH
+
+const userLogin = user => {
+  console.log('logging in with', user);
+  const settings = {
+    url: "/api/auth/login", 
+    method: 'POST',
+    data: JSON.stringify(user),
+    contentType: 'application/json',
+    success: token => {
+      console.log('user signed in and made JWT');
+      const { user, authToken } = token;
+      Cookies.set('userId', user.id);
+      Cookies.set('budget', user.budget);
+      Cookies.set('authToken', authToken);
+
+      setState({ 
+        user: token.user, 
+        jwt: token.authToken,
+        route: 'budgetPage' 
+      });
+    },
+    error: function(err){
+      console.error(err)
+    }
+  };
+
+  $.ajax(settings);
+};
+
+const refreshJwt = (user) => {
+  const settings = {
+    url: "/api/auth/refresh", 
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(user),
+    success: token => {
+      console.log('token refreshed');
+      setState(Object.assign({}, STATE, { jwt: token.authToken })); // only have to update jwt token, not the whole user or budget obj 
+    },
+    error: function(err){
+      console.error(err)
+    }
+  };
+
+  $.ajax(settings);
+};
+
+// SIGN UP 
+
+const createUser = userInfo => {
+  const settings = {
+    url: "/api/users",
+    data: JSON.stringify(userInfo),
+    contentType: 'application/json',
+    type: 'POST',
+    success: newUser => {
+      console.log('user created', newUser, userInfo);
+      userLogin({
+        username: userInfo.username,
+        password: userInfo.password
+      });
+    },
+    error: function(err){
+      console.error(err);
+    }
+  };
+
+  $.ajax(settings);
+};
+
+/* ---------- EVENT HANDLER HELPERS ---------- */
+
+// uses index for data-index to identify, rather than class
+const deleteItem = (list, index) => {
+  console.log(list);
+  return ;
+};
+
+/* ---------- EVENT HANDLERS ---------- */
+
+// logout 
+const userLogout = () => {
+  console.log('logout')
+  Cookies.remove('userId');
+  Cookies.remove('budget');
+  Cookies.remove('authToken');
+  
+  setState({ 
+    user: {},
+    budget: {
+      costOfLiving: [],
+      totalCost: 0,
+      totalExpenses: 0,
+      weeklyBudget: 0,
+      weeklyItems: [],
+      monthlyBudget: 0
+  },
+    route: 'landingPage',
+    editing: false,
+    jwt: ''
+  })
+}
+
+// saves new/updated budget 
+const budgetSaveHandler = event => {
+  event.preventDefault();
+  if(STATE.user.budget){
+    console.log('updating budget');
+    updateBudget(STATE.user.budget);
+  } else {
+    console.log('creating new budget');
+    createBudget();
+  }
+};
+
+const weeklyItemsHandler = event => {
+  event.preventDefault();
+  const userInputItem = $('input[name="add-input-item"]').val();
+  const userInputAmount = $('input[name="add-input-amount"]').val();
+  
+  if (!!userInputItem && !!userInputAmount){
+    setBudget({
+      weeklyItems: [...STATE.budget.weeklyItems, {item: userInputItem, amount: userInputAmount}]
+    });
+  } else {
+    toastr.warning('Warning', 'You cannot leave fields blank!')  
+  }  
+};
+
+const monthlyBudgetHandler = event => {  
+  event.preventDefault();
+  const monthlyBudget = $('input[name="add-monthly-input"]').val();
+  
+  if (!!monthlyBudget){
+    setBudget({ monthlyBudget });
+  } else {
+    toastr.warning('Warning', 'You cannot leave fields blank!') 
+  }
+}
+
+const costOfLivingHandler = event => {
+  event.preventDefault();
+  const userInputItem = $('input[name="cost-input-item"]').val(); 
+  const userInputAmount = $('input[name="cost-input-amount"]').val();
+  
+  if (!!userInputItem && !!userInputAmount){
+    setBudget({ 
+      costOfLiving: [...STATE.budget.costOfLiving, {item: userInputItem, amount: userInputAmount}]
+    });
+  } else {
+    toastr.warning('Warning', 'You cannot leave fields blank!') 
+  }
+}
+
+const deleteItemHandler = event => {
+  event.preventDefault();
+  const toDelete = $(event.target);
+  const type = toDelete.data('type');
+  const selected = toDelete.data('item-index');
+  const newList = STATE.budget[type].filter((item, i) => i !== selected)
+  console.log('target', event.target, 'type', type, 'selected', selected)
+  
+  setBudget({
+    [type]: newList
+  });
+};
+
+const userSignUpHandler = event => {
+  event.preventDefault();
+  const user = {
+    email: $('input[name="email-input').val(),
+    username: $('input[name="username-input').val(),
+    password: $('input[name="password-input').val(),
+    lastName: $('input[name="last-name-input').val(),
+    firstName: $('input[name="first-name-input').val()
+  };
+  if (user.username && user.password && user.email){
+    createUser(user);
+  } else {
+    toastr.warning('Warning', 'You cannot leave fields blank!')
+  }
+};
+
+const userLoginHandler = event => {
+  event.preventDefault();
+  const user = {
+    username: $('input[name="username-login-input"]').val(),
+    password: $('input[name="password-login-input"]').val()
+  };
+
+  if (user.username && user.password){
+    userLogin(user);
+  } else {
+    toastr.warning('Warning', 'You cannot leave fields blank!')
+  }
+};
+
+/* ---------- RENDER Functions ---------- */
+
+const checkBudget = () => {
+  const expectedKeys = [
+    "id",
+    "totalCost",
+    "weeklyItems",
+    "weeklyBudget",
+    "costOfLiving",
+    "totalExpenses",
+    "monthlyBudget"
+  ];
+
+  const actualKeys = Object.keys(STATE.budget);
+  
+  const budgetId = Cookies.get('budget');
+
+  if (STATE.user.budget) {
+    expectedKeys.forEach(key => {
+      if (!actualKeys.includes(key)){
+        console.log('its not here');
+        return getUserBudget(STATE.user.budget);
+      }
+    });
+  } else if (budgetId) {
+    console.log('budgetId cookie here')
+    return getUserBudget(budgetId)
+  };
+  return renderBudgetPage();
+};
+
+const renderLoginPage = () => {
+  const userId = Cookies.get('userId');
+  if (userId) {
+    return checkBudget();
+  };
+
+  $('#page').html('');
+  $('#page').append(langingPageText, userActionForms);
+}
+
+const renderBudgetPage = () => {
+  $('page').html('');
+  const budgetTemplate = createBudgetPage();
+  $('#page').html(budgetTemplate);
+};
+
+const render = () => {
+  const budgetId = Cookies.get('budget');
+  if (STATE.route === 'budgetPage' || budgetId) {
+    if(STATE.budget.id){
+      console.log('the budget is here')
+      return renderBudgetPage()
+    }
+    return checkBudget()
+  }
+  renderLoginPage()
+};
 
 /* ---------- TEMPLATE HELPERS ---------- */
 
@@ -116,10 +477,6 @@ const createBudgetPage = () => {
     monthlyBudget
   } = STATE.budget;
 
-  // if (STATE.user.id) {
-  //   getUserBudget(STATE.user.budget);
-  // }
-
   const weeklyTotal = getTotal(weeklyItems);
                                     // data-type
   const weeklyItemsList = createList('weeklyItems', weeklyItems);
@@ -173,338 +530,6 @@ const createBudgetPage = () => {
       </div>
     </div>
   `);
-};
-
-
-/* ---------- BUDGET REQUESTS ---------- */
-
-const updateUserSuccess = user => {
-  setState({ user });
-  toastr.success('Saved', 'Success!', {
-    containerId: 'budget-success',
-  })
-
-};
-
-const updateUserWithBudgetId = budgetObj => {
-  console.log('budget updated', budgetObj.id);
-  const settings = {
-    url: `/api/users/${STATE.user.id}`,
-    method: 'PUT',
-    contentType: 'application/json',
-    headers: {
-      'Authorization': `Bearer ${STATE.jwt}`
-    },
-    data: JSON.stringify({
-      id: STATE.user.id,
-      budget: budgetObj.id
-    }),
-    success: updateUserSuccess,
-    error: function(err){
-      console.error(err);
-    }
-  };
-
-  $.ajax(settings);
-}
-
-const createBudget = () => { 
-  const settings = {
-    url: "/api/budget",
-    method: 'POST',
-    data: JSON.stringify(STATE.budget),
-    contentType: 'application/json',
-    headers: {
-      'Authorization': `Bearer ${STATE.jwt}`
-    },
-    success: updateUserWithBudgetId,
-    error: function(err){
-      console.error(err)
-    }
-  };
-
-  $.ajax(settings);
-}
-
-const updateBudget = budgetId => {  
-  const settings = {
-    url: `/api/budget/${budgetId}`,
-    method: 'PUT',
-    contentType: 'application/json',
-    headers: {
-      'Authorization': `Bearer ${STATE.jwt}`
-    },
-    data: JSON.stringify(STATE.budget),
-    success: updateUserWithBudgetId,
-    error: function(err){
-      console.error(err)
-    }
-  };
-
-  $.ajax(settings);
-};
-
-const updateStateWithBudget = budget => {
-  setState({ budget });
-};
-
-const getUserBudget = budgetId => {
-  const settings = {
-    url: `/api/budget/${budgetId}`,
-    method: 'GET',
-    contentType: 'application/json',
-    headers: {
-      'Authorization': `Bearer ${STATE.jwt}`
-    },    
-    success: updateStateWithBudget,
-    error: function(err){
-      console.error('error getting budget', err)
-    }
-  };
-
-  $.ajax(settings);
-};
-
-
-/* ---------- USER REQUESTS: SIGN UP, LOGIN, AUTHENTICATE ---------- */
-
-// REFRESH JWT
-
-const refreshSuccess = token => {
-  console.log('token refreshed');
-  setState(Object.assign({}, STATE, { jwt: token.authToken })); // only have to update jwt token, not the whole user or budget obj 
-};
-
-const refreshJwt = (user) => {
-  const settings = {
-    url: "/api/auth/refresh", 
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify(user),
-    success: refreshSuccess,
-    error: function(err){
-      console.error(err)
-    }
-  };
-
-  $.ajax(settings);
-};
-
-
-
-// FLOW FOR USER TO LOGIN, AUTHENTICATION, AND TOKENIZE 
-
-const loginSuccess = token => {
-  console.log('user signed in and made JWT');
-  setState({ 
-    user: token.user, 
-    jwt: token.authToken,
-    route: 'budgetPage' 
-  });
-};
-
-const userLogin = user => {
-  console.log('logging in with', user);
-  const settings = {
-    url: "/api/auth/login", 
-    method: 'POST',
-    data: JSON.stringify(user),
-    contentType: 'application/json',
-    success: loginSuccess,
-    error: function(err){
-      console.error(err)
-    }
-  };
-
-  $.ajax(settings);
-};
-
-
-// FLOW FOR USER SIGN UP 
-
-const createUserSuccess = (newUser, userInfo) => {
-  console.log('user created', newUser, userInfo);
-  userLogin({
-    username: userInfo.username,
-    password: userInfo.password
-  });
-};
-
-const createUser = userInfo => {
-  const settings = {
-    url: "/api/users",
-    data: JSON.stringify(userInfo),
-    contentType: 'application/json',
-    type: 'POST',
-    success: newUser => createUserSuccess(newUser, userInfo),
-    error: function(err){
-      console.error(err);
-    }
-  };
-
-  $.ajax(settings);
-};
-
-/* ---------- EVENT HANDLER HELPERS ---------- */
-
-// uses index for data-index to identify, rather than class
-const deleteItem = (list, index) => {
-  console.log(list);
-  return list.filter((item, i) => i !== index);
-};
-
-/* ---------- EVENT HANDLERS ---------- */
-
-// logout 
-const userLogout = () => {
-  console.log('logout')
-  setState({ 
-    user: {},
-    budget: {
-      costOfLiving: [],
-      totalCost: 0,
-      totalExpenses: 0,
-      weeklyBudget: 0,
-      weeklyItems: [],
-      monthlyBudget: 0
-  },
-    route: 'landingPage',
-    editing: false,
-    jwt: ''
-  })
-}
-
-// saves new/updated budget 
-const budgetSaveHandler = event => {
-  event.preventDefault();
-  if(STATE.user.budget){
-    console.log('updating budget');
-    updateBudget(STATE.user.budget);
-  } else {
-    console.log('creating new budget');
-    createBudget();
-  }
-};
-
-const weeklyItemsHandler = event => {
-  event.preventDefault();
-  const userInputItem = $('input[name="add-input-item"]').val();
-  const userInputAmount = $('input[name="add-input-amount"]').val();
-  
-  if (!!userInputItem && !!userInputAmount){
-    setBudget({
-      weeklyItems: [...STATE.budget.weeklyItems, {item: userInputItem, amount: userInputAmount}]
-    });
-  } else {
-    alert("You can't leave fields blank");
-  }  
-};
-
-const monthlyBudgetHandler = event => {  
-  event.preventDefault();
-  const monthlyBudget = $('input[name="add-monthly-input"]').val();
-  
-  if (!!monthlyBudget){
-    setBudget({ monthlyBudget });
-  } else {
-    alert("You can't leave fields blank");
-  }
-}
-
-const costOfLivingHandler = event => {
-  event.preventDefault();
-  const userInputItem = $('input[name="cost-input-item"]').val(); 
-  const userInputAmount = $('input[name="cost-input-amount"]').val();
-  
-  if (!!userInputItem && !!userInputAmount){
-    setBudget({ 
-      costOfLiving: [...STATE.budget.costOfLiving, {item: userInputItem, amount: userInputAmount}]
-    });
-  } else {
-    alert("You can't leave fields blank");
-  }
-
-}
-
-const deleteItemHandler = event => {
-  event.preventDefault();
-  const toDelete = $(event.target);
-  const type = toDelete.data('type');
-  const selected = toDelete.data('item-index');
-  console.log('target', event.target, 'type', type, 'selected', selected)
-  
-  setBudget({
-    [type]: deleteItem(STATE.budget[type], selected) // args: list, index
-  });
-}
-
-const userSignUpHandler = event => {
-  event.preventDefault();
-  const user = {
-    email: $('input[name="email-input').val(),
-    username: $('input[name="username-input').val(),
-    password: $('input[name="password-input').val(),
-    lastName: $('input[name="last-name-input').val(),
-    firstName: $('input[name="first-name-input').val()
-  };
-  if (user.username && user.password && user.email){
-    createUser(user);
-  } else {
-    alert("Please fill in all fields")
-  }
-
-};
-
-const userLoginHandler = event => {
-  event.preventDefault();
-  const user = {
-    username: $('input[name="username-login-input"]').val(),
-    password: $('input[name="password-login-input"]').val()
-  };
-
-  if (user.username && user.password){
-    userLogin(user);
-  } else {
-    alert("Please fill in both fields")
-  }
-  
-};
-
-/* ---------- RENDER Functions ---------- */
-
-const checkBudget = () => {
-  if (STATE.user.budget && !STATE.budget.id) {
-    getUserBudget(STATE.user.budget);
-  } else {
-    renderBudgetPage();
-  }
-};
-
-const checkForUser = () => {
-  if (STATE.user.id) {
-    setState({ route: 'budgetPage' })
-  };
-
-  render();
-};
-
-const renderLoginPage = () => {
-  $('#page').html('');
-  $('#page').append(langingPageText, userActionForms);
-}
-
-const renderBudgetPage = () => {
-  $('page').html('');
-  const budgetTemplate = createBudgetPage();
-  $('#page').html(budgetTemplate);
-};
-
-const render = () => {
-  if (STATE.route === 'landingPage') {
-    renderLoginPage()
-  } else if (STATE.route === 'budgetPage') {
-    checkBudget()
-  }
 };
 
 /* ---------- LISTENERS ----------*/
