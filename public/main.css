@@ -65,3 +65,8 @@ footer {
   text-align: center;
   color: yellow;
 }
+
+#budget-success {
+  margin: auto;
+  text-align-last: center;
+}

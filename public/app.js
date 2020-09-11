@@ -19,7 +19,6 @@ const STATE = {
 const setState = (newItem, currentState=STATE) => {
   const newState = Object.assign({}, currentState, newItem);
   Object.assign(currentState, newState);
-  console.loog(newState)
 
   render();  // by putting this here, you do not need to specifically call a rerender after each action
 };
@@ -116,6 +115,10 @@ const createBudgetPage = () => {
     costOfLiving,
     monthlyBudget
   } = STATE.budget;
+
+  if (STATE.user.id) {
+    getUserBudget(STATE.user.budget);
+  }
 
   const weeklyTotal = getTotal(weeklyItems);
                                     // data-type
@@ -350,20 +353,30 @@ const deleteItem = (list, index) => {
 /* ---------- EVENT HANDLERS ---------- */
 
 // logout 
-
 const userLogout = () => {
   console.log('logout')
   setState({ 
-    route: 'landingPage',
     user: {},
-    budget: {},
-    jwt: '' 
+    budget: {
+      costOfLiving: [],
+      totalCost: 0,
+      totalExpenses: 0,
+      weeklyBudget: 0,
+      weeklyItems: [],
+      monthlyBudget: 0
+  },
+    route: 'landingPage',
+    editing: false,
+    jwt: ''
   })
 }
 
 // saves new/updated budget 
 const budgetSaveHandler = event => {
   event.preventDefault();
+  toastr.success('Saved', 'Success!', {
+    containerId: 'budget-success',
+  })
   if(STATE.user.budget){
     console.log('updating budget');
     updateBudget(STATE.user.budget);
@@ -434,8 +447,12 @@ const userSignUpHandler = event => {
     lastName: $('input[name="last-name-input').val(),
     firstName: $('input[name="first-name-input').val()
   };
+  if (user.username && user.password && user.email){
+    createUser(user);
+  } else {
+    alert("Please fill in all fields")
+  }
 
-  createUser(user);
 };
 
 const userLoginHandler = event => {
