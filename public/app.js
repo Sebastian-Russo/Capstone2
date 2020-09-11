@@ -141,7 +141,7 @@ const createBudgetPage = () => {
 
         <div id="weekly-budget-container" class="section-container-2">
           <h3>Weekly "Spending Money"</h3>
-          <div>$${monthlyBudget - costOfLivingTotal}</div>
+          <div class="total">$${monthlyBudget - costOfLivingTotal}</div>
         </div>
       </div>
 
@@ -355,6 +355,14 @@ const deleteItem = (list, index) => {
 
 /* ---------- EVENT HANDLERS ---------- */
 
+const landingPage = () => {
+  setState({route: 'landingPage'})
+}
+
+const budgetPage = () => {
+  setState({route: 'budgetPage'})
+}
+
 // logout 
 const userLogout = () => {
   console.log('logout')
@@ -510,7 +518,8 @@ const render = () => {
 /* ---------- LISTENERS ----------*/
 
 // click events
-
+$('body').on('click', '#nav-button-about', () => landingPage());
+$('body').on('click', '#nav-button-budget', () => budgetPage());
 $('body').on('click', '#logout', () => userLogout());
 $('body').on('click', '#save-budget', event => budgetSaveHandler(event));
 $('body').on('click', '.delete-button', event => deleteItemHandler(event));
