@@ -11,12 +11,13 @@ const jsonParser = bodyParser.json();
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'email'];
   const missingField = requiredFields.find(field => !(field in req.body));
+  console.log(missingField)
 
   if (missingField) {
     return res.status(422).json({
       code: 422,
       reason: 'ValidationError',
-      message: 'Missing field',
+      message: `Missing field`,
       location: missingField
     });
   }
@@ -25,12 +26,13 @@ router.post('/', jsonParser, (req, res) => {
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
+  console.log(nonStringField)
 
   if (nonStringField) {
     return res.status(422).json({
       code: 422,
       reason: 'ValidationError',
-      message: 'Incorrect field type: expected string',
+      message: `Incorrect field type: expected string`,
       location: nonStringField
     });
   }
@@ -39,6 +41,7 @@ router.post('/', jsonParser, (req, res) => {
   const nonTrimmedField = explicityTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
+  console.log(nonTrimmedField)
 
   if (nonTrimmedField) {
     return res.status(422).json({
@@ -54,7 +57,7 @@ router.post('/', jsonParser, (req, res) => {
       min: 2
     },
     password: {
-      min: 8,
+      min: 10,
       max: 72
     }
   };
@@ -114,6 +117,7 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(user => { 
       // `.serialize()` creates an id after obj was created
+      console.log(user)
       return res.status(201).json(user.serialize());
     })
     .catch(err => {

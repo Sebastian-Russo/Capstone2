@@ -65,9 +65,7 @@ function generateWeeklyItems() {
     return weeklyItems[Math.floor(Math.random() * weeklyItems.length)]
 }
 
-// generate an object represnting a restaurant.
-// can be used to generate seed data for db
-// or request.body data
+// generate an object representing a budget for db and req.body
 function generateBudgetData() {
     return {
         monthlyBudget: generateMonthlyBudget(),
@@ -77,14 +75,10 @@ function generateBudgetData() {
     };
 }
 
-// this function deletes the entire database. we'll call it in an `afterEach` block below to ensure data from one test does not stick around for next one
 function tearDownDb() {
     console.warn('Deleting database');
     return mongoose.connection.dropDatabase();
 }
-
-
-
 
 
 describe('/api/budget', function() {

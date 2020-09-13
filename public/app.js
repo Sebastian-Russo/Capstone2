@@ -463,22 +463,26 @@ const langingPageText = (`
   <div class="container" id="landing-page-text">
     <h2>Welcome</h2>
     <p>
-      Here's your simple budget calculator to help you stay on track with your budget and monetary goals. List all your fixed bills you have each month; your "cost of living." This allows you to put aside that money already. 
+      Welcome to the ultimate budget and saving calculator to help keep track your daily, weekly, and monthy, short term budget goals with 4 simple steps. 
       <br>
       <br>
+      <span class="special-words">First</span>, simply add in your monthly income after taxes. (What you actually get to keep).
+      <br>
+      <br>
+      <span class="special-words">Second</span>, your "Cost of living" is where you List all your fixed bills you have each month. 
       Examples: savings, rent, car payment, insurance, groceries (if consistent), phone/cable bills, etc. 
       <br>
       <br>
-      Calculate and keep track of what's left. This is your monthly budget, which is your extra "spending money".  
+      <span class="special-words">Third</span>, your "Spending money" is broken down by week. It calculates and keep track of what's left of your monthly income after your fixed "cost of living" items are added in. 
       <br>
-      <br>
-      Your "spending money" is broken down week by week. This can be what you spend for fun, or unoccured expensenes. By adding each item daily for the week, it will help contiously keep track of what you spend your money on. 
+      This is your monthly budget, which is your extra "Spending money". 
+      This is what you have left after your expenses from your cost of living. When you make a purchase, if you log each item daily for the week, then it will help keep track of where your money goes. 
       <br>
       <br> 
-      If you find yourself going over your weekly limit, you can review where your spending habits focus. Then adjust how much you spend on those things, or be honest with yourself and give yourself more weekly spending money from your monthly budget you set for yourself. Or consider to yourself if you can curb habits.
+      <span class="special-words">Fourth</span>, if you find yourself going over your weekly limit, review where your spending habits you've logged each day. 
       <br>
       <br>
-      The first couple weeks are crucial to add each item to build the habit and monitor. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline. Just make sure to adjust either your monthly budget or your spending habits. 
+      Lastly, first couple weeks are crucial to log each purchase to build up a habit and monitor yourself. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline.  
     </p>
   </div>
 `);

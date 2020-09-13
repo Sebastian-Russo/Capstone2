@@ -17,10 +17,12 @@ chai.use(chaiHttp);
 describe("Users endpoint", function() {
   const username = "exampleUser";
   const password = "examplePass";
+  const email = "example@gmail.com"
   const firstName = "Example";
   const lastName = "User";
   const usernameB = "exampleUserB";
   const passwordB = "examplePassB";
+  const emailB = "exampleB@gmail.com";
   const firstNameB = "ExampleB";
   const lastNameB = "UserB";
 
@@ -38,7 +40,8 @@ describe("Users endpoint", function() {
     return User.remove({});
   });
 
-  describe("POST", function() {
+  describe("POST endpoint", function() {
+
     it("Should reject users with missing username", function() {
       return chai
         .request(app)
@@ -46,7 +49,8 @@ describe("Users endpoint", function() {
         .send({
           password,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -69,7 +73,8 @@ describe("Users endpoint", function() {
         .send({
           username,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -93,7 +98,8 @@ describe("Users endpoint", function() {
           username: 1234,
           password,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -119,7 +125,8 @@ describe("Users endpoint", function() {
           username,
           password: 1234,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -145,7 +152,8 @@ describe("Users endpoint", function() {
           username,
           password,
           firstName: 1234,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -171,7 +179,8 @@ describe("Users endpoint", function() {
           username,
           password,
           firstName,
-          lastName: 1234
+          lastName: 1234,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -196,7 +205,8 @@ describe("Users endpoint", function() {
           username: ` ${username} `,
           password,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -222,7 +232,8 @@ describe("Users endpoint", function() {
           username,
           password: ` ${password} `,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -248,7 +259,8 @@ describe("Users endpoint", function() {
           username: "",
           password,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -260,7 +272,7 @@ describe("Users endpoint", function() {
           expect(res).to.have.status(422);
           expect(res.body.reason).to.equal("ValidationError");
           expect(res.body.message).to.equal(
-            "Must be at least 1 characters long"
+            "Must be at least 2 characters long"
           );
           expect(res.body.location).to.equal("username");
         });
@@ -274,7 +286,8 @@ describe("Users endpoint", function() {
           username,
           password: "123456789",
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -300,7 +313,8 @@ describe("Users endpoint", function() {
           username,
           password: new Array(73).fill("a").join(""),
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(() => expect.fail(null, null, "Request should not succeed"))
         .catch(err => {
@@ -324,7 +338,8 @@ describe("Users endpoint", function() {
         username,
         password,
         firstName,
-        lastName
+        lastName,
+        email
       })
         .then(() =>
           // Try to create a second user with the same username
@@ -335,7 +350,8 @@ describe("Users endpoint", function() {
               username,
               password,
               firstName,
-              lastName
+              lastName,
+              email
             })
         )
         .then(() => expect.fail(null, null, "Request should not succeed"))
@@ -360,18 +376,19 @@ describe("Users endpoint", function() {
           username,
           password,
           firstName,
-          lastName
+          lastName,
+          email
         })
         .then(res => {
+          console.log('server res.body', res.body)
           expect(res).to.have.status(201);
           expect(res.body).to.be.an("object");
-          expect(res.body).to.have.keys("username", "firstName", "lastName");
+          expect(res.body).to.have.keys("username", "firstName", "lastName", "email", "id", "budget");
           expect(res.body.username).to.equal(username);
           expect(res.body.firstName).to.equal(firstName);
           expect(res.body.lastName).to.equal(lastName);
-          return User.findOne({
-            username
-          });
+          expect(res.body.email).to.equal(email);
+          return User.findOne({ username });
         })
         .then(user => {
           expect(user).to.not.be.null;
@@ -391,13 +408,14 @@ describe("Users endpoint", function() {
         .send({
           username,
           password,
+          email,
           firstName: ` ${firstName} `,
           lastName: ` ${lastName} `
         })
         .then(res => {
           expect(res).to.have.status(201);
           expect(res.body).to.be.an("object");
-          expect(res.body).to.have.keys("username", "firstName", "lastName");
+          expect(res.body).to.have.keys("username", "firstName", "lastName", "id", "budget");
           expect(res.body.username).to.equal(username);
           expect(res.body.firstName).to.equal(firstName);
           expect(res.body.lastName).to.equal(lastName);
@@ -431,13 +449,17 @@ describe("Users endpoint", function() {
           username,
           password,
           firstName,
-          lastName
+          lastName,
+          email
+        
         },
         {
           username: usernameB,
           password: passwordB,
           firstName: firstNameB,
-          lastName: lastNameB
+          lastName: lastNameB,
+          email: emailB
+
         }
       )
         .then(() => chai.request(app).get("/api/users"))
@@ -448,12 +470,16 @@ describe("Users endpoint", function() {
           expect(res.body[0]).to.deep.equal({
             username,
             firstName,
-            lastName
+            lastName,
+            email
+          
           });
           expect(res.body[1]).to.deep.equal({
             username: usernameB,
             firstName: firstNameB,
-            lastName: lastNameB
+            lastName: lastNameB,
+            email: emailB
+          
           });
         });
     });

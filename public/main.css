@@ -155,6 +155,10 @@ footer {
   text-align-last: center;
 }
 
+.special-words {
+  font-weight: 500;
+  color: red;
+}
 
 @media only screen and (max-width: 600px) {
   body {
