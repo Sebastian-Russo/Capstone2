@@ -17,6 +17,7 @@ describe('Auth endpoints', function () {
   const password = 'examplePass';
   const firstName = 'Example';
   const lastName = 'User';
+  const email = 'Example@gmail.com';
 
   before(function () {
     return runServer(TEST_DATABASE_URL);
@@ -32,7 +33,8 @@ describe('Auth endpoints', function () {
         username,
         password,
         firstName,
-        lastName
+        lastName,
+        email
       })
     );
   });

@@ -40,7 +40,7 @@ describe("Users endpoint", function() {
     return User.remove({});
   });
 
-  describe("POST endpoint", function() {
+  describe("USERS endpoint", function() {
 
     it("Should reject users with missing username", function() {
       return chai

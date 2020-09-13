@@ -81,7 +81,7 @@ function tearDownDb() {
 }
 
 
-describe('/api/budget', function() {
+describe('Budget endpoints', function() {
 
     before(function () {
         return runServer(TEST_DATABASE_URL);
@@ -96,7 +96,7 @@ describe('/api/budget', function() {
     });
 
     after(function () {
-    return closeServer();
+        return closeServer();
     });
 
 
