@@ -75,6 +75,7 @@ router.post("/", jwtAuth, jsonParser, (req, res) => {
 
 
 router.put('/:id', jwtAuth, jsonParser, (req, res) => {
+    console.log('POST REQUEST FROM SERVER', req.params.id, req.body)
     if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
         const message = (`Request path id (${req.params.id}) and request body id (${req.body.id}) must match`)
         console.error(message);
@@ -83,8 +84,9 @@ router.put('/:id', jwtAuth, jsonParser, (req, res) => {
 
     const toUpdate = {};
     const updateableFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]
-    
+
     updateableFields.forEach(field => {
+        console.log('updatable fields', field, req.body, toUpdate)
         if (field in req.body) {
             toUpdate[field] = req.body[field];
         }
