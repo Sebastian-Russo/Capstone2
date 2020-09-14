@@ -110,7 +110,7 @@ router.post('/', jsonParser, (req, res) => {
         email,
         firstName,
         lastName
-      });
+      })
     })
     .then(user => { 
       // `.serialize()` creates an id after obj was created
@@ -124,7 +124,6 @@ router.post('/', jsonParser, (req, res) => {
       res.status(500).json({code: 500, message: 'Internal server error'});
     });
 });
-
 
 
 router.put('/:id', jsonParser, (req, res) => {

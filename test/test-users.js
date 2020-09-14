@@ -445,7 +445,6 @@ describe("Users endpoint", function() {
     
 
     it("Should return an array of users", function() {
-      console.log('RES', userId, res.body)
       return User.create(
         {
           username,
@@ -462,16 +461,8 @@ describe("Users endpoint", function() {
           email: emailB
         }
       )
-        .then((res) => {
-          console.log(res.body)
-          userId = res.body.id;
-            chai
-              .request(app)
-              .get("/api/users")
-        })
+        .then(() => chai.request(app).get("/api/users"))
         .then(res => {
-          console.log(res.body)
-          userId = res.body.id;
           expect(res).to.have.status(200);
           expect(res.body).to.be.an("array");
           expect(res.body).to.have.length(2);
@@ -480,6 +471,7 @@ describe("Users endpoint", function() {
             firstName,
             lastName,
             email,
+            budget: "",
             id: res.body[0].id
           })
           expect(res.body[1]).to.deep.equal({
@@ -487,6 +479,7 @@ describe("Users endpoint", function() {
             firstName: firstNameB,
             lastName: lastNameB,
             email: emailB,
+            budget: "",
             id: res.body[1].id
           });
         });

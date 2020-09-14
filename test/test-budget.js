@@ -15,7 +15,6 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 
-// generate placeholder values and then we insert that data into mongo
 // function seedBudgetData() {
 //     console.info('seeding budget data');
 //     const seedData = [];
@@ -28,6 +27,7 @@ chai.use(chaiHttp);
 
 
 let authToken;
+let budgetId;
 
 // used to generate data to put in db
 function generateMonthlyBudget() {
@@ -76,35 +76,51 @@ function generateBudgetData() {
 }
 
 
-function seedBudgetData(userId) {
-    console.info('seeding budget data');
+function seedUserData(userId) {
+    console.info('THIRD seeding user data');
     const budgetData = generateBudgetData();
-    budgetData.id = userId;
+    console.log('FOURTH BUDGET DATA', budgetData, userId)
+    budgetData.id = userId
         return chai.request(app)
             .post(`/api/budget/`)
             .set('Authorization', `Bearer ${authToken}`)
             .send(budgetData)
             .then(res => {
-                budgetId = res.body._id,
+                budgetId = res.body.id,
                 authToken = res.body.authToken,
-                console.log('BUDGET DATA', budgetData, res.body, 'budgetData.id is', budgetData.id)
+                console.log('FIFTH BUDGET DATA', res.body, 'budgetData.id is', budgetId)
             })
             .catch(err => console.log(err))
 }
 
-// function logUserIn() {
-//     console.info('logging in')
-//     return chai.request(app) 
-//         .post('/api/auth/login')  
-//         .send({username: 'username', password: 'password12'}) 
-//         .then(res => {   
-//             authToken = res.body.authToken, 
-//             userId = res.body.id,  
-//             seedBudgetData(userId)  
-//         })
-//         .catch(err => console.log(err))  
-// }
+function logUserIn() {
+    console.info('SECOND logging in')
+    return chai.request(app) 
+        .post('/api/auth/login')  
+        .send({username: 'username', password: 'password12'}) 
+        .then(res => {   
+            authToken = res.body.authToken, 
+            userId = res.body.id,  
+            console.log('AUTH TOKEN AND USER ID', authToken, userId)
+            seedUserData(userId)  
+        })
+        .catch(err => console.log(err))  
+}
 
+function createMockUser() {
+    console.info('FIRST creating mock user')
+    return chai.request(app)
+        .post('/api/users/')
+        .send({
+            username: 'username', 
+            password: 'password12',
+            firstName: 'firstName',
+            lastName: 'lastName',
+            email: 'email@gmail.com'
+        })
+        .then(() => logUserIn())
+        .catch(err => console.log(err))
+}
 
 
 function tearDownDb() {
@@ -119,7 +135,7 @@ describe('Budget endpoints', function() {
     });
     
     beforeEach(function() {
-        return seedBudgetData();
+        return seedUserData() && createMockUser();
     });
 
     afterEach(function() {
