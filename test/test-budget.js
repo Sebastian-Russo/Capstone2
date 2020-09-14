@@ -27,8 +27,11 @@ chai.use(chaiHttp);
 
 
 let authToken;
-let budgetId;
+let user;
 let userId; 
+let budget;
+let budgetId;
+
 
 // used to generate data to put in db
 function generateMonthlyBudget() {
@@ -75,18 +78,35 @@ function generateBudgetData() {
         weeklyItems: generateWeeklyItems()
     };
 }
+// SeedBudgetData should call a function that makes a put request 
+// to update the user with the newly created budgetId
+function updateUserWithBudget() {
+    console.log('called updateUserWithBudget')
 
+    return chai.request(app)
+        .put(`/api/user/${userId}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+            id: userId,
+            budget: budgetId
+        }) 
+        .then(res => {
+            console.log('UPDATED USER WITH BUDGET IN DB')
+        })
+        .catch(res => console.log(res, 'ERROR HERE'))
+}
 
-function seedBudgetData(userId) {
+function seedBudgetData() {
     const budgetData = generateBudgetData();
-    budgetData.id = userId
         return chai.request(app)
             .post(`/api/budget/`)
             .set('Authorization', `Bearer ${authToken}`)
             .send(budgetData)
             .then(res => {
-                budgetId = res.body.id,
-                authToken = res.body.authToken
+                budget = res.body,
+                budgetId = res.body.id
+                user.budget = budgetId
+                updateUserWithBudget()
             })
             .catch(err => console.log(err))
 }
@@ -98,7 +118,8 @@ function logUserIn() {
         .then(res => {   
             authToken = res.body.authToken, 
             userId = res.body.user.id,  
-            seedBudgetData(userId)  
+            user = res.body
+            seedBudgetData()  
         })
         .catch(err => console.log(err))  
 }
@@ -146,12 +167,12 @@ describe('Budget endpoints', function() {
 
   describe('GET endpoint', function() {
 
-    it('should return all existing budgets', function() {
+    it('Should return all existing budgets', function() {
         let res;
         return chai.request(app)
           .get('/api/budget')
           .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
-          .then(function(_res) {
+          .then(_res => {
               console.log('HERE', _res.body)
               res = _res;
               expect(res).to.have.status(200);
@@ -164,7 +185,7 @@ describe('Budget endpoints', function() {
           });
     });
 
-    it('should list items on GET', function() {
+    it('Should list items on GET', function() {
         
         let resBudget;
 
@@ -273,7 +294,7 @@ describe('Budget endpoints', function() {
                 .put(`/api/budget/${budgetId}`)
                 .set('Authorization', `Bearer ${authToken}`)
                 .send(updatedBudget)
-                .then( res => {
+                .then(res => {
                     console.log('UPDATED RES', res.body)
                     expect(res).to.have.status(204);
                     return Budget.findById(budgetId)
