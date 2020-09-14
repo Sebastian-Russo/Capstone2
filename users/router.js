@@ -11,7 +11,6 @@ const jsonParser = bodyParser.json();
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'email'];
   const missingField = requiredFields.find(field => !(field in req.body));
-  console.log(missingField)
 
   if (missingField) {
     return res.status(422).json({
@@ -26,7 +25,6 @@ router.post('/', jsonParser, (req, res) => {
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
-  console.log(nonStringField)
 
   if (nonStringField) {
     return res.status(422).json({
@@ -41,7 +39,6 @@ router.post('/', jsonParser, (req, res) => {
   const nonTrimmedField = explicityTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
-  console.log(nonTrimmedField)
 
   if (nonTrimmedField) {
     return res.status(422).json({
@@ -117,7 +114,7 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(user => { 
       // `.serialize()` creates an id after obj was created
-      console.log(user)
+      console.log('user got through promise chain and was created', user)
       return res.status(201).json(user.serialize());
     })
     .catch(err => {

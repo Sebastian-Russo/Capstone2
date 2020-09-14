@@ -44,6 +44,7 @@ describe('Auth endpoints', function () {
   });
 
   describe('/api/auth/login', function () {
+
     it('Should reject requests with no credentials', function () {
       return chai
         .request(app)
@@ -77,6 +78,7 @@ describe('Auth endpoints', function () {
           expect(res).to.have.status(401);
         });
     });
+
     it('Should reject requests with incorrect passwords', function () {
       return chai
         .request(app)
@@ -94,6 +96,8 @@ describe('Auth endpoints', function () {
           expect(res).to.have.status(401);
         });
     });
+
+    let id;
     it('Should return a valid auth token', function () {
       return chai
         .request(app)
@@ -107,10 +111,15 @@ describe('Auth endpoints', function () {
           const payload = jwt.verify(token, JWT_SECRET, {
             algorithm: ['HS256']
           });
+          console.log(payload.user)
+          id = payload.user.id;
           expect(payload.user).to.deep.equal({
             username,
             firstName,
-            lastName
+            lastName,
+            email,
+            budget: "", 
+            id
           });
         });
     });
