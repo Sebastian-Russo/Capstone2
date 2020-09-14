@@ -445,6 +445,7 @@ describe("Users endpoint", function() {
     
 
     it("Should return an array of users", function() {
+      console.log('START')
       return User.create(
         {
           username,
@@ -463,6 +464,7 @@ describe("Users endpoint", function() {
       )
         .then(() => chai.request(app).get("/api/users"))
         .then(res => {
+          console.log('THIRD', res.body)
           expect(res).to.have.status(200);
           expect(res.body).to.be.an("array");
           expect(res.body).to.have.length(2);

@@ -28,6 +28,7 @@ chai.use(chaiHttp);
 
 let authToken;
 let budgetId;
+let userId; 
 
 // used to generate data to put in db
 function generateMonthlyBudget() {
@@ -76,10 +77,8 @@ function generateBudgetData() {
 }
 
 
-function seedUserData(userId) {
-    console.info('THIRD seeding user data');
+function seedBudgetData(userId) {
     const budgetData = generateBudgetData();
-    console.log('FOURTH BUDGET DATA', budgetData, userId)
     budgetData.id = userId
         return chai.request(app)
             .post(`/api/budget/`)
@@ -87,28 +86,24 @@ function seedUserData(userId) {
             .send(budgetData)
             .then(res => {
                 budgetId = res.body.id,
-                authToken = res.body.authToken,
-                console.log('FIFTH BUDGET DATA', res.body, 'budgetData.id is', budgetId)
+                authToken = res.body.authToken
             })
             .catch(err => console.log(err))
 }
 
 function logUserIn() {
-    console.info('SECOND logging in')
     return chai.request(app) 
         .post('/api/auth/login')  
         .send({username: 'username', password: 'password12'}) 
         .then(res => {   
             authToken = res.body.authToken, 
-            userId = res.body.id,  
-            console.log('AUTH TOKEN AND USER ID', authToken, userId)
-            seedUserData(userId)  
+            userId = res.body.user.id,  
+            seedBudgetData(userId)  
         })
         .catch(err => console.log(err))  
 }
 
 function createMockUser() {
-    console.info('FIRST creating mock user')
     return chai.request(app)
         .post('/api/users/')
         .send({
@@ -135,7 +130,7 @@ describe('Budget endpoints', function() {
     });
     
     beforeEach(function() {
-        return seedUserData() && createMockUser();
+        return createMockUser();
     });
 
     afterEach(function() {
@@ -155,7 +150,9 @@ describe('Budget endpoints', function() {
         let res;
         return chai.request(app)
           .get('/api/budget')
+          .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
           .then(function(_res) {
+              console.log('HERE', _res.body)
               res = _res;
               expect(res).to.have.status(200);
               expect(res.body.budgets).to.have.lengthOf.at.least(1)
@@ -174,7 +171,9 @@ describe('Budget endpoints', function() {
         return chai
             .request(app)
             .get('/api/budget')
+            .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
             .then(function(res) {
+                console.log('HERE', res.body)
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.budgets).to.be.a("array");
@@ -220,6 +219,7 @@ describe('Budget endpoints', function() {
         // Once we get the response object, we inspect the status code and compare the returned object to the data we sent over.
         .request(app)
         .post('/api/budget')
+        .set('Authorization', `Bearer ${authToken}`)
         .send(newBudgetObj)
         .then(function(res){
             expect(res).to.have.status(201);
@@ -259,38 +259,45 @@ describe('Budget endpoints', function() {
 
   describe('PUT endpoint', function() {
 
-        // strategy:
-        //  1. Get an existing restaurant from db
-        //  2. Make a PUT request to update that restaurant
-        //  3. Prove restaurant returned by request contains data we sent
-        //  4. Prove restaurant in db is correctly updated
-      it('should update budget object', function() {
-          const updateData = generateBudgetData()
-      
-        return Budget  
-            .findOne()
-            .then(function(budget) {
-                updateData.id = budget.id;
-            // make request then inspect it to make sure it reflects data we sent
+      it('Should update the correct recipe by id', function() {
+          const updatedBudget = {
+            "monthlyBudget": 400,
+            "costOfLiving": [ { item: 'rent', amount: 1500 } ],
+            "weeklyBudget": 150,
+            "weeklyItems": [ { item: 'beer', amount: 20 } ],
+            "id": budgetId
+          }
+          console.log('UPATED BUDGET and budgetId', updatedBudget, budgetId)
+ 
             return chai.request(app)
-            .put(`/api/budget/${budget.id}`)
-            .send(updateData);
-            })
-            .then(function(res) {
-                expect(res).to.have.status(200);
+                .put(`/api/budget/${budgetId}`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send(updatedBudget)
+                .then( res => {
+                    console.log('UPDATED RES', res.body)
+                    expect(res).to.have.status(204);
+                    return Budget.findById(budgetId)
+                })
+                .then(recipe => {
+                    expect(recipe.name).to.deep.equal('New Name');
+                    expect(recipe.directions).to.deep.equal('New directions');
+                    expect(recipe.categories).to.deep.equal(['new cat', 'new cat', 'new cat']);
+                    expect(recipe.ingredients).to.deep.equal([ {
+                        'ingredient': 'new ingredient',
+                        'amount': 'new amount'
+                    }])
+                })
 
-                return Budget.findById(updateData.id)
-            })
-            .then(function(budget) {
-                expect(budget.monthlyBudget).to.equal(updateData.monthlyBudget);
-                expect(budget.weeklyBudget).to.equal(updateData.weeklyBudget);
-    
-                expect(budget.costOfLiving.item).to.equal(updateData.costOfLiving.item)
-                expect(budget.costOfLiving.amount).to.equal(updateData.costOfLiving.amount);
-    
-                expect(budget.weeklyItems.item).to.equal(updateData.costOfLiving.item)
-                expect(budget.weeklyItems.amount).to.equal(updateData.costOfLiving.amount)
-            });    
+                // .then( budget => {
+                //     expect(budget.monthlyBudget).to.equal(updatedBudget.monthlyBudget);
+                //     expect(budget.weeklyBudget).to.equal(updatedBudget.weeklyBudget);
+        
+                //     expect(budget.costOfLiving.item).to.equal(updatedBudget.costOfLiving.item)
+                //     expect(budget.costOfLiving.amount).to.equal(updatedBudget.costOfLiving.amount);
+        
+                //     expect(budget.weeklyItems.item).to.equal(updatedBudget.costOfLiving.item)
+                //     expect(budget.weeklyItems.amount).to.equal(updatedBudget.costOfLiving.amount)
+                // });    
       });
 
   });
@@ -301,21 +308,21 @@ describe('Budget endpoints', function() {
    describe('DELETE endpoint', function() {
 
         it('delete a budget object/document by id', function() {
-
           let budget;
-
           return Budget
             .findOne()
             .then(function(_budget) {
                 budget = _budget;
-                return chai.request(app).delete(`/api/budget/${budget.id}`);
+                return chai.request(app)
+                .delete(`/api/budget/${budget.id}`)
+                .set('Authorization', `Bearer ${authToken}`)
             })
             .then(function(res) {
-                expect(res).to.have.status(204);
+                expect(res).to.have.status(204)
                 return Budget.findById(budget.id)
             })
             .then(function(_budget) {
-                expect(_budget).to.be.null;
+                expect(_budget).to.be.null
             });
         });
    });

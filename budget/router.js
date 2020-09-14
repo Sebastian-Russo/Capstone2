@@ -94,7 +94,7 @@ router.put('/:id', jwtAuth, jsonParser, (req, res) => {
 
     Budget
         .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-        .then(updateBudget => res.status(200).json({
+        .then(updateBudget => res.status(204).json({
         id: updateBudget.id,
         monthlyBudget: updateBudget.monthlyBudget,
         costOfLiving: updateBudget.costOfLiving,
