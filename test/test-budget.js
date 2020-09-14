@@ -77,9 +77,46 @@ function tearDownDb() {
     return mongoose.connection.dropDatabase();
 }
 
+// STEP 3
+
+function seedBudgetData(userId) {
+    console.info('seeding budget data');
+    // STEP 2 make user for budget authorization jwt 
+    const budgetData = generateBudgetData();
+    budgetData.id = userId;
+        return chai.request(app)
+            .post(`/api/budget/`)
+            .post('Authorization', `Bearer ${authToken}`)
+            .send(budgetData)
+            .then(res => {
+                budgetId = res.body._id
+                console.log('BUDGET DATA', budgetData, res.body, 'budgetData.id is', budgetData.id)
+            })
+            .catch(err => console.log(err))
+}
+
+function logUserIn() { // STEP 1 make user for budget authorization jwt 
+    console.info('logging in')
+    return chai.request(app)
+        .post('/api/auth/login')
+        .send({
+            username, 
+            password, 
+            email
+        })
+        .then(res => {
+            authToken = res.body.authToken,
+            userId = res.body.id
+            seedRecipeData(userId)
+        })
+        .catch(err => console.log(err))
+}
 
 describe('Budget endpoints', function() {
 
+    let authToken;
+    let userId;
+    
     before(function () {
         return runServer(TEST_DATABASE_URL);
     });
