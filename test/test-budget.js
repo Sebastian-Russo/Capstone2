@@ -16,15 +16,18 @@ chai.use(chaiHttp);
 
 
 // generate placeholder values and then we insert that data into mongo
-function seedBudgetData() {
-    console.info('seeding budget data');
-    const seedData = [];
+// function seedBudgetData() {
+//     console.info('seeding budget data');
+//     const seedData = [];
 
-    for (let i=1; i<10; i++) {
-        seedData.push(generateBudgetData());
-    }
-    return Budget.insertMany(seedData);
-}
+//     for (let i=1; i<10; i++) {
+//         seedData.push(generateBudgetData());
+//     }
+//     return Budget.insertMany(seedData);
+// }
+
+
+let authToken;
 
 // used to generate data to put in db
 function generateMonthlyBudget() {
@@ -72,50 +75,44 @@ function generateBudgetData() {
     };
 }
 
-function tearDownDb() {
-    console.warn('Deleting database');
-    return mongoose.connection.dropDatabase();
-}
-
-// STEP 3
 
 function seedBudgetData(userId) {
     console.info('seeding budget data');
-    // STEP 2 make user for budget authorization jwt 
     const budgetData = generateBudgetData();
     budgetData.id = userId;
         return chai.request(app)
             .post(`/api/budget/`)
-            .post('Authorization', `Bearer ${authToken}`)
+            .set('Authorization', `Bearer ${authToken}`)
             .send(budgetData)
             .then(res => {
-                budgetId = res.body._id
+                budgetId = res.body._id,
+                authToken = res.body.authToken,
                 console.log('BUDGET DATA', budgetData, res.body, 'budgetData.id is', budgetData.id)
             })
             .catch(err => console.log(err))
 }
 
-function logUserIn() { // STEP 1 make user for budget authorization jwt 
-    console.info('logging in')
-    return chai.request(app)
-        .post('/api/auth/login')
-        .send({
-            username, 
-            password, 
-            email
-        })
-        .then(res => {
-            authToken = res.body.authToken,
-            userId = res.body.id
-            seedRecipeData(userId)
-        })
-        .catch(err => console.log(err))
+// function logUserIn() {
+//     console.info('logging in')
+//     return chai.request(app) 
+//         .post('/api/auth/login')  
+//         .send({username: 'username', password: 'password12'}) 
+//         .then(res => {   
+//             authToken = res.body.authToken, 
+//             userId = res.body.id,  
+//             seedBudgetData(userId)  
+//         })
+//         .catch(err => console.log(err))  
+// }
+
+
+
+function tearDownDb() {
+    console.warn('Deleting database');
+    return mongoose.connection.dropDatabase();
 }
 
 describe('Budget endpoints', function() {
-
-    let authToken;
-    let userId;
     
     before(function () {
         return runServer(TEST_DATABASE_URL);
