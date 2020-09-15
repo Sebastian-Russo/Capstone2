@@ -78,20 +78,21 @@ function generateBudgetData() {
         weeklyItems: generateWeeklyItems()
     };
 }
-// SeedBudgetData should call a function that makes a put request 
-// to update the user with the newly created budgetId
-function updateUserWithBudget() {
-    console.log('called updateUserWithBudget')
 
+// update the user with the newly created budgetId
+function updateUserWithBudget() {
+    console.log('START updateUserWithBudget')
+    console.log(userId, budget)
     return chai.request(app)
-        .put(`/api/user/${userId}`)
+        .put(`/api/users/${userId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({
             id: userId,
             budget: budgetId
         }) 
         .then(res => {
-            console.log('UPDATED USER WITH BUDGET IN DB')
+            console.log('updateUserWithBudget RESPONSE BODY', res.body)// does not appear
+            user = res.body;
         })
         .catch(res => console.log(res, 'ERROR HERE'))
 }
@@ -106,7 +107,7 @@ function seedBudgetData() {
                 budget = res.body,
                 budgetId = res.body.id
                 user.budget = budgetId
-                updateUserWithBudget()
+                updateUserWithBudget(res)
             })
             .catch(err => console.log(err))
 }
@@ -118,7 +119,7 @@ function logUserIn() {
         .then(res => {   
             authToken = res.body.authToken, 
             userId = res.body.user.id,  
-            user = res.body
+            user = res.body.user
             seedBudgetData()  
         })
         .catch(err => console.log(err))  
@@ -173,7 +174,7 @@ describe('Budget endpoints', function() {
           .get('/api/budget')
           .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
           .then(_res => {
-              console.log('HERE', _res.body)
+              console.log('RES BODY HERE', _res.body)
               res = _res;
               expect(res).to.have.status(200);
               expect(res.body.budgets).to.have.lengthOf.at.least(1)
@@ -185,16 +186,17 @@ describe('Budget endpoints', function() {
           });
     });
 
-    it('Should list items on GET', function() {
+    it('Should list budgets items on GET', function() {
         
         let resBudget;
 
         return chai
             .request(app)
-            .get('/api/budget')
+            .get('/api/budget/')
             .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
             .then(function(res) {
-                console.log('HERE', res.body)
+                console.log('RES BODY BUDGETS', res, res.body.budgets)
+
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.budgets).to.be.a("array");
@@ -226,12 +228,6 @@ describe('Budget endpoints', function() {
   
     it('should create budget item on POST ', function() {
         
-        // const newItem = { 
-        //     monthlyBudget: 600, 
-        //     costOfLiving: [{item: "rent", amount: 1500}],
-        //     weeklyBudget: 150,
-        //     weeklyItems: [{item: "groceries", amount: 30}]
-        // };
         const newBudgetObj = generateBudgetData();
         let firstItem;
         let firstAmount;
@@ -280,7 +276,7 @@ describe('Budget endpoints', function() {
 
   describe('PUT endpoint', function() {
 
-      it('Should update the correct recipe by id', function() {
+      it.only('Should update the correct recipe by id', function() {
           const updatedBudget = {
             "monthlyBudget": 400,
             "costOfLiving": [ { item: 'rent', amount: 1500 } ],

@@ -83,7 +83,7 @@ router.put('/:id', jwtAuth, jsonParser, (req, res) => {
     }
 
     const toUpdate = {};
-    const updateableFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems"]
+    const updateableFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems", "id"]
 
     updateableFields.forEach(field => {
         console.log('updatable fields', field, req.body, toUpdate)
@@ -91,7 +91,7 @@ router.put('/:id', jwtAuth, jsonParser, (req, res) => {
             toUpdate[field] = req.body[field];
         }
     });
-
+    
     Budget
         .findByIdAndUpdate(req.params.id, {$set: toUpdate})
         .then(updateBudget => res.status(204).json({
