@@ -215,13 +215,6 @@ const createUser = userInfo => {
   $.ajax(settings);
 };
 
-/* ---------- EVENT HANDLER HELPERS ---------- */
-
-// uses index for data-index to identify, rather than class
-// const deleteItem = (list, index) => {
-//   console.log(list);
-//   return list.filter((item, i) => i !== index); 
-// };
 
 /* ---------- EVENT HANDLERS ---------- */
 
@@ -419,11 +412,6 @@ const renderBudgetPage = () => {
 };
 
 const render = () => {
-  // if (STATE.route === 'landingPage') {
-  //   renderLoginPage()
-  // } else if (STATE.route === 'budgetPage') {
-  //   checkBudget()
-  // }
   const budgetId = Cookies.get('budget');
   if (STATE.route === 'budgetPage' || budgetId) {
       console.log('get budget id from cookies', budgetId);
@@ -464,20 +452,20 @@ const langingPageText = (`
         Welcome to the ultimate budget and saving calculator to help keep track your daily, weekly, and monthy, short term budget goals with 4 simple steps. 
         <br>
         <br>
-        <span class="special-words">First</span>, simply add in your monthly income after taxes. (What you actually get to keep).
+        <span class="landing-text">First</span>, simply add in your monthly income after taxes. (What you actually get to keep).
         <br>
         <br>
-        <span class="special-words">Second</span>, your "Cost of living" is where you List all your fixed bills you have each month. 
+        <span class="landing-text">Second</span>, your "Cost of living" is where you List all your fixed bills you have each month. 
         Examples: savings, rent, car payment, insurance, groceries (if consistent), phone/cable bills, etc. 
         <br>
         <br>
-        <span class="special-words">Third</span>, your "Spending money" is broken down by week. It calculates and keep track of what's left of your monthly income after your fixed "cost of living" items are added in. 
+        <span class="landing-text">Third</span>, your "Spending money" is broken down by week. It calculates and keep track of what's left of your monthly income after your fixed "cost of living" items are added in. 
         <br>
         This is your monthly budget, which is your extra "Spending money". 
         This is what you have left after your expenses from your cost of living. When you make a purchase, if you log each item daily for the week, then it will help keep track of where your money goes. 
         <br>
         <br> 
-        <span class="special-words">Fourth</span>, if you find yourself going over your weekly limit, review where your spending habits you've logged each day. 
+        <span class="landing-text">Fourth</span>, if you find yourself going over your weekly limit, review where your spending habits you've logged each day. 
         <br>
         <br>
         Lastly, first couple weeks are crucial to log each purchase to build up a habit and monitor yourself. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline.  
@@ -524,10 +512,6 @@ const createBudgetPage = () => {
     costOfLiving,
     monthlyBudget
   } = STATE.budget;
-
-  // if (STATE.user.id) {
-  //   getUserBudget(STATE.user.budget);
-  // }
 
   const weeklyTotal = getTotal(weeklyItems);
                                     // data-type

@@ -4,10 +4,6 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-// schema for user
-// whole job for frontend user creation
-// sign up has to get username, password, first name, last name, email
-
 
 const UserSchema = mongoose.Schema({
   username: {

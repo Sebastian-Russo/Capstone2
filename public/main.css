@@ -15,8 +15,6 @@ header{
     text-align: center;
     font-size: 200%;
     color: white;
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
 }
 
 .container {
@@ -62,7 +60,7 @@ header{
 
 
 h3{
-  color: blue ;
+  color: rgb(121, 201, 255);
   text-align: center;
 }
 
@@ -72,7 +70,8 @@ button {
   outline:none;
   box-shadow: none;
   border: none;
-  box-shadow: 2px 4px;
+  border-radius: 25px;
+  box-shadow: 1px 2px;
   padding: 5px;;
   margin: 10px;
 }
@@ -80,6 +79,10 @@ button:hover {
   background-color: white;
   color: grey;
   transition: all .4s ease-in-out;
+}
+
+input {
+  border-radius: 25px;
 }
 
 ul {
@@ -160,9 +163,9 @@ footer {
   text-align-last: center;
 }
 
-.special-words {
+.landing-text {
   font-weight: 500;
-  color: red;
+  color: yellow;
 }
 
 @media only screen and (max-width: 600px) {

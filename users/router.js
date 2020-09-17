@@ -20,7 +20,7 @@ router.post('/', jsonParser, (req, res) => {
       location: missingField
     });
   }
-  // We then check that all of the fields are strings:
+
   const stringFields = ['username', 'password', 'firstName', 'lastName', 'email'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
@@ -162,7 +162,7 @@ router.get('/', (req, res) => {
 
 router.get("/:id", (req, res) => {
   User
-    .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
+    .findById(req.params.id) 
     .then(user => {
       res.json({
       id: user._id,

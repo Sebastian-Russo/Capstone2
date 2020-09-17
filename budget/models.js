@@ -3,9 +3,6 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-// const itemSchema = mongoose.Schema({ item: String })
-// const amountSchema = mongoose.Schema({ amount: Number })
-
 const budgetSchema = mongoose.Schema({
     monthlyBudget: { type: Number, required: true },
     costOfLiving: [

@@ -1,5 +1,6 @@
 'use strict';
-require('dotenv').config(); //
+
+require('dotenv').config(); 
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
@@ -35,17 +36,15 @@ app.use(passport.initialize()); // middleware function that has access to req/re
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-// made `localStrategy()` in `strategies.js` to use in a route
-app.use('/api/users/', usersRouter);
+app.use('/api/budget/', budgetRouter); // 1st arg is the name of the url path for the second arg, 2nd arg is the name for the router, named on line 9 
+app.use('/api/users/', usersRouter); // made `localStrategy()` in `strategies.js` to use in a route
 app.use('/api/auth/', authRouter);
-// first arg is the name of the url path for the second arg
-// second arg is the name for the router, named on line 9 
-app.use('/api/budget/', budgetRouter);
 
 // catch all endpoints 
 app.use('*', (req, res) => {
     return res.status(404).json({ message: 'Not Found' });
 });
+
 
 let server;
 

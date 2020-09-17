@@ -2,7 +2,6 @@
 require('dotenv').config(); //
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const faker = require('faker');
 const mongoose = require('mongoose');
 const { TEST_DATABASE_URL } = require('../config');
 
@@ -168,7 +167,6 @@ describe('Budget endpoints', function() {
                 const res = err.response;  // set err to res
                 console.log('res.test', res.test, res.body)
                 expect(res).to.have.status(401); // assertion, expect specific status 
-                // expect(res.test).to.equal('Unauthorized') // assserts that target is strictly (===) equal to val 
             });
     })
 
@@ -225,6 +223,7 @@ describe('Budget endpoints', function() {
     });
   });
 
+
   describe('POST endpoint', function() {
   
     it ('should create budget item on POST ', function() {
@@ -248,16 +247,8 @@ describe('Budget endpoints', function() {
             expect(res.body.monthlyBudget).to.equal(newBudgetObj.monthlyBudget);
             expect(res.body.weeklyBudget).to.equal(newBudgetObj.weeklyBudget);
 
-            // firstItem = newBudgetObj.weeklyItems.items.sort((a, b) => b.date - a.date)[0].item;
-            // firstAmount = newBudgetObj.weeklyItems.amount.sort((a, b) => b.date - a.date)[0].amount;
-
-            // expect(res.body.weeklyItems.items).to.equal(firstItem);
-            // expect(res.body.weeklyItems.amount).to.equal(firstAmount);
-
-
             return Budget.findById(res.body.id);
         })
-        // After that, we retrieve the new budget from the DB and compare its data to the data we sent over.
         .then(function(budget) {
             expect(budget.monthlyBudget).to.equal(newBudgetObj.monthlyBudget);
             expect(budget.weeklyBudget).to.equal(newBudgetObj.weeklyBudget);
@@ -271,8 +262,6 @@ describe('Budget endpoints', function() {
     });
   });
 
-
-/// PUT endpoint ///
 
   describe('PUT endpoint', function() {
 
@@ -306,8 +295,6 @@ describe('Budget endpoints', function() {
       });
 
   });
-
-
 
 
    describe('DELETE endpoint', function() {

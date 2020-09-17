@@ -25,7 +25,7 @@ router.get("/", jwtAuth, (req, res) => {
         });
 });
 
-// can also request by ID
+
 router.get("/:id", jwtAuth, (req, res) => {
     Budget
       .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
