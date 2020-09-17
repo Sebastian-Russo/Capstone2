@@ -14,18 +14,6 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-
-// function seedBudgetData() {
-//     console.info('seeding budget data');
-//     const seedData = [];
-
-//     for (let i=1; i<10; i++) {
-//         seedData.push(generateBudgetData());
-//     }
-//     return Budget.insertMany(seedData);
-// }
-
-
 let authToken;
 let user;
 let userId; 
@@ -81,8 +69,6 @@ function generateBudgetData() {
 
 // update the user with the newly created budgetId
 function updateUserWithBudget() {
-    console.log('START updateUserWithBudget')
-    console.log(userId, budget)
     return chai.request(app)
         .put(`/api/users/${userId}`)
         .set('Authorization', `Bearer ${authToken}`)
@@ -91,10 +77,10 @@ function updateUserWithBudget() {
             budget: budgetId
         }) 
         .then(res => {
-            console.log('updateUserWithBudget RESPONSE BODY', res.body)// does not appear
             user = res.body;
+            return
         })
-        .catch(res => console.log(res, 'ERROR HERE'))
+        .catch(err => console.log(err.message))
 }
 
 function seedBudgetData() {
@@ -107,7 +93,7 @@ function seedBudgetData() {
                 budget = res.body,
                 budgetId = res.body.id
                 user.budget = budgetId
-                updateUserWithBudget(res)
+                return updateUserWithBudget(res)
             })
             .catch(err => console.log(err))
 }
@@ -120,7 +106,7 @@ function logUserIn() {
             authToken = res.body.authToken, 
             userId = res.body.user.id,  
             user = res.body.user
-            seedBudgetData()  
+            return seedBudgetData()  
         })
         .catch(err => console.log(err))  
 }
@@ -164,9 +150,27 @@ describe('Budget endpoints', function() {
     });
 
 
-
-
   describe('GET endpoint', function() {
+
+    it ('Should reject unauthorized requests', () => {
+        return chai.request(app)    // http request, returned as a promise
+            .get(`/api/budget/${budgetId}`) // chained GET method, path with userId (global var)
+            .set('Authorization', 'Bearer IamAuthorized') // set header, key/value pair (value purposely incorrect here)
+            .then((res) => {
+                console.log('RESPONSE BODY here', res.body)
+                expect.fail(null, null, "Request should not succeed")
+            })          
+            .catch(err => {
+                console.log('initial error', err)
+                if (err instanceof chai.AssertionError) { // ??? Asserts that the target is an instance of the given constructor
+                    throw err;
+                }
+                const res = err.response;  // set err to res
+                console.log('res.test', res.test, res.body)
+                expect(res).to.have.status(401); // assertion, expect specific status 
+                // expect(res.test).to.equal('Unauthorized') // assserts that target is strictly (===) equal to val 
+            });
+    })
 
     it('Should return all existing budgets', function() {
         let res;
@@ -174,7 +178,6 @@ describe('Budget endpoints', function() {
           .get('/api/budget')
           .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
           .then(_res => {
-              console.log('RES BODY HERE', _res.body)
               res = _res;
               expect(res).to.have.status(200);
               expect(res.body.budgets).to.have.lengthOf.at.least(1)
@@ -195,8 +198,6 @@ describe('Budget endpoints', function() {
             .get('/api/budget/')
             .set('Authorization', `Bearer ${authToken}`) // set head, key/value pair 
             .then(function(res) {
-                console.log('RES BODY BUDGETS', res, res.body.budgets)
-
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body.budgets).to.be.a("array");
@@ -226,14 +227,13 @@ describe('Budget endpoints', function() {
 
   describe('POST endpoint', function() {
   
-    it('should create budget item on POST ', function() {
+    it ('should create budget item on POST ', function() {
         
         const newBudgetObj = generateBudgetData();
         let firstItem;
         let firstAmount;
 
         return chai
-        // Once we get the response object, we inspect the status code and compare the returned object to the data we sent over.
         .request(app)
         .post('/api/budget')
         .set('Authorization', `Bearer ${authToken}`)
@@ -248,10 +248,10 @@ describe('Budget endpoints', function() {
             expect(res.body.monthlyBudget).to.equal(newBudgetObj.monthlyBudget);
             expect(res.body.weeklyBudget).to.equal(newBudgetObj.weeklyBudget);
 
-            // firstItem = newBudgetObj.weeklyItems.item.sort((a, b) => b.date - a.date)[0].item;
-            // firstAmount =newBudgetObj.weeklyItems.amount.sort((a, b) => b.date - a.date)[0].amount;
+            // firstItem = newBudgetObj.weeklyItems.items.sort((a, b) => b.date - a.date)[0].item;
+            // firstAmount = newBudgetObj.weeklyItems.amount.sort((a, b) => b.date - a.date)[0].amount;
 
-            // expect(res.body.weeklyItems.item).to.equal(firstItem);
+            // expect(res.body.weeklyItems.items).to.equal(firstItem);
             // expect(res.body.weeklyItems.amount).to.equal(firstAmount);
 
 
@@ -276,7 +276,7 @@ describe('Budget endpoints', function() {
 
   describe('PUT endpoint', function() {
 
-      it.only('Should update the correct recipe by id', function() {
+      it ('Should update the correct recipe by id', function() {
           const updatedBudget = {
             "monthlyBudget": 400,
             "costOfLiving": [ { item: 'rent', amount: 1500 } ],
@@ -284,37 +284,25 @@ describe('Budget endpoints', function() {
             "weeklyItems": [ { item: 'beer', amount: 20 } ],
             "id": budgetId
           }
-          console.log('UPATED BUDGET and budgetId', updatedBudget, budgetId)
  
             return chai.request(app)
                 .put(`/api/budget/${budgetId}`)
                 .set('Authorization', `Bearer ${authToken}`)
                 .send(updatedBudget)
                 .then(res => {
-                    console.log('UPDATED RES', res.body)
                     expect(res).to.have.status(204);
                     return Budget.findById(budgetId)
                 })
-                .then(recipe => {
-                    expect(recipe.name).to.deep.equal('New Name');
-                    expect(recipe.directions).to.deep.equal('New directions');
-                    expect(recipe.categories).to.deep.equal(['new cat', 'new cat', 'new cat']);
-                    expect(recipe.ingredients).to.deep.equal([ {
-                        'ingredient': 'new ingredient',
-                        'amount': 'new amount'
-                    }])
-                })
-
-                // .then( budget => {
-                //     expect(budget.monthlyBudget).to.equal(updatedBudget.monthlyBudget);
-                //     expect(budget.weeklyBudget).to.equal(updatedBudget.weeklyBudget);
+                .then( budget => {
+                    expect(budget.monthlyBudget).to.equal(updatedBudget.monthlyBudget);
+                    expect(budget.weeklyBudget).to.equal(updatedBudget.weeklyBudget);
         
-                //     expect(budget.costOfLiving.item).to.equal(updatedBudget.costOfLiving.item)
-                //     expect(budget.costOfLiving.amount).to.equal(updatedBudget.costOfLiving.amount);
+                    expect(budget.costOfLiving.item).to.equal(updatedBudget.costOfLiving.item)
+                    expect(budget.costOfLiving.amount).to.equal(updatedBudget.costOfLiving.amount);
         
-                //     expect(budget.weeklyItems.item).to.equal(updatedBudget.costOfLiving.item)
-                //     expect(budget.weeklyItems.amount).to.equal(updatedBudget.costOfLiving.amount)
-                // });    
+                    expect(budget.weeklyItems.item).to.equal(updatedBudget.costOfLiving.item)
+                    expect(budget.weeklyItems.amount).to.equal(updatedBudget.costOfLiving.amount)
+                });    
       });
 
   });

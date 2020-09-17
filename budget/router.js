@@ -30,7 +30,6 @@ router.get("/:id", jwtAuth, (req, res) => {
     Budget
       .findById(req.params.id) // `req.params.id` is the path URL id for a specific id
       .then(budget => {
-        console.log('retrieved budget', budget);
         res.json({
         id: budget._id,
         monthlyBudget: budget.monthlyBudget,
@@ -56,7 +55,7 @@ router.post("/", jwtAuth, jsonParser, (req, res) => {
             message: `Required \`${field}\` missing.`
         });
     }
-    console.log(req.body)
+
     Budget.create({
         monthlyBudget: req.body.monthlyBudget,
         costOfLiving: req.body.costOfLiving,
@@ -64,8 +63,7 @@ router.post("/", jwtAuth, jsonParser, (req, res) => {
         weeklyItems: req.body.weeklyItems
     })
     .then(budget => {
-    console.log(budget)
-    return res.status(201).json(budget.serialize())
+        return res.status(201).json(budget.serialize())
    })
     .catch(err => {
         console.error(err);
@@ -75,7 +73,6 @@ router.post("/", jwtAuth, jsonParser, (req, res) => {
 
 
 router.put('/:id', jwtAuth, jsonParser, (req, res) => {
-    console.log('POST REQUEST FROM SERVER', req.params.id, req.body)
     if(!(req.params.id && req.body.id && req.params.id == req.body.id)) {
         const message = (`Request path id (${req.params.id}) and request body id (${req.body.id}) must match`)
         console.error(message);
@@ -86,7 +83,6 @@ router.put('/:id', jwtAuth, jsonParser, (req, res) => {
     const updateableFields = ["monthlyBudget", "costOfLiving", "weeklyBudget", "weeklyItems", "id"]
 
     updateableFields.forEach(field => {
-        console.log('updatable fields', field, req.body, toUpdate)
         if (field in req.body) {
             toUpdate[field] = req.body[field];
         }

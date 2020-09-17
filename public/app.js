@@ -102,7 +102,7 @@ const updateBudget = budgetId => {
     },
     data: JSON.stringify(STATE.budget),
     success: updateUserWithBudgetId,
-    error: function(err){
+    error: err => {
       console.error(err)
     }
   };
@@ -125,9 +125,9 @@ const getUserBudget = budgetId => {
           console.log('budget id', budget)
           setState({ budget })
         },
-        error: function(err){
+        error: err => {
           console.error(err);
-          if(err.status === 404) {
+          if (err.status === 404) {
             console.error('NOT FOUND')
           }
         }
@@ -160,7 +160,7 @@ const userLogin = (user) => {
         route: 'budgetPage' 
       });
     },    
-    error: function(err){
+    error: err => {
       console.error(err)
     }
   };
@@ -184,7 +184,7 @@ const refreshJwt = user => {
       console.log('token refreshed');
       setState(Object.assign({}, STATE, { jwt: token.authToken })) // only have to update jwt token, not the whole user or budget obj 
     },
-    error: function(err){
+    error: err => {
       console.error(err)
     }
   };
@@ -207,7 +207,7 @@ const createUser = userInfo => {
         password: userInfo.password
       });
     },
-    error: function(err){
+    error: err => {
       console.error(err);
     }
   };
@@ -439,12 +439,10 @@ const render = () => {
 /* ---------- TEMPLATE HELPERS ---------- */
 
 const getTotal = list => list.reduce((acc, x) => {
-  console.log('total amount', x)
     return acc + Number(x.amount)
 }, 0);
 
 const createList = (type, list) => {
-  console.log(type, list)
   return list.map((obj, i) => (`
     <li class="list-item">
       <span class="list-span">${obj.item}: </span>
@@ -460,37 +458,37 @@ const createList = (type, list) => {
 /* ---------- TEMPLATES ---------- */
 
 const langingPageText = (`
-  <div class="container" id="landing-page-text">
-    <h2>Welcome</h2>
-    <p>
-      Welcome to the ultimate budget and saving calculator to help keep track your daily, weekly, and monthy, short term budget goals with 4 simple steps. 
-      <br>
-      <br>
-      <span class="special-words">First</span>, simply add in your monthly income after taxes. (What you actually get to keep).
-      <br>
-      <br>
-      <span class="special-words">Second</span>, your "Cost of living" is where you List all your fixed bills you have each month. 
-      Examples: savings, rent, car payment, insurance, groceries (if consistent), phone/cable bills, etc. 
-      <br>
-      <br>
-      <span class="special-words">Third</span>, your "Spending money" is broken down by week. It calculates and keep track of what's left of your monthly income after your fixed "cost of living" items are added in. 
-      <br>
-      This is your monthly budget, which is your extra "Spending money". 
-      This is what you have left after your expenses from your cost of living. When you make a purchase, if you log each item daily for the week, then it will help keep track of where your money goes. 
-      <br>
-      <br> 
-      <span class="special-words">Fourth</span>, if you find yourself going over your weekly limit, review where your spending habits you've logged each day. 
-      <br>
-      <br>
-      Lastly, first couple weeks are crucial to log each purchase to build up a habit and monitor yourself. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline.  
-    </p>
+  <div class="container">
+    <div class="box-1"
+      <p>
+        Welcome to the ultimate budget and saving calculator to help keep track your daily, weekly, and monthy, short term budget goals with 4 simple steps. 
+        <br>
+        <br>
+        <span class="special-words">First</span>, simply add in your monthly income after taxes. (What you actually get to keep).
+        <br>
+        <br>
+        <span class="special-words">Second</span>, your "Cost of living" is where you List all your fixed bills you have each month. 
+        Examples: savings, rent, car payment, insurance, groceries (if consistent), phone/cable bills, etc. 
+        <br>
+        <br>
+        <span class="special-words">Third</span>, your "Spending money" is broken down by week. It calculates and keep track of what's left of your monthly income after your fixed "cost of living" items are added in. 
+        <br>
+        This is your monthly budget, which is your extra "Spending money". 
+        This is what you have left after your expenses from your cost of living. When you make a purchase, if you log each item daily for the week, then it will help keep track of where your money goes. 
+        <br>
+        <br> 
+        <span class="special-words">Fourth</span>, if you find yourself going over your weekly limit, review where your spending habits you've logged each day. 
+        <br>
+        <br>
+        Lastly, first couple weeks are crucial to log each purchase to build up a habit and monitor yourself. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline.  
+      </p>
   </div>
 `);
 
 // sign up and login forms
 const userActionForms = (`
   <div class="container">
-    <div id="login-container">
+    <div class="box-2">
       <h4>Sign In</h4>
       <form class="login-form">
         <label for="username-login-input">Username</label>
@@ -501,7 +499,7 @@ const userActionForms = (`
       </form>
     </div>
 
-    <div id="sign-up-container">
+    <div class="box-3">
       <h4>Sign Up</h4>
       <form class="sign-up-form">
         <label for="username-input">Username</label>

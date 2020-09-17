@@ -114,7 +114,6 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(user => { 
       // `.serialize()` creates an id after obj was created
-      console.log('user got through promise chain and was created', user)
       return res.status(201).json(user.serialize());
     })
     .catch(err => {
