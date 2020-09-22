@@ -347,6 +347,10 @@ const userLoginHandler = event => {
   
 };
 
+const aboutHandler = () => {
+  renderAboutPage();
+}
+
 /* ---------- RENDER Functions ---------- */
 
 const checkBudget = () => {
@@ -403,6 +407,11 @@ const renderLoginPage = () => {
 
   $('#page').html('');
   $('#page').append(langingPageText, userActionForms);
+}
+
+const renderAboutPage = () => {
+  $('#page').html('');
+  $('#page').html(langingPageText);
 }
 
 const renderBudgetPage = () => {
@@ -571,7 +580,7 @@ const createBudgetPage = () => {
 /* ---------- LISTENERS ----------*/
 
 // click events
-$('body').on('click', '#nav-button-about', () => landingPage());
+$('body').on('click', '#nav-button-about', () => aboutHandler());
 $('body').on('click', '#nav-button-budget', () => budgetPage());
 $('body').on('click', '#logout', () => userLogout());
 $('body').on('click', '#save-budget', event => budgetSaveHandler(event));
