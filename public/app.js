@@ -485,9 +485,9 @@ const langingPageText = (`
 // sign up and login forms
 const userActionForms = (`
   <div class="container">
-    <div class="box-2">
+    <div class="container-login">
       <h4>Sign In</h4>
-      <form class="login-form">
+      <form class="form">
         <label for="username-login-input">Username</label>
         <input type="text" class="login" name="username-login-input" placeholder="username">
         <label for="password-login-input">Password</label>
@@ -496,9 +496,9 @@ const userActionForms = (`
       </form>
     </div>
 
-    <div class="box-3">
+    <div class="container-register">
       <h4>Sign Up</h4>
-      <form class="sign-up-form">
+      <form class="form">
         <label for="username-input">Username</label>
         <input type="text" name="username-input" placeholder="username">
         <label for="first-name-input">First Name</label>

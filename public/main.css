@@ -12,12 +12,39 @@ body {
     position: relative;
 }
 
-header{
-    padding: 20px;
-    text-align: center;
-    font-size: 200%;
-    color: white;
+/* HEADER NAVBAR */
+
+header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 80px;
+  padding: 20px;
+  text-align: center;
+  font-size: 200%;
+  color: white;
 }
+.inner-header {
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: 0 auto;
+}
+.logo-container {
+  height: 100%;
+  display: table;
+  float: left;
+}
+.logo-container h1 {
+  color: white;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  font-weight: 200;
+  font-style: italic;
+}
+
+/* BODY CONTAINERS SECTIONS */
 
 .container {
     width: 90%;
@@ -29,7 +56,6 @@ header{
     flex-direction: column;
 }
 
-
 .section {
   margin-bottom: 10px;
   display: grid;
@@ -37,14 +63,7 @@ header{
 
 }
 
-.budget-container-1 {
-  margin-bottom: 10px;
-  text-align: center;
-  align-items: center;
-  margin: auto;
-}
-
-.budget-container-2 {
+.budget-container-1, .budget-container-2, .budget-container-4 {
   margin-bottom: 10px;
   text-align: center;
   align-items: center;
@@ -52,13 +71,21 @@ header{
 }
 
 .budget-container-4 {
-  text-align: center;
-  align-items: center;
-  margin: auto;
-  display: grid;
   grid-template-columns: 1fr 1fr; 
 }
 
+.container-login, .container-register {
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.form {
+  position: relative;
+  display: inline-block;
+  top: 50%;
+}
+
+/* THE LITTLE DETAILS */
 
 h3{
   color: rgb(121, 201, 255);
@@ -86,10 +113,6 @@ input {
   border-radius: 25px;
 }
 
-ul {
-  padding: 0;
-}
-
 li{
     list-style: none;
 }
@@ -107,31 +130,6 @@ li{
   cursor: pointer;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 80px;
-}
-.inner-header {
-  width: 100%;
-  height: 100%;
-  display: block;
-  margin: 0 auto;
-}
-.logo-container {
-  height: 100%;
-  display: table;
-  float: left;
-}
-.logo-container h1 {
-  color: white;
-  height: 100%;
-  display: table-cell;
-  vertical-align: middle;
-  font-weight: 200;
-  font-style: italic;
-}
 
 a {
   text-decoration: none;
@@ -144,7 +142,6 @@ a:hover {
   color: lightblue; 
 }
 
-
 .total {
   font-size: 50px;
 }
@@ -153,8 +150,7 @@ footer {
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 15px;
-  color: white;
+  padding: 5px;
 }
 
 #budget-success {
@@ -167,8 +163,18 @@ footer {
   color: yellow;
 }
 
+
+/* RESPONSIVE DESIGN */
+
 @media only screen and (max-width: 670px) {
 
+  .container-login, .container-register {
+    margin: auto;
+    width: auto;
+  }
 
+  .form label, input {
+    display: block;
+  }
   
 }
