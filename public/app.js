@@ -411,7 +411,7 @@ const renderLoginPage = () => {
 
 const renderAboutPage = () => {
   $('#page').html('');
-  $('#page').html(langingPageText);
+  $('#page').append(langingPageText, userActionForms);
 }
 
 const renderBudgetPage = () => {
@@ -532,7 +532,7 @@ const createBudgetPage = () => {
   return (`
     <div class="container">
       <div id="available-funds" class="section">
-        <div id="monthly-budget-container" class="section-container-1">
+        <div id="monthly-budget-container" class="budget-container-1">
           <h3>Monthly Income</h3>
           <form id="monthly-budget-add" class="budget-form">
             <label for="add-monthly-input">$</label>
@@ -541,14 +541,14 @@ const createBudgetPage = () => {
           </form>
         </div>
 
-        <div id="weekly-budget-container" class="section-container-2">
+        <div id="weekly-budget-container" class="budget-container-2">
           <h3>Weekly "Spending Money"</h3>
           <div class="total">$${monthlyBudget - costOfLivingTotal}</div>
         </div>
       </div>
 
       <div id="list-elements" class="section">
-        <div id="cost-of-living-container" class="section-container-1">
+        <div id="cost-of-living-container" class="budget-container-1">
           <h3>Cost of Living: $${costOfLivingTotal}</h3>
           <ul id="cost-of-living" class="item-list">${costOfLivingList}</ul>
           <form id="cost-of-living-add" class="budget-form">
@@ -558,7 +558,7 @@ const createBudgetPage = () => {
           </form>
         </div>
 
-        <div id="weekly-items-container" class="section-container-2">
+        <div id="weekly-items-container" class="budget-container-2">
           <h3>Weekly Items: $${weeklyTotal}</h3>
           <ul class="weekly-items">${weeklyItemsList}</ul>
           <form id="weekly-items-add" class="budget-form">
@@ -569,7 +569,7 @@ const createBudgetPage = () => {
         </div>
       </div>
 
-      <div class="section-container">
+      <div class="budget-container-4">
         <button id="save-budget">Save Budget Information</button>
         <button id="logout"> Logout </button>
       </div>
