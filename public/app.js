@@ -406,8 +406,15 @@ const renderLoginPage = () => {
 }
 
 const renderAboutPage = () => {
-  $('#page').html('');
-  $('#page').append(langingPageText, userActionForms);
+  if (window.matchMedia("(min-width: 670px)").matches) {
+    console.log("big screens")
+    $('#page').html('');
+    $('#page').append(langingPageText, userActionForms);
+  } else {
+    console.log("mobile screens")
+    $('#page').html('');
+    $('#page').append(landingPageTextMobile , userActionForms);
+  }
 }
 
 const renderBudgetPage = () => {
