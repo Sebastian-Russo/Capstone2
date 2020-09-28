@@ -354,19 +354,6 @@ const aboutHandler = () => {
 /* ---------- RENDER Functions ---------- */
 
 const checkBudget = () => {
-//   if (STATE.user.budget && !STATE.budget.id) {
-//     getUserBudget(STATE.user.budget);
-//   } else {
-//     renderBudgetPage();
-//   }
-// };
-
-// const checkForUser = () => {
-//   if (STATE.user.id) {
-//     setState({ route: 'budgetPage' })
-//   };
-console.log('CHECK BUDGET FIRE')
-
     const expectedKeys = [
       "id",
       "totalCost",
@@ -405,8 +392,17 @@ const renderLoginPage = () => {
     return checkBudget();
   };
 
-  $('#page').html('');
-  $('#page').append(langingPageText, userActionForms);
+  if (window.matchMedia("(min-width: 670px)").matches) {
+    console.log("big screens")
+    $('#page').html('');
+    $('#page').append(langingPageText, userActionForms);
+  } else {
+    console.log("mobile screens")
+    $('#page').html('');
+    $('#page').append(landingPageTextMobile , userActionForms);
+  }
+
+
 }
 
 const renderAboutPage = () => {
@@ -451,6 +447,16 @@ const createList = (type, list) => {
   `)).join("");
 };
 
+// const resizeMobile = () => {
+//   if (window.matchMedia("(min-width: 670px)").matches) {
+//     console.log("big screens")
+//    } else {
+//     console.log("mobile screens")
+//    }
+   
+// }
+
+
 
 /* ---------- TEMPLATES ---------- */
 
@@ -459,6 +465,11 @@ const langingPageText = (`
     <div class="box-1"
       <p>
         Welcome to the ultimate budget and saving calculator to help keep track your daily, weekly, and monthy, short term budget goals with 4 simple steps. 
+        <br>
+        <br>
+        <div> 
+          <img src="../images/mindmapHorizontal.png" alt="mind map" id="mindmap-image">
+        </div>
         <br>
         <br>
         <span class="landing-text">First</span>, simply add in your monthly income after taxes. (What you actually get to keep).
@@ -479,6 +490,20 @@ const langingPageText = (`
         <br>
         Lastly, first couple weeks are crucial to log each purchase to build up a habit and monitor yourself. At the same time don't beat yourself up if you go over your limits, you're still finding your baseline.  
       </p>
+  </div>
+`);
+
+const landingPageTextMobile = (`
+  <div class="container">
+    <div class="box-1"
+      <p>
+        Welcome to the ultimate budget and saving calculator to help keep track your daily, weekly, and monthy, short term budget goals with 4 simple steps. 
+      </p>
+      <br>
+      <div> 
+        <img src="../images/mindmapVertical.png" alt="mind map" id="mindmap-image">
+      </div>
+    </div>
   </div>
 `);
 
@@ -594,6 +619,7 @@ $('body').on('submit', '#weekly-items-add', event => weeklyItemsHandler(event));
 $('body').on('submit', '#cost-of-living-add', event => costOfLivingHandler(event));
 $('body').on('submit', '#monthly-budget-add', event => monthlyBudgetHandler(event));
 
+// window.addEventListener("resize", () => resizeMobile());
 /* ---------- LOAD ----------*/
 
 $(() => {
@@ -602,3 +628,10 @@ $(() => {
 
 
 
+// window.addEventListener("resize", function() {
+//   if (window.matchMedia("(min-width: 500px)").matches) {
+//    console.log("Screen width is at least 500px")
+//   } else {
+//    console.log("Screen less than 500px")
+//   }
+//  })
