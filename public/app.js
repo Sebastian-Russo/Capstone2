@@ -13,7 +13,6 @@ const STATE = {
   jwt: ''
 };
 
-
 /* ---------- CHECK/UPDATE STATE ---------- */
 
 const setState = (newItem, currentState=STATE) => {
@@ -402,7 +401,6 @@ const renderLoginPage = () => {
     $('#page').append(landingPageTextMobile , userActionForms);
   }
 
-
 }
 
 const renderAboutPage = () => {
@@ -453,16 +451,6 @@ const createList = (type, list) => {
     </li>
   `)).join("");
 };
-
-// const resizeMobile = () => {
-//   if (window.matchMedia("(min-width: 670px)").matches) {
-//     console.log("big screens")
-//    } else {
-//     console.log("mobile screens")
-//    }
-   
-// }
-
 
 
 /* ---------- TEMPLATES ---------- */
@@ -633,12 +621,3 @@ $(() => {
   checkForUser();
 });
 
-
-
-// window.addEventListener("resize", function() {
-//   if (window.matchMedia("(min-width: 500px)").matches) {
-//    console.log("Screen width is at least 500px")
-//   } else {
-//    console.log("Screen less than 500px")
-//   }
-//  })
