@@ -583,7 +583,7 @@ const createBudgetPage = () => {
           <ul class="weekly-items">${weeklyItemsList}</ul>
           <form id="weekly-items-add" class="budget-form">
             <input type="text" name="add-input-item" placeholder="item">
-            <input type="text" name="add-input-amount" placeholder="amount">
+            <input type="number" name="add-input-amount" placeholder="amount">
             <button id="weekly-items-add-button" class="add-button">Add item</button>
           </form>
         </div>
