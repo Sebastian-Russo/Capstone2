@@ -391,6 +391,12 @@ const renderLoginPage = () => {
     return checkBudget();
   };
 
+  $('#page').html('');
+  $('#page').append(landingPageTextMobile , userActionForms);
+}
+
+const resizeMobile = () => {
+  window.matchMedia("(min-width: 670px)").matches
   if (window.matchMedia("(min-width: 670px)").matches) {
     console.log("big screens")
     $('#page').html('');
@@ -400,7 +406,6 @@ const renderLoginPage = () => {
     $('#page').html('');
     $('#page').append(landingPageTextMobile , userActionForms);
   }
-
 }
 
 const renderAboutPage = () => {
@@ -614,7 +619,7 @@ $('body').on('submit', '#weekly-items-add', event => weeklyItemsHandler(event));
 $('body').on('submit', '#cost-of-living-add', event => costOfLivingHandler(event));
 $('body').on('submit', '#monthly-budget-add', event => monthlyBudgetHandler(event));
 
-// window.addEventListener("resize", () => resizeMobile());
+window.addEventListener("resize", () => resizeMobile());
 /* ---------- LOAD ----------*/
 
 $(() => {
