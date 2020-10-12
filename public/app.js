@@ -40,9 +40,7 @@ const checkForUser = () => {
 /* ---------- BUDGET REQUESTS ---------- */
 
 const updateUserWithBudgetId = budgetObj => {
-  // if there is a jwt in state, use that, if not, get from cookies 
   const authToken = STATE.jwt.length ? STATE.jwt : Cookies.get('authToken');
-  console.log('update user budget ajax', budgetObj.id, STATE.user.id, STATE.user.budget);
 
   const settings = {
     url: `/api/users/${STATE.user.id}`,
@@ -100,7 +98,8 @@ const updateBudget = budgetId => {
       'Authorization': `Bearer ${authToken}`
     },
     data: JSON.stringify(STATE.budget),
-    success: updateUserWithBudgetId,
+    // success: updateUserWithBudgetId,
+    success: toastr.success('Success!', 'Budget updated and saved :)'),
     error: err => {
       console.error(err)
     }
@@ -161,6 +160,7 @@ const userLogin = (user) => {
     },    
     error: err => {
       console.error(err)
+      toastr.warning('Warning', 'Check your username and/or password')
     }
   };
 
@@ -208,6 +208,7 @@ const createUser = userInfo => {
     },
     error: err => {
       console.error(err);
+      toastr.warning('Warning', 'Username has been taken')
     }
   };
 
@@ -309,7 +310,6 @@ const deleteItemHandler = event => {
   console.log('target', event.target, 'type', type, 'selected', selected)
   
   setBudget({
-    // [type]: deleteItem(STATE.budget[type], selected) // args: list, index 
     [type]: newList
   });
 }
@@ -512,7 +512,7 @@ const userActionForms = (`
   <div class="container">
     <div class="container-login">
       <h4>Sign In</h4>
-      <form class="form">
+      <form class="form login-form">
         <label for="username-login-input">Username</label>
         <input type="text" class="login" name="username-login-input" placeholder="username">
         <label for="password-login-input">Password</label>
@@ -523,7 +523,7 @@ const userActionForms = (`
 
     <div class="container-register">
       <h4>Sign Up</h4>
-      <form class="form">
+      <form class="form sign-up-form">
         <label for="username-input">Username</label>
         <input type="text" name="username-input" placeholder="username">
         <label for="first-name-input">First Name</label>
