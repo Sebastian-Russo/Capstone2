@@ -1,15 +1,20 @@
 * {
-    margin: 0;
-    box-sizing: border-box;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-    color: white;
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    position: relative;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 9, 121, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  color: white;
+  font-family: "DM Mono", monospace;
+  min-height: 100vh;
+  position: relative;
 }
 
 /* NAVBAR */
@@ -45,14 +50,15 @@ nav ul {
 /* BODY CONTAINERS SECTIONS */
 
 .container {
-    width: 90%;
-    opacity: .8;
-    padding: 25px;
-    margin: auto;
-    margin-top: 40px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
+  width: 90%;
+  opacity: 0.8;
+  padding: 25px;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .section {
@@ -61,7 +67,9 @@ nav ul {
   grid-template-columns: 1fr 1fr;
 }
 
-.budget-container-1, .budget-container-2, .budget-container-4 {
+.budget-container-1,
+.budget-container-2,
+.budget-container-4 {
   margin-bottom: 10px;
   text-align: center;
   align-items: center;
@@ -69,10 +77,11 @@ nav ul {
 }
 
 .budget-container-4 {
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr 1fr;
 }
 
-.container-login, .container-register {
+.container-login,
+.container-register {
   width: 100%;
   padding-bottom: 10px;
 }
@@ -85,7 +94,7 @@ nav ul {
 
 /* THE LITTLE DETAILS */
 
-h3{
+h3 {
   color: rgb(121, 201, 255);
   text-align: center;
 }
@@ -93,26 +102,26 @@ h3{
 button {
   background-color: grey;
   color: white;
-  outline:none;
+  outline: none;
   box-shadow: none;
   border: none;
   border-radius: 25px;
   box-shadow: 1px 2px;
-  padding: 5px;;
+  padding: 5px;
   margin: 10px;
 }
 button:hover {
   background-color: white;
   color: grey;
-  transition: all .4s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }
 
 input {
   border-radius: 25px;
 }
 
-li{
-    list-style: none;
+li {
+  list-style: none;
 }
 
 .list-item {
@@ -120,14 +129,13 @@ li{
 }
 
 .delete-button {
-  color: red
+  color: red;
 }
 
-.delete-button:hover{
+.delete-button:hover {
   color: lightcoral;
   cursor: pointer;
 }
-
 
 a {
   text-decoration: none;
@@ -137,7 +145,7 @@ a {
   margin: 8px;
 }
 a:hover {
-  color: lightblue; 
+  color: lightblue;
 }
 
 .total {
@@ -164,7 +172,7 @@ footer {
 #mindmap-image {
   display: block;
   border: solid;
-  width: 90%;
+  width: 50%;
   height: auto;
   margin-left: auto;
   margin-right: auto;
@@ -173,14 +181,18 @@ footer {
 /* RESPONSIVE DESIGN */
 
 @media only screen and (max-width: 670px) {
-
-  .container-login, .container-register {
+  .container-login,
+  .container-register {
     margin: auto;
     width: auto;
   }
 
-  .form label, input {
+  #mindmap-image {
+    width: 80%;
+  }
+
+  .form label,
+  input {
     display: block;
   }
-  
 }

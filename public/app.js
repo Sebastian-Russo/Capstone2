@@ -252,7 +252,10 @@ const userLogout = () => {
 // saves new/updated budget 
 const budgetSaveHandler = event => {
   event.preventDefault();
-  if(STATE.user.budget){
+  if (!STATE.user.budget){
+    console.log('no user signed in')
+    toastr.warning('Warning', 'Please go to the about page and login or register before you save a budget!')
+  } else if (STATE.user.budget){
     console.log('updating budget');
     updateBudget(STATE.user.budget);
   } else {
@@ -392,7 +395,7 @@ const renderLoginPage = () => {
   };
 
   $('#page').html('');
-  $('#page').append(landingPageTextMobile , userActionForms);
+  $('#page').append(userActionForms, landingPageTextMobile );
 }
 
 const resizeMobile = () => {
@@ -400,11 +403,11 @@ const resizeMobile = () => {
   if (window.matchMedia("(min-width: 670px)").matches) {
     console.log("big screens")
     $('#page').html('');
-    $('#page').append(langingPageText, userActionForms);
+    $('#page').append(userActionForms, langingPageText);
   } else {
     console.log("mobile screens")
     $('#page').html('');
-    $('#page').append(landingPageTextMobile , userActionForms);
+    $('#page').append(userActionForms, landingPageTextMobile );
   }
 }
 
@@ -412,11 +415,11 @@ const renderAboutPage = () => {
   if (window.matchMedia("(min-width: 670px)").matches) {
     console.log("big screens")
     $('#page').html('');
-    $('#page').append(langingPageText, userActionForms);
+    $('#page').append(userActionForms, langingPageText);
   } else {
     console.log("mobile screens")
     $('#page').html('');
-    $('#page').append(landingPageTextMobile , userActionForms);
+    $('#page').append(userActionForms, landingPageTextMobile );
   }
 }
 
